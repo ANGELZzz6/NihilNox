@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#121212">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="12dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="MI GALERÍA"
+            android:textColor="#FFFFFF"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.15"/>
+
+        <TextView
+            android:id="@+id/btnNuevaCarpeta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="＋"
+            android:textColor="#FFD700"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:background="#1E1E1E"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#2A2A2A"/>
+
+    <TextView
+        android:id="@+id/tvGaleriaVacia"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No tienes carpetas.\nPresiona ＋ para crear una."
+        android:textColor="#666666"
+        android:textSize="15sp"
+        android:gravity="center"
+        android:padding="32dp"
+        android:visibility="gone"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/galeriaRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp"
+        android:clipToPadding="false"/>
+
+</LinearLayout>

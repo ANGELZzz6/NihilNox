@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#111133"
+    android:padding="14dp"
+    android:layout_marginBottom="12dp">
+
+    <!-- Fecha + calorías -->
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
+        <TextView android:id="@+id/tvHistorialFecha"
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="2026-03-09"
+            android:textColor="#FFD700" android:textSize="14sp" android:textStyle="bold"/>
+        <TextView android:id="@+id/tvHistorialCalorias"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="0 kcal"
+            android:textColor="#FFD700" android:textSize="13sp"/>
+    </LinearLayout>
+
+    <!-- Proteína -->
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:gravity="center_vertical"
+        android:layout_marginBottom="3dp">
+        <TextView android:layout_width="80dp" android:layout_height="wrap_content"
+            android:text="Proteína" android:textColor="#4FC3F7" android:textSize="11sp"/>
+        <ProgressBar android:id="@+id/pbHistorialProteina"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp" android:layout_height="5dp" android:layout_weight="1"
+            android:progressTint="#4FC3F7" android:progressBackgroundTint="#2A2A4A"
+            android:max="200" android:layout_marginEnd="8dp"/>
+        <TextView android:id="@+id/tvHistorialProteina"
+            android:layout_width="45dp" android:layout_height="wrap_content"
+            android:text="0g" android:textColor="#4FC3F7" android:textSize="11sp"
+            android:gravity="end"/>
+    </LinearLayout>
+
+    <!-- Carbos -->
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:gravity="center_vertical"
+        android:layout_marginBottom="3dp">
+        <TextView android:layout_width="80dp" android:layout_height="wrap_content"
+            android:text="Carbos" android:textColor="#FFD700" android:textSize="11sp"/>
+        <ProgressBar android:id="@+id/pbHistorialCarbos"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp" android:layout_height="5dp" android:layout_weight="1"
+            android:progressTint="#FFD700" android:progressBackgroundTint="#2A2A4A"
+            android:max="400" android:layout_marginEnd="8dp"/>
+        <TextView android:id="@+id/tvHistorialCarbos"
+            android:layout_width="45dp" android:layout_height="wrap_content"
+            android:text="0g" android:textColor="#FFD700" android:textSize="11sp"
+            android:gravity="end"/>
+    </LinearLayout>
+
+    <!-- Grasas -->
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:gravity="center_vertical"
+        android:layout_marginBottom="3dp">
+        <TextView android:layout_width="80dp" android:layout_height="wrap_content"
+            android:text="Grasas" android:textColor="#FF69B4" android:textSize="11sp"/>
+        <ProgressBar android:id="@+id/pbHistorialGrasas"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp" android:layout_height="5dp" android:layout_weight="1"
+            android:progressTint="#FF69B4" android:progressBackgroundTint="#2A2A4A"
+            android:max="120" android:layout_marginEnd="8dp"/>
+        <TextView android:id="@+id/tvHistorialGrasas"
+            android:layout_width="45dp" android:layout_height="wrap_content"
+            android:text="0g" android:textColor="#FF69B4" android:textSize="11sp"
+            android:gravity="end"/>
+    </LinearLayout>
+
+    <!-- Fibra -->
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:gravity="center_vertical"
+        android:layout_marginBottom="3dp">
+        <TextView android:layout_width="80dp" android:layout_height="wrap_content"
+            android:text="Fibra" android:textColor="#69FF87" android:textSize="11sp"/>
+        <ProgressBar android:id="@+id/pbHistorialFibra"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp" android:layout_height="5dp" android:layout_weight="1"
+            android:progressTint="#69FF87" android:progressBackgroundTint="#2A2A4A"
+            android:max="50" android:layout_marginEnd="8dp"/>
+        <TextView android:id="@+id/tvHistorialFibra"
+            android:layout_width="45dp" android:layout_height="wrap_content"
+            android:text="0g" android:textColor="#69FF87" android:textSize="11sp"
+            android:gravity="end"/>
+    </LinearLayout>
+
+    <!-- Azúcares -->
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:gravity="center_vertical"
+        android:layout_marginBottom="10dp">
+        <TextView android:layout_width="80dp" android:layout_height="wrap_content"
+            android:text="Azúcares" android:textColor="#FF8C00" android:textSize="11sp"/>
+        <ProgressBar android:id="@+id/pbHistorialAzucares"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp" android:layout_height="5dp" android:layout_weight="1"
+            android:progressTint="#FF8C00" android:progressBackgroundTint="#2A2A4A"
+            android:max="80" android:layout_marginEnd="8dp"/>
+        <TextView android:id="@+id/tvHistorialAzucares"
+            android:layout_width="45dp" android:layout_height="wrap_content"
+            android:text="0g" android:textColor="#FF8C00" android:textSize="11sp"
+            android:gravity="end"/>
+    </LinearLayout>
+
+    <!-- Análisis IA -->
+    <TextView android:id="@+id/tvHistorialAnalisis"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text=""
+        android:textColor="#AAAACC" android:textSize="12sp"
+        android:lineSpacingMultiplier="1.4"
+        android:background="#0D0D2A"
+        android:padding="10dp"
+        android:visibility="gone"/>
+
+    <Button android:id="@+id/btnVerAnalisis"
+        android:layout_width="wrap_content" android:layout_height="32dp"
+        android:text="🤖 Ver análisis IA"
+        android:textColor="#4FC3F7" android:textSize="11sp"
+        android:background="@drawable/btn_nav_gradient"
+        android:stateListAnimator="@null"
+        android:layout_marginTop="6dp"
+        android:visibility="gone"/>
+    <LinearLayout
+        android:id="@+id/layoutRecompensa"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="8dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tvMonedasRecompensa"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="🪙 +0 monedas disponibles"
+            android:textColor="#FFD700"
+            android:textSize="12sp"
+            android:textStyle="bold"/>
+
+        <Button
+            android:id="@+id/btnReclamarRecompensa"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:text="Reclamar"
+            android:textColor="#1A1200"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:background="@drawable/btn_gacha_gold_gradient"
+            android:stateListAnimator="@null"/>
+
+    </LinearLayout>
+
+    <!-- Ya reclamado -->
+    <TextView
+        android:id="@+id/tvYaReclamado"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="✓ Recompensa reclamada"
+        android:textColor="#444466"
+        android:textSize="11sp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"/>
+
+</LinearLayout>

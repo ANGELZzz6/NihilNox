@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/dialog_background">
+
+    <!-- Barra decorativa top -->
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:background="#FFD700"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Header -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="🔑  CAMBIAR CONTRASEÑA"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.08"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="16dp"/>
+
+    <!-- Divisor -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#2A2A2A"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="20dp"/>
+
+    <!-- Label -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="CONTRASEÑA ACTUAL"
+        android:textColor="#888888"
+        android:textSize="11sp"
+        android:letterSpacing="0.12"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="6dp"/>
+
+    <EditText
+        android:id="@+id/etContrasenaActual"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:hint="••••••••"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#444444"
+        android:textSize="15sp"
+        android:background="@drawable/input_background"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:inputType="textPassword"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="20dp"/>
+
+    <!-- Label -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="NUEVA CONTRASEÑA"
+        android:textColor="#888888"
+        android:textSize="11sp"
+        android:letterSpacing="0.12"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="6dp"/>
+
+    <EditText
+        android:id="@+id/etContrasenaNueva"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:hint="••••••••"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#444444"
+        android:textSize="15sp"
+        android:background="@drawable/input_background"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:inputType="textPassword"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="20dp"/>
+
+    <!-- Label -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="CONFIRMAR CONTRASEÑA"
+        android:textColor="#888888"
+        android:textSize="11sp"
+        android:letterSpacing="0.12"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="6dp"/>
+
+    <EditText
+        android:id="@+id/etContrasenaConfirmar"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:hint="••••••••"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#444444"
+        android:textSize="15sp"
+        android:background="@drawable/input_background"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:inputType="textPassword"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"/>
+
+</LinearLayout>

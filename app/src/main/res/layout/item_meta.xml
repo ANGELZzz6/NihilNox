@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/card_info_panel_bg"
+    android:layout_marginStart="12dp"
+    android:layout_marginEnd="12dp"
+    android:layout_marginTop="8dp">
+
+    <!-- Stripe de color arriba -->
+    <View
+        android:id="@+id/metaStripe"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:background="#FFD700"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Título + badge + basura -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:id="@+id/metaTitulo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:maxLines="2"
+                android:ellipsize="end"/>
+
+            <TextView
+                android:id="@+id/metaTipoBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="9sp"
+                android:textColor="#FFD700"
+                android:background="@drawable/badge_anime_bg"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:layout_marginStart="8dp"
+                android:letterSpacing="0.1"
+                android:text="DIARIA"/>
+
+            <ImageButton
+                android:id="@+id/btnEliminarMeta"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@android:drawable/ic_menu_delete"
+                android:background="@android:color/transparent"
+                android:tint="#FF5555"
+                android:layout_marginStart="8dp"
+                android:contentDescription="Eliminar meta"/>
+
+        </LinearLayout>
+
+        <!-- Progreso texto -->
+        <TextView
+            android:id="@+id/metaProgreso"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#6666AA"
+            android:textSize="12sp"
+            android:layout_marginBottom="6dp"/>
+
+        <!-- Barra de progreso -->
+        <ProgressBar
+            android:id="@+id/metaProgressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:progressTint="#FFD700"
+            android:progressBackgroundTint="#1A1A3A"
+            android:layout_marginBottom="10dp"/>
+
+        <!-- Racha (solo DIARIA) -->
+        <LinearLayout
+            android:id="@+id/layoutRacha"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/btn_nav_gradient"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:layout_marginBottom="10dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/metaRacha"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="12sp"
+                android:textColor="#AAAAFF"/>
+
+            <TextView
+                android:id="@+id/metaMejorRacha"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="#FFD700"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@drawable/card_divider_gradient"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Botón acción -->
+        <Button
+            android:id="@+id/metaBoton"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:textColor="#0D0D1A"
+            android:textStyle="bold"
+            android:textSize="13sp"
+            android:letterSpacing="0.05"
+            android:backgroundTint="#FFD700"
+            android:stateListAnimator="@null"
+            android:text="Acción"/>
+
+        <!-- Botón IA oculto (compatibilidad) -->
+        <Button
+            android:id="@+id/btnValidarIA"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+</LinearLayout>

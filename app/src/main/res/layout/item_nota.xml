@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/card_info_panel_bg"
+    android:layout_marginStart="2dp"
+    android:layout_marginEnd="2dp"
+    android:layout_marginBottom="8dp">
+
+    <!-- Stripe dorada superior -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="#3D2E00"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="12dp">
+
+        <!-- Título + fecha + drag handle -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp">
+
+            <!-- Handle drag -->
+            <TextView
+                android:id="@+id/ivDragHandle"
+                android:layout_width="28dp"
+                android:layout_height="wrap_content"
+                android:text="⠿"
+                android:textColor="#444466"
+                android:textSize="18sp"
+                android:gravity="center"
+                android:layout_marginEnd="8dp"/>
+
+            <!-- Badge tipo -->
+            <TextView
+                android:id="@+id/tvTipoNota"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📝"
+                android:textSize="12sp"
+                android:layout_marginEnd="6dp"/>
+
+            <TextView
+                android:id="@+id/tvNotaTitulo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="#FFD700"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end"/>
+
+            <TextView
+                android:id="@+id/tvNotaFecha"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#444466"
+                android:textSize="11sp"
+                android:layout_marginStart="8dp"/>
+
+        </LinearLayout>
+
+        <!-- Contenido texto (solo notas normales) -->
+        <TextView
+            android:id="@+id/tvNotaContenido"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#8888AA"
+            android:textSize="13sp"
+            android:lineSpacingMultiplier="1.4"
+            android:maxLines="3"
+            android:ellipsize="end"
+            android:layout_marginBottom="6dp"/>
+
+        <!-- Preview lista de control (solo listas) -->
+        <LinearLayout
+            android:id="@+id/contenedorPreviewLista"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:layout_marginBottom="6dp"/>
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@drawable/card_divider_gradient"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="6dp"/>
+
+        <!-- Botones -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end">
+
+            <Button
+                android:id="@+id/btnEditarNota"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="✏️ Editar"
+                android:textColor="#AAAACC"
+                android:textSize="12sp"
+                android:background="@drawable/btn_nav_gradient"
+                android:stateListAnimator="@null"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:layout_marginEnd="8dp"/>
+
+            <Button
+                android:id="@+id/btnEliminarNota"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="🗑️"
+                android:textColor="#FF5555"
+                android:textSize="14sp"
+                android:background="@drawable/btn_nav_gradient"
+                android:stateListAnimator="@null"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/back_global">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="14dp"
+        android:background="#0D0D1A">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tvDetalleTitulo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:maxLines="2"
+                android:ellipsize="end"/>
+
+            <TextView
+                android:id="@+id/tvDetalleBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:textColor="#FFD700"
+                android:background="@drawable/badge_anime_bg"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:text="DIARIA"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvDetalleDescripcion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#6666AA"
+            android:textSize="13sp"
+            android:lineSpacingMultiplier="1.4"
+            android:layout_marginTop="6dp"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:id="@+id/tvDetalleDias"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="#4FC3F7"
+                android:textSize="11sp"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#2A2A4A"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="20dp">
+
+            <!-- Progreso -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/card_info_panel_bg"
+                android:padding="16dp"
+                android:layout_marginBottom="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="10dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="📊 PROGRESO"
+                        android:textColor="#8888AA"
+                        android:textSize="11sp"
+                        android:letterSpacing="0.1"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:id="@+id/tvDetalleProgreso"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#FFD700"
+                        android:textSize="14sp"
+                        android:textStyle="bold"/>
+
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/pbDetalleProgreso"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"
+                    android:progressTint="#FFD700"
+                    android:progressBackgroundTint="#1A1A3A"
+                    android:layout_marginBottom="4dp"/>
+
+                <LinearLayout
+                    android:id="@+id/layoutDetalleRacha"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="@drawable/btn_nav_gradient"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:layout_marginTop="10dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/tvDetalleRacha"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="#AAAAFF"
+                        android:textSize="13sp"/>
+
+                    <TextView
+                        android:id="@+id/tvDetalleMejorRacha"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#FFD700"
+                        android:textSize="13sp"
+                        android:textStyle="bold"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Registro fotográfico -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/card_info_panel_bg"
+                android:padding="16dp"
+                android:layout_marginBottom="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="4dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="📸 REGISTRO FOTOGRÁFICO"
+                        android:textColor="#8888AA"
+                        android:textSize="11sp"
+                        android:letterSpacing="0.1"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:id="@+id/tvContadorFotos"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#444466"
+                        android:textSize="11sp"/>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@drawable/card_divider_gradient"
+                    android:layout_marginBottom="12dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="14dp">
+
+                    <Button
+                        android:id="@+id/btnAgregarCamara"
+                        android:layout_width="0dp"
+                        android:layout_height="42dp"
+                        android:layout_weight="1"
+                        android:text="📷 Cámara"
+                        android:textColor="#1A1200"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:background="@drawable/btn_gacha_gold_gradient"
+                        android:stateListAnimator="@null"
+                        android:layout_marginEnd="6dp"/>
+
+                    <Button
+                        android:id="@+id/btnAgregarGaleria"
+                        android:layout_width="0dp"
+                        android:layout_height="42dp"
+                        android:layout_weight="1"
+                        android:text="🖼 Galería"
+                        android:textColor="#AAAACC"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:background="@drawable/btn_nav_gradient"
+                        android:stateListAnimator="@null"
+                        android:layout_marginStart="6dp"/>
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvSinImagenes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Sin fotos aún. Usa los botones de arriba para agregar."
+                    android:textColor="#333355"
+                    android:textSize="13sp"
+                    android:gravity="center"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:visibility="visible"/>
+
+                <LinearLayout
+                    android:id="@+id/layoutGruposFechas"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"/>
+
+            </LinearLayout>
+
+            <!-- ── Recordatorio ─────────────────────────────────────────── -->
+            <Button
+                android:id="@+id/btnRecordatorio"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="🔔 Agregar recordatorio"
+                android:textColor="#AAAACC"
+                android:textSize="13sp"
+                android:background="@drawable/btn_nav_gradient"
+                android:stateListAnimator="@null"
+                android:layout_marginBottom="8dp"/>
+
+            <!-- ── Validar con IA ────────────────────────────────────────── -->
+            <Button
+                android:id="@+id/btnDetalleValidarIA"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:text="✦  VALIDAR CON IA"
+                android:textColor="#1A1200"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.1"
+                android:background="@drawable/btn_gacha_gold_gradient"
+                android:stateListAnimator="@null"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

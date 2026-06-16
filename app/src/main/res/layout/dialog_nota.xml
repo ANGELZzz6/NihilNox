@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/dialog_background">
+
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:background="#FFD700"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/tvDialogEditarHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="✏️  NUEVA NOTA"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.08"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="12dp"/>
+
+    <!-- Selector tipo -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="16dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tipo:"
+            android:textColor="#888888"
+            android:textSize="12sp"
+            android:layout_marginEnd="12dp"/>
+
+        <Button
+            android:id="@+id/btnTipoNota"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_weight="1"
+            android:text="📝 Nota"
+            android:textColor="#FFD700"
+            android:textSize="12sp"
+            android:background="@drawable/btn_gacha_gold_gradient"
+            android:stateListAnimator="@null"
+            android:layout_marginEnd="8dp"/>
+
+        <Button
+            android:id="@+id/btnTipoLista"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_weight="1"
+            android:text="☑️ Lista"
+            android:textColor="#AAAACC"
+            android:textSize="12sp"
+            android:background="@drawable/btn_nav_gradient"
+            android:stateListAnimator="@null"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#2A2A2A"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="20dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TÍTULO"
+        android:textColor="#888888"
+        android:textSize="11sp"
+        android:letterSpacing="0.12"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="6dp"/>
+
+    <EditText
+        android:id="@+id/etNotaTitulo"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:hint="Nombre de la nota"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#444444"
+        android:textSize="15sp"
+        android:background="@drawable/input_background"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:inputType="text"
+        android:maxLines="1"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="20dp"/>
+
+    <!-- Label contenido (cambia según tipo) -->
+    <TextView
+        android:id="@+id/tvLabelContenido"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="CONTENIDO"
+        android:textColor="#888888"
+        android:textSize="11sp"
+        android:letterSpacing="0.12"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="6dp"/>
+
+    <!-- Campo nota normal -->
+    <EditText
+        android:id="@+id/etNotaContenido"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:hint="Escribe tu nota aquí..."
+        android:textColor="#FFFFFF"
+        android:textColorHint="#444444"
+        android:textSize="14sp"
+        android:background="@drawable/input_background"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:inputType="textMultiLine"
+        android:gravity="top"
+        android:scrollbars="vertical"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"/>
+
+    <!-- Campo lista de control -->
+    <LinearLayout
+        android:id="@+id/contenedorLista"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="8dp"/>
+
+    <Button
+        android:id="@+id/btnAgregarItem"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="＋ Agregar ítem"
+        android:textColor="#FFD700"
+        android:textSize="13sp"
+        android:background="@drawable/btn_nav_gradient"
+        android:stateListAnimator="@null"
+        android:visibility="gone"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"/>
+
+</LinearLayout>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/back_global"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🎚 EQUALIZADOR"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Contenedor Dinámico para Bandas -->
+        <LinearLayout
+            android:id="@+id/containerBandas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#0D0D1A"
+            android:padding="16dp"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Efectos Extra -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="✨ EFECTOS"
+            android:textColor="#FFD700"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#0D0D1A"
+            android:padding="16dp"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Refuerzo de Graves"
+                android:textColor="#AAAACC"
+                android:textSize="12sp" />
+            <SeekBar
+                android:id="@+id/seekBass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="1000"
+                android:progressTint="#FFD700"
+                android:thumbTint="#FFD700" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Virtualizador"
+                android:textColor="#AAAACC"
+                android:textSize="12sp"
+                android:layout_marginTop="16dp" />
+            <SeekBar
+                android:id="@+id/seekVirtualizer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="1000"
+                android:progressTint="#FFD700"
+                android:thumbTint="#FFD700" />
+        </LinearLayout>
+
+        <!-- Velocidad y Pitch -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="⏩ VELOCIDAD Y TONO"
+            android:textColor="#FFD700"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#0D0D1A"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/tvSpeed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Velocidad: 1.0x"
+                android:textColor="#AAAACC"
+                android:textSize="12sp" />
+            <SeekBar
+                android:id="@+id/seekSpeed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="200"
+                android:progress="100"
+                android:progressTint="#4FC3F7"
+                android:thumbTint="#4FC3F7" />
+
+            <TextView
+                android:id="@+id/tvPitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tono (Pitch): 1.0x"
+                android:textColor="#AAAACC"
+                android:textSize="12sp"
+                android:layout_marginTop="16dp" />
+            <SeekBar
+                android:id="@+id/seekPitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="200"
+                android:progress="100"
+                android:progressTint="#4FC3F7"
+                android:thumbTint="#4FC3F7" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

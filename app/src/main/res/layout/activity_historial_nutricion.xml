@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/back_global">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="#0D0D1A"
+        android:paddingStart="16dp" android:paddingEnd="16dp"
+        android:paddingTop="24dp" android:paddingBottom="14dp">
+
+        <TextView
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="📅 Historial nutricional"
+            android:textColor="#FFD700"
+            android:textSize="20sp" android:textStyle="bold"/>
+
+        <Button android:id="@+id/btnVolverHistorial"
+            android:layout_width="wrap_content" android:layout_height="36dp"
+            android:text="← Volver"
+            android:textColor="#AAAACC" android:textSize="12sp"
+            android:background="@drawable/btn_nav_gradient"
+            android:stateListAnimator="@null"/>
+    </LinearLayout>
+
+    <View android:layout_width="match_parent" android:layout_height="1dp"
+        android:background="#2A2A4A"/>
+
+    <TextView android:id="@+id/tvHistorialVacio"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="Aún no hay días analizados.\nVuelve a Nutrición y pulsa\n'Analizar mi día con IA' 🤖"
+        android:textColor="#555577" android:textSize="14sp"
+        android:gravity="center" android:padding="40dp"
+        android:visibility="gone"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerHistorial"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingStart="14dp" android:paddingEnd="14dp"
+        android:paddingTop="14dp" android:paddingBottom="14dp"
+        android:clipToPadding="false"/>
+
+</LinearLayout>

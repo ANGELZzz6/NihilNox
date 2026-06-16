@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/back_global">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#0D0D1A"
+        android:paddingStart="16dp" android:paddingEnd="16dp"
+        android:paddingTop="24dp"  android:paddingBottom="14dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="⚙ API Keys"
+            android:textColor="#FFD700"
+            android:textSize="22sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Configura tus propias keys para mayor control y límites más altos."
+            android:textColor="#6666AA"
+            android:textSize="12sp"
+            android:layout_marginTop="4dp"
+            android:lineSpacingMultiplier="1.3"/>
+    </LinearLayout>
+
+    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#2A2A4A"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="14dp" android:paddingEnd="14dp"
+            android:paddingTop="14dp"  android:paddingBottom="20dp">
+
+            <!-- Aviso -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/btn_nav_gradient"
+                android:padding="12dp"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ℹ"
+                    android:textColor="#4FC3F7"
+                    android:textSize="16sp"
+                    android:layout_marginEnd="10dp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Si no configuras nada, la app usa las keys por defecto. Agrega las tuyas para tener tus propios límites de uso."
+                    android:textColor="#8888BB"
+                    android:textSize="12sp"
+                    android:lineSpacingMultiplier="1.3"/>
+            </LinearLayout>
+
+            <!-- ── GROQ ────────────────────────────────────────────────────── -->
+            <LinearLayout android:id="@+id/contenedorGroq"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:background="@drawable/card_info_panel_bg"
+                android:padding="14dp" android:layout_marginBottom="10dp">
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="6dp">
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Groq API Key" android:textColor="#FFFFFF"
+                            android:textSize="14sp" android:textStyle="bold"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Chat con personajes y validación de metas" android:textColor="#555577" android:textSize="11sp"/>
+                    </LinearLayout>
+                    <ImageButton android:id="@+id/btnInfoGroq"
+                        android:layout_width="32dp" android:layout_height="32dp"
+                        android:src="@android:drawable/ic_menu_info_details"
+                        android:background="@android:color/transparent" android:tint="#4FC3F7"/>
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@drawable/card_divider_gradient" android:layout_marginBottom="10dp"/>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical">
+                    <EditText android:id="@+id/etGroq"
+                        android:layout_width="0dp" android:layout_height="42dp" android:layout_weight="1"
+                        android:hint="gsk_..." android:textColorHint="#333355" android:textColor="#CCCCDD"
+                        android:textSize="12sp" android:background="@drawable/btn_nav_gradient"
+                        android:paddingStart="10dp" android:paddingEnd="10dp"
+                        android:inputType="textPassword" android:maxLines="1" android:layout_marginEnd="6dp"/>
+                    <ImageButton android:id="@+id/btnPegarGroq"
+                        android:layout_width="36dp" android:layout_height="36dp"
+                        android:src="@android:drawable/ic_menu_edit" android:background="@drawable/btn_nav_gradient"
+                        android:tint="#8888AA" android:contentDescription="Pegar" android:layout_marginEnd="4dp"/>
+                    <ImageButton android:id="@+id/btnBorrarGroq"
+                        android:layout_width="36dp" android:layout_height="36dp"
+                        android:src="@android:drawable/ic_menu_delete" android:background="@drawable/btn_nav_gradient"
+                        android:tint="#884444" android:contentDescription="Borrar"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- ── IGDB CLIENT ID ──────────────────────────────────────────── -->
+            <LinearLayout android:id="@+id/contenedorIgdbId"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:background="@drawable/card_info_panel_bg"
+                android:padding="14dp" android:layout_marginBottom="10dp">
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="6dp">
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="IGDB Client ID" android:textColor="#FFFFFF"
+                            android:textSize="14sp" android:textStyle="bold"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Personajes de videojuegos (Twitch)" android:textColor="#555577" android:textSize="11sp"/>
+                    </LinearLayout>
+                    <ImageButton android:id="@+id/btnInfoIgdbId"
+                        android:layout_width="32dp" android:layout_height="32dp"
+                        android:src="@android:drawable/ic_menu_info_details"
+                        android:background="@android:color/transparent" android:tint="#4FC3F7"/>
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@drawable/card_divider_gradient" android:layout_marginBottom="10dp"/>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical">
+                    <EditText android:id="@+id/etIgdbId"
+                        android:layout_width="0dp" android:layout_height="42dp" android:layout_weight="1"
+                        android:hint="Client ID de Twitch..." android:textColorHint="#333355" android:textColor="#CCCCDD"
+                        android:textSize="12sp" android:background="@drawable/btn_nav_gradient"
+                        android:paddingStart="10dp" android:paddingEnd="10dp"
+                        android:inputType="textPassword" android:maxLines="1" android:layout_marginEnd="6dp"/>
+                    <ImageButton android:id="@+id/btnPegarIgdbId"
+                        android:layout_width="36dp" android:layout_height="36dp"
+                        android:src="@android:drawable/ic_menu_edit" android:background="@drawable/btn_nav_gradient"
+                        android:tint="#8888AA" android:contentDescription="Pegar" android:layout_marginEnd="4dp"/>
+                    <ImageButton android:id="@+id/btnBorrarIgdbId"
+                        android:layout_width="36dp" android:layout_height="36dp"
+                        android:src="@android:drawable/ic_menu_delete" android:background="@drawable/btn_nav_gradient"
+                        android:tint="#884444" android:contentDescription="Borrar"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- ── IGDB ACCESS TOKEN ───────────────────────────────────────── -->
+            <LinearLayout android:id="@+id/contenedorIgdbToken"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:background="@drawable/card_info_panel_bg"
+                android:padding="14dp" android:layout_marginBottom="10dp">
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="6dp">
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="IGDB Access Token" android:textColor="#FFFFFF"
+                            android:textSize="14sp" android:textStyle="bold"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Personajes de videojuegos (Twitch)" android:textColor="#555577" android:textSize="11sp"/>
+                    </LinearLayout>
+                    <ImageButton android:id="@+id/btnInfoIgdbToken"
+                        android:layout_width="32dp" android:layout_height="32dp"
+                        android:src="@android:drawable/ic_menu_info_details"
+                        android:background="@android:color/transparent" android:tint="#4FC3F7"/>
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@drawable/card_divider_gradient" android:layout_marginBottom="10dp"/>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical">
+                    <EditText android:id="@+id/etIgdbToken"
+                        android:layout_width="0dp" android:layout_height="42dp" android:layout_weight="1"
+                        android:hint="Access Token de Twitch..." android:textColorHint="#333355" android:textColor="#CCCCDD"
+                        android:textSize="12sp" android:background="@drawable/btn_nav_gradient"
+                        android:paddingStart="10dp" android:paddingEnd="10dp"
+                        android:inputType="textPassword" android:maxLines="1" android:layout_marginEnd="6dp"/>
+                    <ImageButton android:id="@+id/btnPegarIgdbToken"
+                        android:layout_width="36dp" android:layout_height="36dp"
+                        android:src="@android:drawable/ic_menu_edit" android:background="@drawable/btn_nav_gradient"
+                        android:tint="#8888AA" android:contentDescription="Pegar" android:layout_marginEnd="4dp"/>
+                    <ImageButton android:id="@+id/btnBorrarIgdbToken"
+                        android:layout_width="36dp" android:layout_height="36dp"
+                        android:src="@android:drawable/ic_menu_delete" android:background="@drawable/btn_nav_gradient"
+                        android:tint="#884444" android:contentDescription="Borrar"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- ── GIANTBOMB ───────────────────────────────────────────────── -->
+            <LinearLayout android:id="@+id/contenedorGiantBomb"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:background="@drawable/card_info_panel_bg"
+                android:padding="14dp" android:layout_marginBottom="10dp">
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="6dp">
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="GiantBomb API Key" android:textColor="#FFFFFF"
+                            android:textSize="14sp" android:textStyle="bold"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Personajes adicionales de videojuegos" android:textColor="#555577" android:textSize="11sp"/>
+                    </LinearLayout>
+                    <ImageButton android:id="@+id/btnInfoGiantBomb"
+                        android:layout_width="32dp" android:layout_height="32dp"
+                        android:src="@android:drawable/ic_menu_info_details"
+                        android:background="@android:color/transparent" android:tint="#4FC3F7"/>
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@drawable/card_divider_gradient" android:layout_marginBottom="10dp"/>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical">
+                    <EditText android:id="@+id/etGiantBomb"
+                        android:layout_width="0dp" android:layout_height="42dp" android:layout_weight="1"
+                        android:hint="API Key de GiantBomb..." android:textColorHint="#333355" android:textColor="#CCCCDD"
+                        android:textSize="12sp" android:background="@drawable/btn_nav_gradient"
+                        android:paddingStart="10dp" android:paddingEnd="10dp"
+                        android:inputType="textPassword" android:maxLines="1" android:layout_marginEnd="6dp"/>
+                    <ImageButton android:id="@+id/btnPegarGiantBomb"
+                        android:layout_width="36dp" android:layout_height="36dp"
+                        android:src="@android:drawable/ic_menu_edit" android:background="@drawable/btn_nav_gradient"
+                        android:tint="#8888AA" android:contentDescription="Pegar" android:layout_marginEnd="4dp"/>
+                    <ImageButton android:id="@+id/btnBorrarGiantBomb"
+                        android:layout_width="36dp" android:layout_height="36dp"
+                        android:src="@android:drawable/ic_menu_delete" android:background="@drawable/btn_nav_gradient"
+                        android:tint="#884444" android:contentDescription="Borrar"/>
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout android:id="@+id/contenedorServidorUrl"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:background="@drawable/card_info_panel_bg"
+                android:padding="14dp" android:layout_marginBottom="10dp">
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="6dp">
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="URL del Servidor" android:textColor="#FFFFFF"
+                            android:textSize="14sp" android:textStyle="bold"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Servidor de descarga de musica" android:textColor="#555577" android:textSize="11sp"/>
+                    </LinearLayout>
+                    <ImageButton android:id="@+id/btnInfoServidorUrl"
+                        android:layout_width="32dp" android:layout_height="32dp"
+                        android:src="@android:drawable/ic_menu_info_details"
+                        android:background="@android:color/transparent" android:tint="#4FC3F7"/>
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@drawable/card_divider_gradient" android:layout_marginBottom="10dp"/>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical">
+                    <EditText android:id="@+id/etServidorUrl"
+                        android:layout_width="0dp" android:layout_height="42dp" android:layout_weight="1"
+                        android:hint="https://xxxx.ngrok-free.app" android:textColorHint="#333355" android:textColor="#CCCCDD"
+                        android:textSize="12sp" android:background="@drawable/btn_nav_gradient"
+                        android:paddingStart="10dp" android:paddingEnd="10dp"
+                        android:inputType="textUri" android:maxLines="1" android:layout_marginEnd="6dp"/>
+                    <ImageButton android:id="@+id/btnPegarServidorUrl"
+                        android:layout_width="36dp" android:layout_height="36dp"
+                        android:src="@android:drawable/ic_menu_edit" android:background="@drawable/btn_nav_gradient"
+                        android:tint="#8888AA" android:contentDescription="Pegar" android:layout_marginEnd="4dp"/>
+                    <ImageButton android:id="@+id/btnBorrarServidorUrl"
+                        android:layout_width="36dp" android:layout_height="36dp"
+                        android:src="@android:drawable/ic_menu_delete" android:background="@drawable/btn_nav_gradient"
+                        android:tint="#884444" android:contentDescription="Borrar"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- ── SERVIDOR KEY ───────────────────────────────────────────── -->
+            <LinearLayout android:id="@+id/contenedorServidorKey"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:background="@drawable/card_info_panel_bg"
+                android:padding="14dp" android:layout_marginBottom="24dp">
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="6dp">
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="API Key del Servidor" android:textColor="#FFFFFF"
+                            android:textSize="14sp" android:textStyle="bold"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Clave de acceso a tu servidor" android:textColor="#555577" android:textSize="11sp"/>
+                    </LinearLayout>
+                    <ImageButton android:id="@+id/btnInfoServidorKey"
+                        android:layout_width="32dp" android:layout_height="32dp"
+                        android:src="@android:drawable/ic_menu_info_details"
+                        android:background="@android:color/transparent" android:tint="#4FC3F7"/>
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@drawable/card_divider_gradient" android:layout_marginBottom="10dp"/>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical">
+                    <EditText android:id="@+id/etServidorKey"
+                        android:layout_width="0dp" android:layout_height="42dp" android:layout_weight="1"
+                        android:hint="mi-key-secreta-123" android:textColorHint="#333355" android:textColor="#CCCCDD"
+                        android:textSize="12sp" android:background="@drawable/btn_nav_gradient"
+                        android:paddingStart="10dp" android:paddingEnd="10dp"
+                        android:inputType="textPassword" android:maxLines="1" android:layout_marginEnd="6dp"/>
+                    <ImageButton android:id="@+id/btnPegarServidorKey"
+                        android:layout_width="36dp" android:layout_height="36dp"
+                        android:src="@android:drawable/ic_menu_edit" android:background="@drawable/btn_nav_gradient"
+                        android:tint="#8888AA" android:contentDescription="Pegar" android:layout_marginEnd="4dp"/>
+                    <ImageButton android:id="@+id/btnBorrarServidorKey"
+                        android:layout_width="36dp" android:layout_height="36dp"
+                        android:src="@android:drawable/ic_menu_delete" android:background="@drawable/btn_nav_gradient"
+                        android:tint="#884444" android:contentDescription="Borrar"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- ── CONFIGURAR SERVIDOR COLAB ────────────────────────────────── -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🚀 SERVIDOR DE DESCARGAS (COLAB)"
+                android:textColor="#FFD700"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/card_info_panel_bg"
+                android:padding="16dp"
+                android:layout_marginBottom="10dp">
+
+                <Button
+                    android:id="@+id/btnDownloadNotebook"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="📥 Descargar Notebook (.ipynb)"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:background="@drawable/btn_nav_gradient"
+                    android:stateListAnimator="@null"
+                    android:layout_marginBottom="8dp"/>
+
+                <Button
+                    android:id="@+id/btnOpenDrive"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="☁️ Abrir Google Drive"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:background="@drawable/btn_nav_gradient"
+                    android:stateListAnimator="@null"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Tutorial Paso a Paso:"
+                    android:textColor="#AAAACC"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="12dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="1️⃣ Descarga el notebook arriba y súbelo a tu Google Drive.\n\n2️⃣ Ábrelo en Google Colab y pega tu Token de ngrok (consíguelo en ngrok.com).\n\n3️⃣ Ejecuta todas las celdas (Entorno de ejecución -> Ejecutar todas).\n\n4️⃣ Aparecerá una URL tipo https://xxxx.ngrok-free.app al final de la ejecución.\n\n5️⃣ Copia esa URL y pégala en el campo 'URL del Servidor' más arriba."
+                    android:textColor="#8888BB"
+                    android:textSize="12sp"
+                    android:lineSpacingMultiplier="1.4"/>
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Footer -->
+    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#2A2A4A"/>
+    <LinearLayout
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:background="#0D0D1A" android:padding="14dp">
+
+        <Button android:id="@+id/btnVolverKeys"
+            android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1"
+            android:text="← Volver" android:textColor="#AAAACC" android:textSize="13sp"
+            android:background="@drawable/btn_nav_gradient" android:stateListAnimator="@null"
+            android:layout_marginEnd="8dp"/>
+
+        <Button android:id="@+id/btnGuardarKeys"
+            android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="2"
+            android:text="💾 Guardar Keys" android:textColor="#1A1200"
+            android:textSize="14sp" android:textStyle="bold"
+            android:background="@drawable/btn_gacha_gold_gradient" android:stateListAnimator="@null"/>
+    </LinearLayout>
+
+</LinearLayout>

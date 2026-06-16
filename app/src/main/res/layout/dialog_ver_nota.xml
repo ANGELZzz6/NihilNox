@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/dialog_background">
+
+    <!-- Barra superior decorativa -->
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:background="#FFD700"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="4dp"/>
+
+    <!-- Título de la nota -->
+    <TextView
+        android:id="@+id/tvDialogTitulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#FFD700"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="4dp"
+        android:maxLines="2"
+        android:ellipsize="end"/>
+
+    <!-- Fecha -->
+    <TextView
+        android:id="@+id/tvDialogFecha"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#888888"
+        android:textSize="12sp"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="12dp"/>
+
+    <!-- Divisor -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#2A2A2A"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"/>
+
+    <!-- Contenido scrolleable -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:id="@+id/scrollContenidoVer"
+        android:layout_height="360dp"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:scrollbars="vertical"
+        android:fadeScrollbars="false">
+
+        <TextView
+            android:id="@+id/tvDialogContenido"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#DDDDDD"
+            android:textSize="15sp"
+            android:lineSpacingMultiplier="1.5"/>
+
+    </ScrollView>
+
+    <!-- Divisor inferior -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#2A2A2A"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"/>
+
+    <!-- Botón cerrar -->
+    <Button
+        android:id="@+id/btnCerrarVer"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:text="CERRAR"
+        android:textColor="#FFD700"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        android:letterSpacing="0.1"
+        android:backgroundTint="#1A1A1A"
+        android:layout_margin="16dp"/>
+
+</LinearLayout>

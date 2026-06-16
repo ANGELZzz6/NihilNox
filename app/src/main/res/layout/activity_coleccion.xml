@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/back_global">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="20dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="14dp"
+        android:gravity="center_vertical">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MI COLECCIÓN"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.12"/>
+
+            <TextView
+                android:id="@+id/tvContadorAnimes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Animes desbloqueados"
+                android:textColor="#8888AA"
+                android:textSize="12sp"
+                android:layout_marginTop="2dp"/>
+
+        </LinearLayout>
+
+        <!-- Toggle masculinos — pill estilizado -->
+        <TextView
+            android:id="@+id/tvToggleMasc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="♂ ON"
+            android:textColor="#4FC3F7"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:background="@drawable/toggle_masc_bg"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"/>
+
+    </LinearLayout>
+
+    <!-- Barra de búsqueda flotante -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/search_bar_bg"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="12dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🔍"
+            android:textSize="15sp"
+            android:paddingEnd="10dp"/>
+
+        <EditText
+            android:id="@+id/searchAnime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Buscar anime..."
+            android:textColor="#FFFFFF"
+            android:textColorHint="#555577"
+            android:textSize="14sp"
+            android:background="@null"
+            android:inputType="text"
+            android:maxLines="1"/>
+
+    </LinearLayout>
+
+    <!-- Divider sutil -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#1A1A2E"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="4dp"/>
+
+    <!-- Grid 2 columnas -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/coleccionRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="12dp"
+        android:clipToPadding="false"/>
+
+</LinearLayout>

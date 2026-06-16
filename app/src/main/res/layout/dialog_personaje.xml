@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/dialog_card_bg">
+
+    <!-- Stripe de rareza -->
+    <View
+        android:id="@+id/dialogRarezaStripe"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:background="#FFD700"/>
+
+    <!-- ViewPager imágenes -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/dialogViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:background="#070710"/>
+
+    <!-- Panel de info -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/card_info_panel_bg"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="18dp">
+
+        <!-- Nombre + indicador de imágenes -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="4dp">
+
+            <TextView
+                android:id="@+id/dialogNombre"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:letterSpacing="0.03"/>
+
+            <TextView
+                android:id="@+id/dialogIndicador"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#444466"
+                android:textSize="11sp"
+                android:paddingStart="10dp"/>
+
+        </LinearLayout>
+
+        <!-- Favoritos -->
+        <TextView
+            android:id="@+id/dialogFavoritos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="#6666AA"
+            android:layout_marginBottom="14dp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@drawable/card_divider_gradient"
+            android:layout_marginBottom="14dp"/>
+
+        <!-- Botón cargar imágenes -->
+        <Button
+            android:id="@+id/btnCargarImagenes"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:text="🖼  Cargar más imágenes"
+            android:textColor="#AAAACC"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:background="@drawable/btn_nav_gradient"
+            android:stateListAnimator="@null"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Botón mis fotos -->
+        <Button
+            android:id="@+id/btnMisFotos"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:text="📁  Mis fotos"
+            android:textColor="#AAAACC"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:background="@drawable/btn_nav_gradient"
+            android:stateListAnimator="@null"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Botón cerrar -->
+        <Button
+            android:id="@+id/dialogCerrar"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="✦  CERRAR"
+            android:textColor="#1A1200"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.1"
+            android:background="@drawable/btn_gacha_gold_gradient"
+            android:stateListAnimator="@null"/>
+
+    </LinearLayout>
+
+</LinearLayout>

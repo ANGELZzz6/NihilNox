@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="objetivos_array">
+        <item>Ganar músculo</item>
+        <item>Bajar peso</item>
+        <item>Mantenimiento</item>
+        <item>Definición</item>
+    </string-array>
+
+    <string-array name="actividad_array">
+        <item>Sedentario</item>
+        <item>Ligero</item>
+        <item>Moderado</item>
+        <item>Activo</item>
+        <item>Muy activo</item>
+    </string-array>
+
+    <string-array name="categorias_comida">
+        <item>Desayuno</item>
+        <item>Almuerzo</item>
+        <item>Cena</item>
+        <item>Snack</item>
+    </string-array>
+
+    <string-array name="unidades_array">
+        <item>g</item>
+        <item>ml</item>
+        <item>porción</item>
+    </string-array>
+</resources>

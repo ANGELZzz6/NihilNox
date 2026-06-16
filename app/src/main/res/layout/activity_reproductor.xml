@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/back_global">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="16dp" android:paddingEnd="16dp"
+        android:paddingTop="24dp" android:paddingBottom="14dp"
+        android:gravity="center_vertical"
+        android:background="#0D0D1A">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="✦  REPRODUCTOR"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.15"/>
+
+        <TextView
+            android:id="@+id/btnEqualizador"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🎚"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:background="@drawable/btn_nav_gradient"
+            android:paddingStart="14dp" android:paddingEnd="14dp"
+            android:paddingTop="8dp" android:paddingBottom="8dp"
+            android:layout_marginEnd="8dp"/>
+
+        <TextView
+            android:id="@+id/btnTemporizador"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="⏱"
+            android:textColor="#AAAACC"
+            android:textSize="20sp"
+            android:background="@drawable/btn_nav_gradient"
+            android:paddingStart="14dp" android:paddingEnd="14dp"
+            android:paddingTop="8dp" android:paddingBottom="8dp"
+            android:layout_marginEnd="8dp"/>
+
+        <TextView
+            android:id="@+id/btnDescargarYoutube"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="⬇"
+            android:textColor="#4FC3F7"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:background="@drawable/btn_nav_gradient"
+            android:paddingStart="14dp" android:paddingEnd="14dp"
+            android:paddingTop="8dp" android:paddingBottom="8dp"
+            android:layout_marginEnd="8dp"/>
+
+        <TextView
+            android:id="@+id/btnAgregarMusica"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="＋"
+            android:textColor="#FFD700"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:background="@drawable/btn_nav_gradient"
+            android:paddingStart="16dp" android:paddingEnd="16dp"
+            android:paddingTop="8dp" android:paddingBottom="8dp"/>
+
+    </LinearLayout>
+
+    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#2A2A4A"/>
+
+    <!-- Zona reproductor -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="24dp" android:paddingEnd="24dp"
+        android:paddingTop="28dp" android:paddingBottom="24dp"
+        android:background="#0D0D1A">
+
+        <!-- Timer badge -->
+        <TextView
+            android:id="@+id/tvTimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="#FFD700"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:layout_gravity="end"
+            android:visibility="gone"
+            android:layout_marginBottom="4dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="12dp">
+
+            <Button
+                android:id="@+id/btnReproducirTodo"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_nav_gradient"
+                android:stateListAnimator="@null"
+                android:text="▶ Reproducir todo"
+                android:textColor="#4FC3F7"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnCrearPlaylist"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="🎼 Crear playlist"
+                android:textColor="#FFD700"
+                android:textSize="11sp"
+                android:background="@drawable/btn_nav_gradient"
+                android:stateListAnimator="@null"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvNombreCancion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sin canción"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:layout_marginBottom="24dp"/>
+
+        <SeekBar
+            android:id="@+id/seekBarMusica"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:progressTint="#FFD700"
+            android:thumbTint="#FFD700"
+            android:progressBackgroundTint="#1A1A3A"
+            android:layout_marginBottom="6dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:id="@+id/tvTiempoActual"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="0:00"
+                android:textColor="#444466"
+                android:textSize="12sp"/>
+
+            <TextView
+                android:id="@+id/tvTiempoTotal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0:00"
+                android:textColor="#444466"
+                android:textSize="12sp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/btnShuffle"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:text="⇄"
+                android:textSize="22sp"
+                android:gravity="center"
+                android:textColor="#444466"
+                android:background="@drawable/btn_nav_gradient"
+                android:layout_marginEnd="12dp"/>
+
+            <TextView
+                android:id="@+id/btnAnterior"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:text="⏮"
+                android:textSize="24sp"
+                android:gravity="center"
+                android:textColor="#AAAACC"
+                android:background="@drawable/btn_nav_gradient"
+                android:layout_marginEnd="12dp"/>
+
+            <TextView
+                android:id="@+id/btnPlayPause"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:text="▶"
+                android:textColor="#1A1200"
+                android:textSize="30sp"
+                android:gravity="center"
+                android:background="@drawable/btn_gacha_gold_gradient"
+                android:layout_marginEnd="12dp"/>
+
+            <TextView
+                android:id="@+id/btnSiguiente"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:text="⏭"
+                android:textSize="24sp"
+                android:gravity="center"
+                android:textColor="#AAAACC"
+                android:background="@drawable/btn_nav_gradient"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#2A2A4A"/>
+
+    <!-- ══ BARRA SELECCIÓN MÚLTIPLE (se muestra solo al hacer long press) ══ -->
+    <LinearLayout
+        android:id="@+id/barraSeleccion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp" android:paddingEnd="16dp"
+        android:paddingTop="10dp" android:paddingBottom="10dp"
+        android:background="#1A1A3A"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tvContadorSeleccion"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="0 seleccionadas"
+            android:textColor="#FFD700"
+            android:textSize="13sp"
+            android:textStyle="bold"/>
+
+        <Button
+            android:id="@+id/btnAgregarSeleccionadas"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="+ Playlist"
+            android:textColor="#1A1200"
+            android:textSize="11sp"
+            android:background="@drawable/btn_gacha_gold_gradient"
+            android:stateListAnimator="@null"
+            android:layout_marginEnd="8dp"/>
+
+        <Button
+            android:id="@+id/btnCancelarSeleccion"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="Cancelar"
+            android:textColor="#AAAACC"
+            android:textSize="11sp"
+            android:background="@drawable/btn_nav_gradient"
+            android:stateListAnimator="@null"/>
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/listaCancionesRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingStart="8dp" android:paddingEnd="8dp"
+        android:paddingBottom="8dp"
+        android:clipToPadding="false"/>
+
+</LinearLayout>
+
+    <!-- Overlay de carga -->
+    <FrameLayout
+        android:id="@+id/loadingMusica"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#99000000"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true">
+        <ProgressBar
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_gravity="center"
+            android:indeterminateTint="#FFD700"/>
+    </FrameLayout>
+
+</FrameLayout>

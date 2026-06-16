@@ -1,0 +1,18 @@
+query GetRandomCharacters($page: Int!, $perPage: Int!) {
+    Page(page: $page, perPage: $perPage) {
+        characters {
+            id
+            name { full }
+            image { large }
+            favourites
+            gender
+            media(sort: POPULARITY_DESC, perPage: 1) {
+                nodes {
+                    id
+                    title { romaji }
+                    coverImage { large }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingStart="12dp"
+    android:paddingEnd="12dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:background="@drawable/btn_nav_gradient"
+    android:layout_marginBottom="4dp">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvNombreAlimento"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nombre"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tvMacrosAlimento"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="P: 0g  C: 0g  G: 0g"
+            android:textColor="#6666AA"
+            android:textSize="11sp"
+            android:layout_marginTop="2dp"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvCaloriasAlimento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0 kcal"
+        android:textColor="#FFD700"
+        android:textSize="13sp"
+        android:textStyle="bold"/>
+
+</LinearLayout>

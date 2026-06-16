@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">NihilNox</string>
+    <string name="add_mezcla">Agregar Mezcla</string>
+    <string name="image_desc">Descripción de la imagen</string>
+    <string name="mezcla_image">Descripción de la mezcla</string>
+</resources>

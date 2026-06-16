@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="120dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginEnd="10dp">
+
+    <FrameLayout
+        android:layout_width="120dp"
+        android:layout_height="120dp">
+
+        <ImageView
+            android:id="@+id/imgDia"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:background="@drawable/card_info_panel_bg"/>
+
+        <!-- Gradiente inferior para leer la fecha -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/gradient_bottom_card"/>
+
+        <!-- Fecha encima de la imagen -->
+        <TextView
+            android:id="@+id/tvFechaImagen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:textColor="#FFFFFF"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:paddingBottom="6dp"
+            android:shadowColor="#000000"
+            android:shadowRadius="3"/>
+
+        <!-- Botón borrar -->
+        <TextView
+            android:id="@+id/btnBorrarImagen"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:text="✕"
+            android:textColor="#FFFFFF"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:background="#BB1A1A2E"
+            android:layout_gravity="top|end"
+            android:layout_margin="5dp"/>
+
+    </FrameLayout>
+
+</LinearLayout>

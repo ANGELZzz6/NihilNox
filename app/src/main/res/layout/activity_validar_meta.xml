@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/back_global">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="14dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="VALIDACIÓN IA"
+            android:textColor="#8888AA"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.2"/>
+
+        <TextView
+            android:id="@+id/tvMetaTitulo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginTop="2dp"
+            android:maxLines="2"
+            android:ellipsize="end"/>
+
+    </LinearLayout>
+
+    <!-- Línea dorada -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/card_divider_gradient"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Chat messages -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chatRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:clipToPadding="false"/>
+
+    <!-- Indicador de escritura -->
+    <TextView
+        android:id="@+id/tvTyping"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="✦ IA escribiendo..."
+        android:textColor="#8888AA"
+        android:textSize="12sp"
+        android:paddingStart="20dp"
+        android:paddingBottom="4dp"
+        android:visibility="gone"/>
+
+    <!-- Input bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/search_bar_bg"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp">
+
+        <EditText
+            android:id="@+id/etMensaje"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Escribe tu respuesta..."
+            android:textColor="#FFFFFF"
+            android:textColorHint="#555577"
+            android:textSize="14sp"
+            android:background="@null"
+            android:maxLines="3"
+            android:inputType="textMultiLine"/>
+
+        <Button
+            android:id="@+id/btnEnviar"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:text="➤"
+            android:textColor="#0D0D1A"
+            android:textSize="16sp"
+            android:backgroundTint="#FFD700"
+            android:padding="0dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

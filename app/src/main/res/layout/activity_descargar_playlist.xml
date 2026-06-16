@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/back_global">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="16dp" android:paddingEnd="16dp"
+        android:paddingTop="24dp" android:paddingBottom="14dp"
+        android:gravity="center_vertical"
+        android:background="#0D0D1A">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="⬇ DESCARGAR PLAYLIST"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.1"/>
+
+        <TextView
+            android:id="@+id/btnVolverDescarga"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="✕"
+            android:textColor="#AAAACC"
+            android:textSize="18sp"
+            android:background="@drawable/btn_nav_gradient"
+            android:paddingStart="14dp" android:paddingEnd="14dp"
+            android:paddingTop="8dp" android:paddingBottom="8dp"/>
+
+    </LinearLayout>
+
+    <View android:layout_width="match_parent" android:layout_height="1dp"
+        android:background="#2A2A4A"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="16dp" android:paddingEnd="16dp"
+            android:paddingTop="24dp" android:paddingBottom="32dp">
+
+            <!-- Instrucciones -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📋 Pega la URL de YouTube o escanea tu playlist de Spotify"
+                android:textColor="#FFD700"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="6dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Puedes pegar una URL de YouTube o tomar foto a tu playlist de Spotify"
+                android:textColor="#6666AA"
+                android:textSize="11sp"
+                android:layout_marginBottom="12dp"/>
+
+            <!-- Input URL -->
+            <EditText
+                android:id="@+id/etUrlPlaylist"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="https://www.youtube.com/playlist?list=..."
+                android:textColorHint="#333355"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:background="@drawable/btn_nav_gradient"
+                android:paddingStart="14dp" android:paddingEnd="14dp"
+                android:inputType="textUri"
+                android:maxLines="1"
+                android:layout_marginBottom="12dp"/>
+
+            <!-- Botones escanear Spotify -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <Button
+                    android:id="@+id/btnEscanearImagen"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:text="📷 Escanear Spotify"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:background="@drawable/btn_nav_gradient"
+                    android:stateListAnimator="@null"
+                    android:layout_marginEnd="8dp"/>
+
+
+                <Button
+                    android:id="@+id/btnGaleriaImagen"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:text="🖼 Galería"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:background="@drawable/btn_nav_gradient"
+                    android:stateListAnimator="@null"/>
+
+            </LinearLayout>
+            <Button
+                android:id="@+id/btnImportarExcel"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="📊 Importar Excel de Spotify"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:background="@drawable/btn_nav_gradient"
+                android:stateListAnimator="@null"
+                android:layout_marginBottom="8dp"/>
+
+            <Button
+                android:id="@+id/btnDescargarServidor"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="📦 Descargar Servidor PC"
+                android:textColor="#FFD700"
+                android:textSize="12sp"
+                android:background="@drawable/btn_nav_gradient"
+                android:stateListAnimator="@null"
+                android:layout_marginBottom="12dp"/>
+
+            <!-- Texto detectado por OCR -->
+            <TextView
+                android:id="@+id/tvTextoDetectado"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="#4FC3F7"
+                android:textSize="11sp"
+                android:layout_marginBottom="12dp"
+                android:visibility="gone"/>
+
+            <!-- Botón obtener info -->
+            <Button
+                android:id="@+id/btnObtenerInfo"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="🔍 Obtener información"
+                android:textColor="#FFFFFF"
+                android:textSize="13sp"
+                android:background="@drawable/btn_nav_gradient"
+                android:stateListAnimator="@null"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Info playlist -->
+            <LinearLayout
+                android:id="@+id/layoutInfoPlaylist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/btn_nav_gradient"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tvNombrePlaylist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="#FFFFFF"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="4dp"/>
+
+                <TextView
+                    android:id="@+id/tvCantidadVideos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="#AAAACC"
+                    android:textSize="12sp"/>
+
+            </LinearLayout>
+
+            <!-- Botón descargar -->
+            <Button
+                android:id="@+id/btnDescargarPlaylist"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="⬇ Descargar playlist"
+                android:textColor="#1A1200"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:background="@drawable/btn_gacha_gold_gradient"
+                android:stateListAnimator="@null"
+                android:visibility="gone"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Progreso -->
+            <LinearLayout
+                android:id="@+id/layoutProgreso"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:id="@+id/tvProgresoDescarga"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="⏳ Preparando..."
+                    android:textColor="#4FC3F7"
+                    android:textSize="13sp"
+                    android:layout_marginBottom="8dp"/>
+
+                <ProgressBar
+                    android:id="@+id/progressDescarga"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="8dp"
+                    android:max="100"
+                    android:progressTint="#FFD700"
+                    android:progressBackgroundTint="#1A1A3A"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:id="@+id/tvCancionActual"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="#6666AA"
+                    android:textSize="11sp"/>
+
+            </LinearLayout>
+
+            <!-- Log de descarga -->
+            <TextView
+                android:id="@+id/tvLogDescarga"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="#444466"
+                android:textSize="11sp"
+                android:lineSpacingMultiplier="1.4"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
