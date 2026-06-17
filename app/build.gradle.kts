@@ -37,6 +37,12 @@ kotlinOptions {
     }
 
     buildToolsVersion = "34.0.0"
+
+    packaging {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
 }
 
 apollo {

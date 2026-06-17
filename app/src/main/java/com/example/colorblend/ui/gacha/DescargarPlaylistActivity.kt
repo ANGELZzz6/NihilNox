@@ -15,6 +15,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.colorblend.R
+import com.example.colorblend.data.local.AppDatabase
+import com.example.colorblend.domain.model.Cancion
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
@@ -166,6 +168,37 @@ class DescargarPlaylistActivity : AppCompatActivity() {
         }
 
         bindService(Intent(this, DescargaService::class.java), connection, Context.BIND_AUTO_CREATE)
+
+        // ── Manejar archivos Excel o URLs externos ───────────────────────
+        manejarIntentExterno(intent)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        manejarIntentExterno(intent)
+    }
+
+    private fun manejarIntentExterno(intent: Intent?) {
+        intent?.let { 
+            // 1. URLs desde Dashboard (si se usó el flujo de lista anterior)
+            it.getStringArrayListExtra("urls_excel")?.let { urls ->
+                if (urls.isNotEmpty()) iniciarDescargaSpotify(urls, "Spotify_Excel")
+                return
+            }
+
+            // 2. Archivo Excel directo (.xlsx)
+            val uri = it.data
+            val mimeType = contentResolver.getType(uri ?: Uri.EMPTY)
+            val path = uri?.path?.lowercase() ?: ""
+            
+            if (it.action == Intent.ACTION_VIEW && uri != null) {
+                if (mimeType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" || 
+                    path.endsWith(".xlsx")) {
+                    procesarExcel(uri)
+                }
+            }
+        }
     }
 
     // ── Dialog de instrucciones del servidor ──────────────────────────────
@@ -374,11 +407,11 @@ class DescargarPlaylistActivity : AppCompatActivity() {
 
                 try {
                     val resultado = withContext(Dispatchers.IO) {
+                        // ... (código existente de red) ...
                         val body = """{"query":"$query"}"""
                         val conn = URL("$servidorUrl/buscar-cancion").openConnection() as HttpURLConnection
                         conn.requestMethod = "POST"
                         conn.setRequestProperty("Content-Type", "application/json")
-                        conn.setRequestProperty("Authorization", "Bearer $apiKey")
                         conn.connectTimeout = 120000
                         conn.readTimeout = 120000
                         conn.doOutput = true
@@ -418,6 +451,17 @@ class DescargarPlaylistActivity : AppCompatActivity() {
                     if (archivo != null) {
                         exitosos++
                         log.appendLine("✓ $titulo")
+                        // Guardar en Room tras descarga exitosa
+                        withContext(Dispatchers.IO) {
+                            val nuevoCancion = Cancion(
+                                uriLocal = archivo.absolutePath,
+                                titulo = titulo,
+                                artista = "", 
+                                playlistId = nombreCarpeta,
+                                uriSpotify = query
+                            )
+                            AppDatabase.getDatabase(this@DescargarPlaylistActivity).cancionDao().insertar(nuevoCancion)
+                        }
                     } else {
                         fallidos++
                         log.appendLine("✗ $titulo — error al transferir")
@@ -439,6 +483,7 @@ class DescargarPlaylistActivity : AppCompatActivity() {
                 btnEscanearImagen.isEnabled = true
                 btnGaleriaImagen.isEnabled = true
                 descargandoSpotify = false
+                sendBroadcast(Intent(MusicaService.ACTION_MUSICA_ACTUALIZADA))
                 Toast.makeText(
                     this@DescargarPlaylistActivity,
                     "$exitosos canciones guardadas en $nombreCarpeta",
@@ -487,8 +532,33 @@ class DescargarPlaylistActivity : AppCompatActivity() {
         btnObtenerInfo.text = "Obtener informacion"
 
         val cancionesObtenidas = svc._cancionesPendientes
+        
+        // --- VALIDACIÓN DE DUPLICADOS ---
+        lifecycleScope.launch {
+            val urlsDescargar = cancionesObtenidas.map { it.rutaColab } // Usamos rutaColab como ID único si no hay URL
+            val (eliminadas, urlsLimpias) = svc.validarDuplicados(urlsDescargar, svc.nombrePlaylist)
+
+            if (eliminadas.isNotEmpty()) {
+                AlertDialog.Builder(this@DescargarPlaylistActivity)
+                    .setTitle("⚠️ Duplicados detectados")
+                    .setMessage("Se eliminaron ${eliminadas.size} canciones de la base de datos que ya existían:\n\n" + 
+                                eliminadas.joinToString("\n• ", "• "))
+                    .setPositiveButton("OK", null)
+                    .show()
+            }
+
+            // Filtrar las canciones para descargar
+            val cancionesParaDescargar = cancionesObtenidas.filter { it.rutaColab in urlsLimpias }
+            svc._cancionesPendientes = cancionesParaDescargar
+            
+            // ... Actualizar UI con la lista filtrada ...
+            actualizarUiConResultados(svc, cancionesParaDescargar)
+        }
+    }
+
+    private fun actualizarUiConResultados(svc: DescargaService, cancionesFiltradas: List<YoutubeCancion>) {
         val fallidosYt = svc._fallidosPendientes
-        canciones = cancionesObtenidas
+        canciones = cancionesFiltradas
 
         val logInicial = StringBuilder()
         if (fallidosYt.isNotEmpty()) {
@@ -499,12 +569,12 @@ class DescargarPlaylistActivity : AppCompatActivity() {
 
         nombrePlaylist = svc.nombrePlaylist.ifBlank { "Playlist" }
         val carpeta = YoutubeExtractor.crearCarpetaPlaylist(this, nombrePlaylist)
-        val yaExisten = cancionesObtenidas.count { cancion ->
+        val yaExisten = cancionesFiltradas.count { cancion ->
             java.io.File(carpeta, "${YoutubeExtractor.limpiarNombre(cancion.titulo)}.m4a").exists()
         }
-        val nuevas = cancionesObtenidas.size - yaExisten
+        val nuevas = cancionesFiltradas.size - yaExisten
 
-        tvNombre.text = "${cancionesObtenidas.size} canciones listas"
+        tvNombre.text = "${cancionesFiltradas.size} canciones listas"
         tvCantidad.text = buildString {
             append("Ya en telefono: $yaExisten  |  Nuevas: $nuevas")
             if (fallidosYt.isNotEmpty()) append("  |  No disponibles: ${fallidosYt.size}")
@@ -810,6 +880,7 @@ class DescargarPlaylistActivity : AppCompatActivity() {
                         tvTextoDetectado.text = "✓ Descargada: $titulo"
                         tvProgreso.text = "✓ Completado"
                         tvCancionActual.text = "Guardado en: YouTube_Canciones"
+                        sendBroadcast(Intent(MusicaService.ACTION_MUSICA_ACTUALIZADA))
                         Toast.makeText(this@DescargarPlaylistActivity, "✓ $titulo guardada", Toast.LENGTH_LONG).show()
                     } else {
                         tvTextoDetectado.text = "✗ Error al transferir el archivo"

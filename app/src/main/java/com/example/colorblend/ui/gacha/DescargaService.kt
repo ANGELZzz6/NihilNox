@@ -6,6 +6,8 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import com.example.colorblend.data.local.AppDatabase
+import com.example.colorblend.domain.model.Cancion
 import kotlinx.coroutines.*
 
 class DescargaService : Service() {
@@ -37,6 +39,30 @@ class DescargaService : Service() {
     var mensajeFase = ""
     var _cancionesPendientes: List<YoutubeCancion> = emptyList()
     var _fallidosPendientes: List<String> = emptyList()
+
+    internal suspend fun validarDuplicados(
+        urlsSpotify: List<String>,
+        playlistId: String
+    ): Pair<List<String>, List<String>> {
+        val cancionDao = AppDatabase.getDatabase(this).cancionDao()
+        val urisExistentes = cancionDao.obtenerTodosLosUrisSpotify()
+        
+        val cancionesEliminadas = mutableListOf<String>()
+        val urlsLimpias = mutableListOf<String>()
+        
+        for (url in urlsSpotify) {
+            if (url in urisExistentes) {
+                // Es duplicado
+                val titulo = cancionDao.obtenerTituloPorUriSpotify(url) ?: "Desconocida"
+                cancionDao.eliminarPorUriSpotify(url)
+                cancionesEliminadas.add(titulo)
+            } else {
+                urlsLimpias.add(url)
+            }
+        }
+        
+        return Pair(cancionesEliminadas, urlsLimpias)
+    }
 
     // Flag para saber si fase1 terminó pero fase2 aún no inició
     var fasePendienteTransferencia = false
@@ -157,7 +183,20 @@ class DescargaService : Service() {
                         carpeta       = carpeta,
                         onProgreso    = { }
                     )
-                    if (archivo != null) exitosos++ else fallidos++
+                    if (archivo != null) {
+                        exitosos++
+                        // Guardar en Room tras descarga exitosa
+                        val nuevoCancion = Cancion(
+                            uriLocal = archivo.absolutePath,
+                            titulo = cancion.titulo,
+                            artista = "", // Podríamos extraerlo si estuviera en YoutubeCancion
+                            playlistId = playlist,
+                            uriSpotify = cancion.urlSpotify.ifBlank { cancion.rutaColab }
+                        )
+                        AppDatabase.getDatabase(context).cancionDao().insertar(nuevoCancion)
+                    } else {
+                        fallidos++
+                    }
                 }
 
                 procesados++
@@ -174,6 +213,7 @@ class DescargaService : Service() {
 
             withContext(Dispatchers.Main) {
                 onTerminado?.invoke(exitosos, omitidos, fallidos, carpetaPath)
+                context.sendBroadcast(Intent(MusicaService.ACTION_MUSICA_ACTUALIZADA))
             }
 
             mostrarNotificacionFinal(exitosos, fallidos)

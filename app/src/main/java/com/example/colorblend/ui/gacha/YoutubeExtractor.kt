@@ -13,7 +13,8 @@ data class YoutubeCancion(
     val videoId: String,
     val titulo: String,
     val duracion: String,
-    val rutaColab: String = ""
+    val rutaColab: String = "",
+    val urlSpotify: String = ""
 )
 
 object YoutubeExtractor {

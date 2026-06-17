@@ -1,9 +1,11 @@
 package com.example.colorblend.ui.gacha
 
 import android.Manifest
+import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -13,10 +15,13 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.provider.OpenableColumns
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.TextView
@@ -52,6 +57,14 @@ class ReproductorActivity : AppCompatActivity() {
     private lateinit var barraSeleccion: LinearLayout
     private lateinit var tvContadorSeleccion: TextView
     private lateinit var loadingOverlay: View
+
+    private val musicaReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == MusicaService.ACTION_MUSICA_ACTUALIZADA) {
+                cargarCancionesDescargadas()
+            }
+        }
+    }
 
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
@@ -128,6 +141,14 @@ class ReproductorActivity : AppCompatActivity() {
         tvContadorSeleccion  = findViewById(R.id.tvContadorSeleccion)
         loadingOverlay       = findViewById(R.id.loadingMusica)
 
+        val etBuscar = findViewById<EditText>(R.id.etBuscarCancion)
+        etBuscar.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                cancionesAdapter.filtrar(s?.toString() ?: "")
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
 
         btnReproducirTodo.setOnClickListener {
             SonidoHelper.reproducir(this)
@@ -283,6 +304,9 @@ class ReproductorActivity : AppCompatActivity() {
             SonidoHelper.reproducir(this)
             startActivity(Intent(this, EqualizadorActivity::class.java))
         }
+
+        val filter = IntentFilter(MusicaService.ACTION_MUSICA_ACTUALIZADA)
+        ContextCompat.registerReceiver(this, musicaReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
     }
 
     // ── Temporizador ──────────────────────────────────────────────────────
@@ -584,6 +608,7 @@ class ReproductorActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        unregisterReceiver(musicaReceiver)
         handler.removeCallbacksAndMessages(null)
         if (serviceConectado) unbindService(connection)
         super.onDestroy()
@@ -603,6 +628,7 @@ class CancionesAdapter(
 
     private val prefs = context.getSharedPreferences("reproductor_adapter_prefs", Context.MODE_PRIVATE)
     private var itemsOriginales: List<ItemLista> = items
+    private var queryActual = ""
     private var indiceActivo = -1
     private var modoSeleccion = false
     private val seleccionadas = mutableSetOf<String>()
@@ -625,18 +651,48 @@ class CancionesAdapter(
         seleccionadas.clear()
     }
 
+    fun filtrar(nuevaQuery: String) {
+        queryActual = nuevaQuery
+        aplicarFiltroColapso()
+    }
+
     private fun aplicarFiltroColapso() {
         val nuevosItems = mutableListOf<ItemLista>()
-        var saltar = false
-        for (item in itemsOriginales) {
-            if (item is ItemLista.Header) {
-                nuevosItems.add(item)
-                // Se verifica si este título específico está en la lista de colapsados
-                saltar = headersColapsados.contains(item.titulo)
-            } else if (!saltar) {
-                nuevosItems.add(item)
+
+        if (queryActual.isBlank()) {
+            var saltar = false
+            for (item in itemsOriginales) {
+                if (item is ItemLista.Header) {
+                    nuevosItems.add(item)
+                    saltar = headersColapsados.contains(item.titulo)
+                } else if (!saltar) {
+                    nuevosItems.add(item)
+                }
+            }
+        } else {
+            var headerActual: ItemLista.Header? = null
+            var cancionesEnSeccion = mutableListOf<ItemLista.Cancion>()
+
+            for (item in itemsOriginales) {
+                if (item is ItemLista.Header) {
+                    if (cancionesEnSeccion.isNotEmpty()) {
+                        headerActual?.let { nuevosItems.add(it) }
+                        nuevosItems.addAll(cancionesEnSeccion)
+                    }
+                    headerActual = item
+                    cancionesEnSeccion = mutableListOf()
+                } else if (item is ItemLista.Cancion) {
+                    if (getNombre(item.uri).contains(queryActual, ignoreCase = true)) {
+                        cancionesEnSeccion.add(item)
+                    }
+                }
+            }
+            if (cancionesEnSeccion.isNotEmpty()) {
+                headerActual?.let { nuevosItems.add(it) }
+                nuevosItems.addAll(cancionesEnSeccion)
             }
         }
+
         items = nuevosItems
         notifyDataSetChanged()
     }

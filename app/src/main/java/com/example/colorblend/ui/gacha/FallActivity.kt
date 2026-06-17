@@ -105,6 +105,14 @@ class FallActivity : AppCompatActivity() {
         }
     }
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent) // Actualiza el intent de la actividad
+        if (intent.action == Intent.ACTION_SEND && intent.type == "text/plain") {
+            intent.getStringExtra(Intent.EXTRA_TEXT)?.let { handleSharedText(it) }
+        }
+    }
+
     private fun handleSharedText(text: String) {
         Log.d(TAG, "Manejando texto compartido: $text")
         if (text.contains("instagram.com") || text.contains("http")) {
@@ -121,6 +129,10 @@ class FallActivity : AppCompatActivity() {
             } else {
                 startService(downloadIntent)
             }
+
+            // Regresar a la app anterior inmediatamente
+            moveTaskToBack(true)
+            Toast.makeText(this, "⬇ Descargando en segundo plano...", Toast.LENGTH_SHORT).show()
         }
     }
 

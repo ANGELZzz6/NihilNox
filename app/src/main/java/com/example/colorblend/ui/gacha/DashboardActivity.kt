@@ -102,6 +102,38 @@ class DashboardActivity : AppCompatActivity() {
                 startActivity(Intent(this, ApiKeysActivity::class.java))
             }
         }
+
+        // ── Interceptar Intent de Archivo Excel ───────────────────────────
+        intent?.let { manejarIntent(it) }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        manejarIntent(intent)
+    }
+
+    private fun manejarIntent(intent: Intent) {
+        if (intent.action == Intent.ACTION_VIEW) {
+            val uri = intent.data ?: return
+            val mimeType = contentResolver.getType(uri)
+            val path = uri.path?.lowercase() ?: ""
+            
+            val esExcel = mimeType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+                          mimeType == "application/vnd.ms-excel" ||
+                          mimeType == "application/octet-stream" ||
+                          path.endsWith(".xlsx") || 
+                          path.endsWith(".xls")
+
+            if (esExcel) {
+                val nextIntent = Intent(this, DescargarPlaylistActivity::class.java).apply {
+                    data = uri
+                    action = Intent.ACTION_VIEW
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+                startActivity(nextIntent)
+            }
+        }
     }
 
     override fun onResume() {

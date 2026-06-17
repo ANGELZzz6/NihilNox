@@ -94,6 +94,7 @@ class MusicaService : Service() {
         const val ACTION_SIGUIENTE  = "ACTION_SIGUIENTE"
         const val ACTION_ANTERIOR   = "ACTION_ANTERIOR"
         private const val TAG = "MusicaService"
+        const val ACTION_MUSICA_ACTUALIZADA = "com.example.colorblend.MUSICA_ACTUALIZADA"
     }
 
     // ── Temporizador ──────────────────────────────────────────────────────

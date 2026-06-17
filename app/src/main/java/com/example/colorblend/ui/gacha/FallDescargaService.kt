@@ -173,13 +173,20 @@ class FallDescargaService : Service() {
     }
 
     private fun mostrarNotificacionFinal(texto: String) {
+        val notificationManager = getSystemService(NotificationManager::class.java)
+        
+        // Cancelar la notificación de progreso activa (la de Foreground)
+        notificationManager.cancel(NOTIF_ID)
+
         val notif = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("FALL Downloader")
             .setContentText(texto)
             .setSmallIcon(android.R.drawable.stat_sys_download_done)
-            .setAutoCancel(true)
+            .setAutoCancel(true) // Se elimina al tocarla
+            .setTimeoutAfter(3000) // Se elimina sola tras 3 segundos
             .build()
-        getSystemService(NotificationManager::class.java).notify(NOTIF_ID + 1, notif)
+        
+        notificationManager.notify(NOTIF_ID + 1, notif)
     }
 
     override fun onDestroy() {

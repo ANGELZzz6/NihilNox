@@ -72,10 +72,37 @@
 
         <activity
             android:name=".ui.gacha.DashboardActivity"
+            android:launchMode="singleTask"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            <!-- ✅ Intent Filter para recibir archivos Excel (Mejorado para WhatsApp/Exploradores) -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="content" />
+                <data android:scheme="file" />
+
+                <!-- XLSX (Moderno) -->
+                <data android:mimeType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+                <!-- XLS (Legacy) -->
+                <data android:mimeType="application/vnd.ms-excel" />
+                <!-- Fallback para archivos genéricos si tienen la extensión correcta -->
+                <data android:mimeType="application/octet-stream" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="content" />
+                <data android:scheme="file" />
+                <data android:host="*" />
+                <data android:pathPattern=".*\\.xlsx" />
+                <data android:pathPattern=".*\\.XLSX" />
             </intent-filter>
         </activity>
 
@@ -99,6 +126,7 @@
         <activity android:name=".ui.gacha.EqualizadorActivity"/>
         <activity
             android:name=".ui.gacha.FallActivity"
+            android:launchMode="singleTask"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />

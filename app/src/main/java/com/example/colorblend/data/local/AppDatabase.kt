@@ -5,6 +5,7 @@ import androidx.room.*
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.colorblend.domain.model.*
+import com.example.colorblend.data.local.migrations.MIGRATION_25_26
 
 // ══════════════════════════════════════════════════════════════════════════════
 //  REGLA DE ORO — lee esto antes de cada update que toque la base de datos
@@ -65,9 +66,10 @@ import com.example.colorblend.domain.model.*
         RegistroAlimento::class,
         AlimentoGuardado::class,
         AnalisisDia::class,
-        FallVideo::class
+        FallVideo::class,
+        Cancion::class
     ],
-    version = 25   // ← sube este número cada vez que cambies el esquema
+    version = 26   // ← sube este número cada vez que cambies el esquema
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -82,6 +84,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun personajeDao(): PersonajeDao
     abstract fun nutricionDao(): NutricionDao
     abstract fun fallVideoDao(): FallVideoDao
+    abstract fun cancionDao(): CancionDao
 
     companion object {
         @Volatile private var INSTANCE: AppDatabase? = null
@@ -94,7 +97,7 @@ abstract class AppDatabase : RoomDatabase() {
                     "colorblend_db"
                 )
                     // ── Registra aquí cada migración nueva que escribas ──────
-                    .addMigrations(MIGRATION_24_25)
+                    .addMigrations(MIGRATION_24_25, MIGRATION_25_26)
                     // .addMigrations(MIGRATION_25_26)
                     // ── NO agregues más fallbackToDestructiveMigration() ─────
                     // Si la app crashea por migración incorrecta es preferible

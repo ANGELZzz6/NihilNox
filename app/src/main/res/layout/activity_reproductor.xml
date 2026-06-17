@@ -83,6 +83,36 @@
 
     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#2A2A4A"/>
 
+    <!-- Buscador -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="10dp"
+        android:background="#0D0D1A">
+
+        <EditText
+            android:id="@+id/etBuscarCancion"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/category_card_background"
+            android:backgroundTint="#1A1A3A"
+            android:drawableStart="@android:drawable/ic_menu_search"
+            android:drawablePadding="12dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:hint="Buscar canción..."
+            android:textColorHint="#6666AA"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:singleLine="true"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:autofillHints="none"/>
+    </LinearLayout>
+
+    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#2A2A4A"/>
+
     <!-- Zona reproductor -->
     <LinearLayout
         android:layout_width="match_parent"
