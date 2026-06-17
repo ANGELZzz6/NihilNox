@@ -201,6 +201,13 @@ class DescargarPlaylistActivity : AppCompatActivity() {
                → Copia tu Authtoken desde ngrok.com/authtokens
             
             ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            💻 PASO 2.5 — Dominio Estático (Opcional)
+            ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            Si tienes un dominio estático de ngrok, pégalo en el campo NGROK_DOMAIN. 
+            Créalo gratis en dashboard.ngrok.com → Domains. 
+            Con esto la URL nunca cambia y no tendrás que actualizarla en la app.
+            
+            ━━━━━━━━━━━━━━━━━━━━━━━━━━━
             ▶ PASO 3 — Ejecutar el servidor
             ━━━━━━━━━━━━━━━━━━━━━━━━━━━
             1. Pon servidor.py y servidor.bat en la misma carpeta

@@ -91,6 +91,7 @@
         <activity android:name=".ui.gacha.DescargarPlaylistActivity"/>
         <activity android:name=".ui.gacha.metas.ValidarMetaActivity"/>
         <activity android:name=".ui.gacha.GachaResultadoActivity"/>
+        <activity android:name=".ui.gacha.VideoCategorySelectionActivity"/>
 
 
         <activity android:name=".ui.gacha.BlockNotasActivity"/>

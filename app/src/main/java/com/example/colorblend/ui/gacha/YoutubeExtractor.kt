@@ -21,13 +21,9 @@ object YoutubeExtractor {
     private fun getUrl(context: Context): String =
         ApiKeysManager.getServidorUrl(context).trimEnd('/')
 
-    private fun getKey(context: Context): String =
-        ApiKeysManager.getServidorKey(context)
-
     fun servidorConfigurado(context: Context): Boolean {
         val url = getUrl(context)
-        val key = getKey(context)
-        return url.isNotBlank() && key.isNotBlank()
+        return url.isNotBlank()
     }
 
     fun extraerPlaylistId(url: String): String? {
@@ -44,9 +40,8 @@ object YoutubeExtractor {
         val fallidos  = mutableListOf<String>()
 
         val servidorUrl = getUrl(context)
-        val apiKey      = getKey(context)
 
-        if (servidorUrl.isBlank() || apiKey.isBlank()) {
+        if (servidorUrl.isBlank()) {
             return@withContext Pair(canciones, fallidos)
         }
 
@@ -57,7 +52,6 @@ object YoutubeExtractor {
             val conn = URL("$servidorUrl/descargar").openConnection() as HttpURLConnection
             conn.requestMethod = "POST"
             conn.setRequestProperty("Content-Type", "application/json")
-            conn.setRequestProperty("Authorization", "Bearer $apiKey")
             conn.connectTimeout = 300000
             conn.readTimeout = 300000
             conn.doOutput = true
@@ -108,7 +102,6 @@ object YoutubeExtractor {
         onProgreso: (Int) -> Unit
     ): File? = withContext(Dispatchers.IO) {
         val servidorUrl = getUrl(context)
-        val apiKey      = getKey(context)
 
         try {
             val archivo = File(carpeta, "${limpiarNombre(nombreArchivo)}.m4a")
@@ -117,7 +110,6 @@ object YoutubeExtractor {
             val encodedRuta = java.net.URLEncoder.encode(rutaColab, "UTF-8")
             val conn = URL("$servidorUrl/archivo?ruta=$encodedRuta")
                 .openConnection() as HttpURLConnection
-            conn.setRequestProperty("Authorization", "Bearer $apiKey")
             conn.connectTimeout = 60000
             conn.readTimeout = 60000
             conn.connect()

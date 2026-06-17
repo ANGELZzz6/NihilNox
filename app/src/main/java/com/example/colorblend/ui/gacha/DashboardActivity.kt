@@ -21,7 +21,10 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.colorblend.R
+import com.example.colorblend.data.local.AppDatabase
+import kotlinx.coroutines.launch
 import java.io.File
 
 class DashboardActivity : AppCompatActivity() {
@@ -80,7 +83,17 @@ class DashboardActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.btnDashFall).setOnClickListener {
             animarBoton(it) {
-                startActivity(Intent(this, FallActivity::class.java))
+                lifecycleScope.launch {
+                    val dao = AppDatabase.getDatabase(this@DashboardActivity).fallVideoDao()
+                    val count = dao.getCategorizedCount()
+                    if (count > 0) {
+                        startActivity(Intent(this@DashboardActivity, VideoCategorySelectionActivity::class.java))
+                    } else {
+                        startActivity(Intent(this@DashboardActivity, FallActivity::class.java).apply {
+                            putExtra("video_category", "RANDOM")
+                        })
+                    }
+                }
             }
         }
 

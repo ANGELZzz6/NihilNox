@@ -2,6 +2,7 @@ package com.example.colorblend.data.local
 
 import android.content.Context
 import androidx.room.*
+import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.colorblend.domain.model.*
 
@@ -63,9 +64,10 @@ import com.example.colorblend.domain.model.*
         PerfilNutricion::class,
         RegistroAlimento::class,
         AlimentoGuardado::class,
-        AnalisisDia::class
+        AnalisisDia::class,
+        FallVideo::class
     ],
-    version = 24   // ← sube este número cada vez que cambies el esquema
+    version = 25   // ← sube este número cada vez que cambies el esquema
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -79,6 +81,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun userStatsDao(): UserStatsDao
     abstract fun personajeDao(): PersonajeDao
     abstract fun nutricionDao(): NutricionDao
+    abstract fun fallVideoDao(): FallVideoDao
 
     companion object {
         @Volatile private var INSTANCE: AppDatabase? = null
@@ -91,7 +94,7 @@ abstract class AppDatabase : RoomDatabase() {
                     "colorblend_db"
                 )
                     // ── Registra aquí cada migración nueva que escribas ──────
-                    // .addMigrations(MIGRATION_24_25)
+                    .addMigrations(MIGRATION_24_25)
                     // .addMigrations(MIGRATION_25_26)
                     // ── NO agregues más fallbackToDestructiveMigration() ─────
                     // Si la app crashea por migración incorrecta es preferible
@@ -107,13 +110,16 @@ abstract class AppDatabase : RoomDatabase() {
 //  MIGRACIONES — escribe cada una abajo y regístrala en el builder arriba
 // ══════════════════════════════════════════════════════════════════════════════
 
-// Ejemplo de cómo se ve una migración real.
-// Cuando necesites la 24→25: descomenta, cambia los números y escribe el SQL.
-//
-// val MIGRATION_24_25 = object : Migration(24, 25) {
-//     override fun migrate(database: SupportSQLiteDatabase) {
-//         // Escribe aquí el SQL exacto que refleja lo que cambiaste en las entidades
-//         // Ejemplo — agregaste una columna `nivelEnergia` a UserStats:
-//         // database.execSQL("ALTER TABLE `user_stats` ADD COLUMN `nivelEnergia` INTEGER NOT NULL DEFAULT 0")
-//     }
-// }
+val MIGRATION_24_25 = object : Migration(24, 25) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("""
+            CREATE TABLE IF NOT EXISTS `fall_videos` (
+                `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                `file_path` TEXT NOT NULL, 
+                `file_name` TEXT NOT NULL, 
+                `category` TEXT NOT NULL DEFAULT 'NEWS', 
+                `date_added` INTEGER NOT NULL
+            )
+        """.trimIndent())
+    }
+}
