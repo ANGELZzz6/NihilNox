@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/back_global">
+
+    <LinearLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        android:background="#CC121212"
+        app:layout_constraintTop_toTopOf="parent">
+        <TextView android:id="@+id/tvScore"
+            android:layout_width="0dp" android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Puntos: 0"
+            android:textColor="#FFD700" android:textSize="13sp" android:textStyle="bold"/>
+        <TextView android:id="@+id/tvDifficulty"
+            android:layout_width="0dp" android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="#AAAAFF" android:textSize="13sp" android:textStyle="bold"/>
+        <TextView android:id="@+id/tvTimer"
+            android:layout_width="0dp" android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:textColor="#FFFFFF" android:textSize="13sp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/topZone"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:orientation="horizontal"
+        android:padding="4dp"
+        android:gravity="center_vertical"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/topBar">
+        <FrameLayout android:id="@+id/stockPile"
+            android:layout_width="52dp" android:layout_height="80dp"
+            android:layout_margin="2dp"
+            android:background="@drawable/card_back_bg"/>
+        <FrameLayout android:id="@+id/wastePile"
+            android:layout_width="52dp" android:layout_height="80dp"
+            android:layout_margin="2dp"
+            android:background="@drawable/card_empty_slot"/>
+        <View android:layout_width="0dp" android:layout_weight="1" android:layout_height="1dp"/>
+        <FrameLayout android:id="@+id/foundation0"
+            android:layout_width="52dp" android:layout_height="80dp"
+            android:layout_margin="2dp" android:background="@drawable/card_empty_slot"/>
+        <FrameLayout android:id="@+id/foundation1"
+            android:layout_width="52dp" android:layout_height="80dp"
+            android:layout_margin="2dp" android:background="@drawable/card_empty_slot"/>
+        <FrameLayout android:id="@+id/foundation2"
+            android:layout_width="52dp" android:layout_height="80dp"
+            android:layout_margin="2dp" android:background="@drawable/card_empty_slot"/>
+        <FrameLayout android:id="@+id/foundation3"
+            android:layout_width="52dp" android:layout_height="80dp"
+            android:layout_margin="2dp" android:background="@drawable/card_empty_slot"/>
+    </LinearLayout>
+
+    <HorizontalScrollView
+        android:id="@+id/tableauScroll"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scrollbars="none"
+        app:layout_constraintTop_toBottomOf="@id/topZone"
+        app:layout_constraintBottom_toTopOf="@id/bottomBar">
+        <LinearLayout
+            android:id="@+id/tableauZone"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:padding="4dp">
+            <FrameLayout android:id="@+id/col0" android:layout_width="52dp"
+                android:layout_height="match_parent" android:layout_margin="2dp"
+                android:clipChildren="false" android:clipToPadding="false"/>
+            <FrameLayout android:id="@+id/col1" android:layout_width="52dp"
+                android:layout_height="match_parent" android:layout_margin="2dp"
+                android:clipChildren="false" android:clipToPadding="false"/>
+            <FrameLayout android:id="@+id/col2" android:layout_width="52dp"
+                android:layout_height="match_parent" android:layout_margin="2dp"
+                android:clipChildren="false" android:clipToPadding="false"/>
+            <FrameLayout android:id="@+id/col3" android:layout_width="52dp"
+                android:layout_height="match_parent" android:layout_margin="2dp"
+                android:clipChildren="false" android:clipToPadding="false"/>
+            <FrameLayout android:id="@+id/col4" android:layout_width="52dp"
+                android:layout_height="match_parent" android:layout_margin="2dp"
+                android:clipChildren="false" android:clipToPadding="false"/>
+            <FrameLayout android:id="@+id/col5" android:layout_width="52dp"
+                android:layout_height="match_parent" android:layout_margin="2dp"
+                android:clipChildren="false" android:clipToPadding="false"/>
+            <FrameLayout android:id="@+id/col6" android:layout_width="52dp"
+                android:layout_height="match_parent" android:layout_margin="2dp"
+                android:clipChildren="false" android:clipToPadding="false"/>
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <LinearLayout
+        android:id="@+id/bottomBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:background="#CC121212"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <Button android:id="@+id/btnUndo"
+            android:layout_width="0dp" android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="↩ Deshacer"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/btn_games_gradient"
+            android:layout_marginEnd="4dp"/>
+        <Button android:id="@+id/btnCompletar"
+            android:layout_width="0dp" android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="✨ Completar"
+            android:textColor="#1A1200"
+            android:background="@drawable/btn_gold_action"
+            android:layout_marginHorizontal="4dp"
+            android:visibility="gone"/>
+        <Button android:id="@+id/btnNewGame"
+            android:layout_width="0dp" android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="🔄 Nueva"
+            android:textColor="#FFD700"
+            android:background="@drawable/btn_games_gradient"
+            android:layout_marginStart="4dp"/>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

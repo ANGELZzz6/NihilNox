@@ -175,6 +175,22 @@
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
                 android:stateListAnimator="@null"
+                android:layout_marginBottom="12dp"/>
+
+            <Button
+                android:id="@+id/btnDashGames"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="GAMES"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:background="@drawable/btn_nav_gradient"
+                android:drawableStart="@drawable/ic_music"
+                android:drawablePadding="16dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:stateListAnimator="@null"
                 android:layout_marginBottom="24dp"/>
 
             <View

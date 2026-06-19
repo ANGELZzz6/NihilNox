@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/back_global"
+    android:gravity="center"
+    android:padding="24dp"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="🃏 Solitario"
+        android:textColor="#FFD700"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="6dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Elige tu dificultad"
+        android:textColor="#AAAAAA"
+        android:textSize="15sp"
+        android:gravity="center"
+        android:layout_marginBottom="28dp"/>
+
+    <LinearLayout android:id="@+id/cardFacil"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/difficulty_card_bg"
+        android:padding="16dp" android:layout_marginBottom="10dp"
+        android:gravity="center_vertical"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+        <TextView android:layout_width="36dp" android:layout_height="wrap_content"
+            android:text="⭐" android:textSize="22sp"/>
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:orientation="vertical" android:layout_marginStart="12dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Fácil" android:textColor="#FFFFFF" android:textSize="17sp" android:textStyle="bold"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Roba 1 carta · Sin límite de tiempo" android:textColor="#8888AA" android:textSize="12sp"/>
+        </LinearLayout>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="x1.0" android:textColor="#FFD700" android:textSize="14sp" android:textStyle="bold"/>
+    </LinearLayout>
+
+    <LinearLayout android:id="@+id/cardNormal"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/difficulty_card_bg"
+        android:padding="16dp" android:layout_marginBottom="10dp"
+        android:gravity="center_vertical"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+        <TextView android:layout_width="36dp" android:layout_height="wrap_content"
+            android:text="⭐⭐" android:textSize="15sp"/>
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:orientation="vertical" android:layout_marginStart="12dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Normal" android:textColor="#FFFFFF" android:textSize="17sp" android:textStyle="bold"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Roba 1 carta · Sin límite de tiempo" android:textColor="#8888AA" android:textSize="12sp"/>
+        </LinearLayout>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="x1.5" android:textColor="#FFD700" android:textSize="14sp" android:textStyle="bold"/>
+    </LinearLayout>
+
+    <LinearLayout android:id="@+id/cardDificil"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/difficulty_card_bg"
+        android:padding="16dp" android:layout_marginBottom="10dp"
+        android:gravity="center_vertical"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+        <TextView android:layout_width="36dp" android:layout_height="wrap_content"
+            android:text="⭐⭐⭐" android:textSize="11sp"/>
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:orientation="vertical" android:layout_marginStart="12dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Difícil" android:textColor="#FFFFFF" android:textSize="17sp" android:textStyle="bold"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Roba 3 cartas · Sin límite de tiempo" android:textColor="#8888AA" android:textSize="12sp"/>
+        </LinearLayout>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="x2.0" android:textColor="#FFD700" android:textSize="14sp" android:textStyle="bold"/>
+    </LinearLayout>
+
+    <LinearLayout android:id="@+id/cardExperto"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/difficulty_card_bg_orange"
+        android:padding="16dp" android:layout_marginBottom="10dp"
+        android:gravity="center_vertical"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+        <TextView android:layout_width="36dp" android:layout_height="wrap_content"
+            android:text="🔥" android:textSize="22sp"/>
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:orientation="vertical" android:layout_marginStart="12dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Experto" android:textColor="#FFFFFF" android:textSize="17sp" android:textStyle="bold"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Roba 3 cartas · 10 minutos" android:textColor="#FFCC80" android:textSize="12sp"/>
+        </LinearLayout>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="x3.0" android:textColor="#FFD700" android:textSize="14sp" android:textStyle="bold"/>
+    </LinearLayout>
+
+    <LinearLayout android:id="@+id/cardGranMaestro"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/difficulty_card_bg_purple"
+        android:padding="16dp" android:layout_marginBottom="24dp"
+        android:gravity="center_vertical"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+        <TextView android:layout_width="36dp" android:layout_height="wrap_content"
+            android:text="👑" android:textSize="22sp"/>
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:orientation="vertical" android:layout_marginStart="12dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Gran Maestro" android:textColor="#FFFFFF" android:textSize="17sp" android:textStyle="bold"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Roba 3 cartas · 5 minutos" android:textColor="#CE93D8" android:textSize="12sp"/>
+        </LinearLayout>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="x5.0" android:textColor="#FFD700" android:textSize="14sp" android:textStyle="bold"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnReanudar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="▶ Reanudar partida"
+        android:textColor="#1A1200"
+        android:background="@drawable/btn_gold_action"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone"/>
+
+    <Button android:id="@+id/btnBack"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="← Volver"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/btn_games_gradient"/>
+
+</LinearLayout>

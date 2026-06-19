@@ -148,6 +148,9 @@
         <activity android:name=".ui.gacha.HistorialNutricionActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".ui.gacha.metas.CrearMetaActivity"/>
+        <activity android:name=".ui.gacha.GamesActivity"/>
+        <activity android:name=".ui.gacha.SolitaireActivity"/>
+        <activity android:name=".ui.gacha.DifficultySelectorActivity"/>
         <!-- ✅ Mini browser incógnito -->
         <activity
             android:name=".ui.gacha.IncognitoWebViewActivity"

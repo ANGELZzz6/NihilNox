@@ -100,6 +100,12 @@ class DashboardActivity : AppCompatActivity() {
             }
         }
 
+        findViewById<Button>(R.id.btnDashGames).setOnClickListener {
+            animarBoton(it) {
+                startActivity(Intent(this, GamesActivity::class.java))
+            }
+        }
+
         findViewById<Button>(R.id.btnDashApiKeys).setOnClickListener {
             animarBoton(it) {
                 startActivity(Intent(this, ApiKeysActivity::class.java))
@@ -265,7 +271,7 @@ class DashboardActivity : AppCompatActivity() {
         val nombre = findViewById<TextView>(R.id.tvDashNick)
         val botones = listOf(
             R.id.btnDashGacha, R.id.btnDashReproductor, R.id.btnDashBlockNotas,
-            R.id.btnDashNutricion, R.id.btnDashPerfil, R.id.btnDashFall
+            R.id.btnDashNutricion, R.id.btnDashPerfil, R.id.btnDashFall, R.id.btnDashGames
         ).map { findViewById<View>(it) }
 
         listOf(avatar, nombre).forEachIndexed { i, v ->
