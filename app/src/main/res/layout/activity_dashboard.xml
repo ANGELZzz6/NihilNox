@@ -11,7 +11,9 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:padding="24dp">
+        android:padding="24dp"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
         <!-- ── Header: Perfil ─────────────────────────────────────────────── -->
         <LinearLayout
@@ -23,6 +25,7 @@
             android:layout_marginBottom="48dp">
 
             <FrameLayout
+                android:id="@+id/flDashAvatar"
                 android:layout_width="140dp"
                 android:layout_height="140dp"
                 android:layout_marginBottom="16dp">
@@ -74,7 +77,9 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingStart="16dp"
-            android:paddingEnd="16dp">
+            android:paddingEnd="16dp"
+            android:clipChildren="false"
+            android:clipToPadding="false">
 
             <Button
                 android:id="@+id/btnDashGacha"

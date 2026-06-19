@@ -12,9 +12,12 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import android.view.animation.DecelerateInterpolator
+import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
@@ -105,6 +108,8 @@ class DashboardActivity : AppCompatActivity() {
 
         // ── Interceptar Intent de Archivo Excel ───────────────────────────
         intent?.let { manejarIntent(it) }
+
+        iniciarAnimacionesEntrada()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -251,18 +256,84 @@ class DashboardActivity : AppCompatActivity() {
 
     private fun animarBoton(view: View, action: () -> Unit) {
         SonidoHelper.reproducir(this)
-        view.animate()
-            .scaleX(0.95f)
-            .scaleY(0.95f)
-            .setDuration(80)
+        action()
+    }
+
+    // ── Entrada suave ──────────────────────────────────────────────────────
+    private fun iniciarAnimacionesEntrada() {
+        val avatar = findViewById<FrameLayout>(R.id.flDashAvatar)
+        val nombre = findViewById<TextView>(R.id.tvDashNick)
+        val botones = listOf(
+            R.id.btnDashGacha, R.id.btnDashReproductor, R.id.btnDashBlockNotas,
+            R.id.btnDashNutricion, R.id.btnDashPerfil, R.id.btnDashFall
+        ).map { findViewById<View>(it) }
+
+        listOf(avatar, nombre).forEachIndexed { i, v ->
+            v.translationY = -60f
+            v.alpha = 0f
+            v.animate()
+                .translationY(0f).alpha(1f)
+                .setDuration(500).setStartDelay(i * 80L)
+                .setInterpolator(DecelerateInterpolator()).start()
+        }
+
+        botones.forEachIndexed { i, v ->
+            v.translationY = 80f
+            v.alpha = 0f
+            v.animate()
+                .translationY(0f).alpha(1f)
+                .setDuration(450).setStartDelay(150L + i * 70L)
+                .setInterpolator(DecelerateInterpolator())
+                .withEndAction {
+                    if (i == botones.size - 1) {
+                        iniciarLoopIdle(botones)
+                        iniciarLoopAvatar(avatar)
+                    }
+                }.start()
+        }
+    }
+
+    // ── Loop idle botones (escala mínima, sin recorte visual) ─────────────
+    private fun animarRespiracion(v: View) {
+        v.animate()
+            .scaleX(1.015f).scaleY(1.015f)
+            .setDuration(2200)
+            .setInterpolator(AccelerateDecelerateInterpolator())
             .withEndAction {
-                view.animate()
-                    .scaleX(1f)
-                    .scaleY(1f)
-                    .setDuration(80)
-                    .withEndAction { action() }
+                v.animate()
+                    .scaleX(1f).scaleY(1f)
+                    .setDuration(2200)
+                    .setInterpolator(AccelerateDecelerateInterpolator())
+                    .withEndAction { animarRespiracion(v) }
                     .start()
-            }
-            .start()
+            }.start()
+    }
+
+    // ── Loop avatar: flota suavemente arriba y abajo ──────────────────────
+    private fun iniciarLoopAvatar(avatar: View) {
+        animarFlotacion(avatar)
+    }
+
+    private fun animarFlotacion(v: View) {
+        v.animate()
+            .translationY(-8f)
+            .setDuration(2000)
+            .setInterpolator(AccelerateDecelerateInterpolator())
+            .withEndAction {
+                v.animate()
+                    .translationY(0f)
+                    .setDuration(2000)
+                    .setInterpolator(AccelerateDecelerateInterpolator())
+                    .withEndAction { animarFlotacion(v) }
+                    .start()
+            }.start()
+    }
+
+    // ── Loop idle suave (respiración) en los botones ─────────
+    private fun iniciarLoopIdle(botones: List<View>) {
+        botones.forEachIndexed { i, v ->
+            val delay = i * 120L // desfase para que no pulsen todos igual
+            v.postDelayed({ animarRespiracion(v) }, delay)
+        }
     }
 }
