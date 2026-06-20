@@ -27,6 +27,19 @@
         android:textStyle="bold"
         android:background="@drawable/btn_nav_gradient"
         android:stateListAnimator="@null"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnGamesLearn"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="🧠 Academia"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:background="@drawable/btn_nav_gradient"
+        android:stateListAnimator="@null"
         android:layout_marginHorizontal="16dp"/>
 
     <View

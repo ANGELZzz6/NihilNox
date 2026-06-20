@@ -15,11 +15,18 @@ class GamesActivity : AppCompatActivity() {
         FullScreenHelper.enable(this)
 
         val btnSolitaire = findViewById<Button>(R.id.btnGamesSolitaire)
+        val btnLearn = findViewById<Button>(R.id.btnGamesLearn)
         val btnVolver = findViewById<Button>(R.id.btnVolverGames)
 
         btnSolitaire.setOnClickListener {
             animarBoton(it) {
                 startActivity(Intent(this, DifficultySelectorActivity::class.java))
+            }
+        }
+
+        btnLearn.setOnClickListener {
+            animarBoton(it) {
+                startActivity(Intent(this, LearnActivity::class.java))
             }
         }
 

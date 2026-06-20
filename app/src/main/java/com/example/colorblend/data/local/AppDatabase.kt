@@ -8,50 +8,6 @@ import com.example.colorblend.domain.model.*
 import com.example.colorblend.data.local.migrations.MIGRATION_25_26
 import com.example.colorblend.data.local.migrations.MIGRATION_26_27
 
-// ══════════════════════════════════════════════════════════════════════════════
-//  REGLA DE ORO — lee esto antes de cada update que toque la base de datos
-// ══════════════════════════════════════════════════════════════════════════════
-//
-//  Cada vez que cambies CUALQUIER cosa del esquema (nueva tabla, nueva columna,
-//  borrar columna, cambiar tipo) debes hacer DOS cosas obligatoriamente:
-//
-//  1. Subir `version` en @Database  (ej: 24 → 25)
-//
-//  2. Escribir una Migration nueva aquí abajo con el SQL exacto del cambio
-//     y registrarla en el builder con .addMigrations(MIGRATION_24_25)
-//
-//  Si subes la versión sin migración → la app crashea en el teléfono del usuario
-//  Si escribes la migración mal      → la app crashea en el teléfono del usuario
-//  Si haces ambas bien               → los datos del usuario se conservan ✓
-//
-// ══════════════════════════════════════════════════════════════════════════════
-//  REFERENCIA RÁPIDA DE SQL PARA MIGRACIONES
-// ══════════════════════════════════════════════════════════════════════════════
-//
-//  Agregar tabla nueva:
-//    database.execSQL("CREATE TABLE IF NOT EXISTS `nombre_tabla` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `campo` TEXT NOT NULL)")
-//
-//  Agregar columna nueva (Room no permite borrar columnas directamente):
-//    database.execSQL("ALTER TABLE `nombre_tabla` ADD COLUMN `nueva_columna` TEXT NOT NULL DEFAULT ''")
-//    database.execSQL("ALTER TABLE `nombre_tabla` ADD COLUMN `numero` INTEGER NOT NULL DEFAULT 0")
-//    database.execSQL("ALTER TABLE `nombre_tabla` ADD COLUMN `decimal` REAL NOT NULL DEFAULT 0.0")
-//    database.execSQL("ALTER TABLE `nombre_tabla` ADD COLUMN `booleano` INTEGER NOT NULL DEFAULT 0")  // 0=false 1=true
-//    database.execSQL("ALTER TABLE `nombre_tabla` ADD COLUMN `nullable` TEXT")  // sin DEFAULT = nullable
-//
-//  Renombrar tabla:
-//    database.execSQL("ALTER TABLE `viejo_nombre` RENAME TO `nuevo_nombre`")
-//
-//  Borrar tabla:
-//    database.execSQL("DROP TABLE IF EXISTS `nombre_tabla`")
-//
-//  Borrar columna (SQLite no soporta DROP COLUMN directo — hay que recrear):
-//    database.execSQL("CREATE TABLE `tabla_nueva` (...columnas que quieres conservar...)")
-//    database.execSQL("INSERT INTO `tabla_nueva` SELECT col1, col2 FROM `tabla_vieja`")
-//    database.execSQL("DROP TABLE `tabla_vieja`")
-//    database.execSQL("ALTER TABLE `tabla_nueva` RENAME TO `tabla_vieja`")
-//
-// ══════════════════════════════════════════════════════════════════════════════
-
 @Database(
     entities = [
         Meta::class,
@@ -68,9 +24,12 @@ import com.example.colorblend.data.local.migrations.MIGRATION_26_27
         AlimentoGuardado::class,
         AnalisisDia::class,
         FallVideo::class,
-        Cancion::class
+        Cancion::class,
+        LearnTopic::class,
+        LearnCard::class,
+        LearnQuizQuestion::class
     ],
-    version = 27   // ← sube este número cada vez que cambies el esquema
+    version = 28
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -86,6 +45,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun nutricionDao(): NutricionDao
     abstract fun fallVideoDao(): FallVideoDao
     abstract fun cancionDao(): CancionDao
+    abstract fun learnDao(): LearnDao
 
     companion object {
         @Volatile private var INSTANCE: AppDatabase? = null
@@ -97,22 +57,13 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "colorblend_db"
                 )
-                    // ── Registra aquí cada migración nueva que escribas ──────
-                    .addMigrations(MIGRATION_24_25, MIGRATION_25_26, MIGRATION_26_27)
-                    // .addMigrations(MIGRATION_25_26)
-                    // ── NO agregues más fallbackToDestructiveMigration() ─────
-                    // Si la app crashea por migración incorrecta es preferible
-                    // al borrado silencioso de todos los datos del usuario.
+                    .addMigrations(MIGRATION_24_25, MIGRATION_25_26, MIGRATION_26_27, MIGRATION_27_28)
                     .build()
                     .also { INSTANCE = it }
             }
         }
     }
 }
-
-// ══════════════════════════════════════════════════════════════════════════════
-//  MIGRACIONES — escribe cada una abajo y regístrala en el builder arriba
-// ══════════════════════════════════════════════════════════════════════════════
 
 val MIGRATION_24_25 = object : Migration(24, 25) {
     override fun migrate(database: SupportSQLiteDatabase) {
@@ -125,5 +76,52 @@ val MIGRATION_24_25 = object : Migration(24, 25) {
                 `date_added` INTEGER NOT NULL
             )
         """.trimIndent())
+    }
+}
+
+val MIGRATION_27_28 = object : Migration(27, 28) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("""
+            CREATE TABLE IF NOT EXISTS learn_topics (
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                titulo TEXT NOT NULL,
+                descripcion TEXT NOT NULL,
+                categoria TEXT NOT NULL,
+                materialUsuario TEXT,
+                fechaCreacion INTEGER NOT NULL DEFAULT 0,
+                ultimaRepaso INTEGER NOT NULL DEFAULT 0,
+                rachaEstudio INTEGER NOT NULL DEFAULT 0,
+                dominioTotal REAL NOT NULL DEFAULT 0,
+                totalSesiones INTEGER NOT NULL DEFAULT 0,
+                activo INTEGER NOT NULL DEFAULT 1
+            )
+        """)
+        database.execSQL("""
+            CREATE TABLE IF NOT EXISTS learn_cards (
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                topicId INTEGER NOT NULL,
+                frente TEXT NOT NULL,
+                reverso TEXT NOT NULL,
+                ejemplo TEXT,
+                intervalo INTEGER NOT NULL DEFAULT 1,
+                facilidad REAL NOT NULL DEFAULT 2.5,
+                repeticiones INTEGER NOT NULL DEFAULT 0,
+                proximoRepaso INTEGER NOT NULL DEFAULT 0,
+                ultimaCalificacion INTEGER NOT NULL DEFAULT 0
+            )
+        """)
+        database.execSQL("""
+            CREATE TABLE IF NOT EXISTS learn_quiz_questions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                topicId INTEGER NOT NULL,
+                pregunta TEXT NOT NULL,
+                opcionA TEXT NOT NULL,
+                opcionB TEXT NOT NULL,
+                opcionC TEXT NOT NULL,
+                opcionD TEXT NOT NULL,
+                respuestaCorrecta TEXT NOT NULL,
+                explicacion TEXT NOT NULL
+            )
+        """)
     }
 }

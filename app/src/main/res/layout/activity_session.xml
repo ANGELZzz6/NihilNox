@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/back_global">
+
+    <!-- Header -->
+    <LinearLayout
+        android:id="@+id/headerSession"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="#CC121212"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tvSessionTitulo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#FFD700"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ProgressBar
+                android:id="@+id/progressSession"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="6dp"
+                android:progressTint="#FFD700"
+                android:progressBackgroundTint="#333333"
+                android:layout_marginEnd="8dp"/>
+
+            <TextView
+                android:id="@+id/tvSessionProgreso"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="13sp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Contenedor principal animable -->
+    <FrameLayout
+        android:id="@+id/sessionContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@id/headerSession"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <!-- MODO TARJETAS -->
+        <LinearLayout
+            android:id="@+id/layoutTarjeta"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <FrameLayout
+                android:id="@+id/cardFlipContainer"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@drawable/difficulty_card_bg"
+                android:padding="24dp"
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/tvCardFrente"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="#FFFFFF"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:layout_marginBottom="24dp"/>
+
+                    <TextView
+                        android:id="@+id/tvCardReverso"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="#88FFAA"
+                        android:textSize="16sp"
+                        android:gravity="center"
+                        android:layout_marginBottom="12dp"
+                        android:visibility="invisible"/>
+
+                    <TextView
+                        android:id="@+id/tvCardEjemplo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="#AAAAFF"
+                        android:textSize="14sp"
+                        android:gravity="center"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:id="@+id/tvCardHint"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="👆 Toca para revelar"
+                        android:textColor="#555555"
+                        android:textSize="13sp"/>
+                </LinearLayout>
+            </FrameLayout>
+
+            <!-- Botones calificación -->
+            <LinearLayout
+                android:id="@+id/layoutCalificacion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/btnCalMal"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="😕 Mal"
+                    android:textColor="#FFFFFF"
+                    android:background="@drawable/difficulty_card_bg_orange"
+                    android:layout_marginEnd="6dp"
+                    android:onClick="onCalMal"/>
+
+                <Button
+                    android:id="@+id/btnCalBien"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="🙂 Bien"
+                    android:textColor="#FFFFFF"
+                    android:background="@drawable/btn_games_gradient"
+                    android:layout_marginEnd="6dp"
+                    android:onClick="onCalBien"/>
+
+                <Button
+                    android:id="@+id/btnCalPerfecto"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="🌟 Perfecto"
+                    android:textColor="#1A1200"
+                    android:background="@drawable/btn_gold_action"
+                    android:onClick="onCalPerfecto"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- MODO QUIZ -->
+        <LinearLayout
+            android:id="@+id/layoutQuiz"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tvQuizPregunta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:background="@drawable/difficulty_card_bg"
+                android:padding="20dp"
+                android:gravity="center"
+                android:layout_marginBottom="16dp"/>
+
+            <Button android:id="@+id/btnQuizA"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:textColor="#FFFFFF" android:background="@drawable/btn_games_gradient"
+                android:layout_marginBottom="8dp" android:gravity="start|center_vertical"
+                android:paddingHorizontal="16dp"/>
+            <Button android:id="@+id/btnQuizB"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:textColor="#FFFFFF" android:background="@drawable/btn_games_gradient"
+                android:layout_marginBottom="8dp" android:gravity="start|center_vertical"
+                android:paddingHorizontal="16dp"/>
+            <Button android:id="@+id/btnQuizC"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:textColor="#FFFFFF" android:background="@drawable/btn_games_gradient"
+                android:layout_marginBottom="8dp" android:gravity="start|center_vertical"
+                android:paddingHorizontal="16dp"/>
+            <Button android:id="@+id/btnQuizD"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:textColor="#FFFFFF" android:background="@drawable/btn_games_gradient"
+                android:layout_marginBottom="12dp" android:gravity="start|center_vertical"
+                android:paddingHorizontal="16dp"/>
+
+            <TextView
+                android:id="@+id/tvQuizExplicacion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:background="@drawable/difficulty_card_bg"
+                android:padding="12dp"
+                android:visibility="gone"/>
+        </LinearLayout>
+
+        <!-- RESUMEN FINAL -->
+        <LinearLayout
+            android:id="@+id/layoutResumen"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🎉"
+                android:textSize="64sp"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:id="@+id/tvResumenTitulo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginBottom="24dp"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="32dp">
+
+                <TextView
+                    android:id="@+id/tvResumenXP"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#88FFAA"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:layout_marginEnd="24dp"/>
+
+                <TextView
+                    android:id="@+id/tvResumenMonedas"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFD700"
+                    android:textSize="22sp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnResumenRepetir"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="🔄 Repetir"
+                android:textColor="#1A1200"
+                android:background="@drawable/btn_gold_action"
+                android:layout_marginBottom="10dp"/>
+
+            <Button
+                android:id="@+id/btnResumenVolver"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="← Volver"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/btn_games_gradient"/>
+        </LinearLayout>
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
