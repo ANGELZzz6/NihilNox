@@ -4,7 +4,11 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.media.AudioManager
 import android.media.MediaPlayer
 import android.media.audiofx.BassBoost
 import android.media.audiofx.Equalizer
@@ -42,6 +46,20 @@ class MusicaService : Service() {
     
     private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     private var playbackJob: Job? = null
+
+    // ✅ Pausar si se desconectan auriculares (Becomes Noisy)
+    private val noisyReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == AudioManager.ACTION_AUDIO_BECOMING_NOISY) {
+                if (isPlaying()) {
+                    mediaPlayer?.pause()
+                    onCancionCambiada?.invoke(nombreCancion(), false)
+                    actualizarNotificacion()
+                    updatePlaybackState()
+                }
+            }
+        }
+    }
 
     var onCancionCambiada: ((String, Boolean) -> Unit)? = null
     var onShuffleChanged: ((Boolean) -> Unit)? = null
@@ -154,6 +172,10 @@ class MusicaService : Service() {
         super.onCreate()
         crearCanalNotificacion()
         initMediaSession()
+        
+        // Registrar receptor para desconexión de auriculares
+        registerReceiver(noisyReceiver, IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY))
+        
         startForeground(NOTIF_ID, construirNotificacion())
     }
 
@@ -413,6 +435,11 @@ class MusicaService : Service() {
 
     override fun onDestroy() {
         cancelarTemporizador()
+        try {
+            unregisterReceiver(noisyReceiver)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error al desregistrar noisyReceiver", e)
+        }
         liberarReproductor()
         scope.cancel()
         super.onDestroy()

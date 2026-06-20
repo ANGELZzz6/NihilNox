@@ -1,6 +1,9 @@
 package com.example.colorblend.ui.gacha
 
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.app.AlertDialog
+import android.graphics.BitmapFactory
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,6 +14,9 @@ import androidx.core.view.children
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.AccelerateDecelerateInterpolator
+import com.example.colorblend.data.local.AppDatabase
+import com.example.colorblend.data.local.repository.UserStatsRepository
+import java.io.File
 
 class SolitaireActivity : AppCompatActivity() {
 
@@ -27,6 +33,17 @@ class SolitaireActivity : AppCompatActivity() {
     private lateinit var btnCompletar: Button
     private var isAutoCompleting = false
     private var autoCompleteStep = 0
+
+    private lateinit var repository: UserStatsRepository
+
+    // Recompensas por dificultad: Pair(monedas, xp)
+    private val recompensas = mapOf(
+        Difficulty.FACIL        to Pair(50,  300),
+        Difficulty.NORMAL       to Pair(90,  500),
+        Difficulty.DIFICIL      to Pair(150, 800),
+        Difficulty.EXPERTO      to Pair(250, 1200),
+        Difficulty.GRAN_MAESTRO to Pair(400, 1800)
+    )
 
     private val moveHistory = ArrayDeque<GameSnapshot>()
 
@@ -52,6 +69,9 @@ class SolitaireActivity : AppCompatActivity() {
         setContentView(R.layout.activity_solitaire)
 
         game = SolitaireGame()
+        val db = AppDatabase.getDatabase(this)
+        repository = UserStatsRepository(db.userStatsDao())
+
         bindViews()
         setupClickListeners()
 
@@ -792,18 +812,123 @@ class SolitaireActivity : AppCompatActivity() {
     private fun onWin() {
         borrarPartidaGuardada()
         timerJob?.cancel()
+
         val bonus = if (difficulty.timeLimit > 0)
             ((difficulty.timeLimit - secondsElapsed) * 2 * difficulty.scoreMultiplier).toInt() else 0
         score += bonus
+
+        val (monedas, xpGanado) = recompensas[difficulty] ?: Pair(10, 50)
+
         animarVictoria()
+
+        // Otorgar recompensas en background
+        CoroutineScope(Dispatchers.IO).launch {
+            repository.addMonedas(monedas)
+            val (xpTotal, subioNivel) = repository.addXP(xpGanado)
+
+            withContext(Dispatchers.Main) {
+                android.os.Handler(mainLooper).postDelayed({
+                    mostrarModalVictoria(monedas, xpGanado, xpTotal, subioNivel, bonus)
+                }, 1500)
+            }
+        }
+    }
+
+    private fun mostrarModalVictoria(
+        monedas: Int, xpGanado: Int, xpTotal: Int,
+        subioNivel: Boolean, bonus: Int
+    ) {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_solitaire_win, null)
+
+        // Foto de perfil
+        val ivAvatar = dialogView.findViewById<ImageView>(R.id.ivWinAvatar)
+        val tvEmoji = dialogView.findViewById<TextView>(R.id.tvWinEmoji)
+        val prefs = getSharedPreferences("perfil_prefs", MODE_PRIVATE)
+        val avatarPath = prefs.getString("avatar_path", null)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val stats = repository.getStatsOnce()
+            val nivel = stats?.nivel ?: 1
+            var avatarBitmap: android.graphics.Bitmap? = null
+            if (!avatarPath.isNullOrEmpty() && File(avatarPath).exists()) {
+                val bmp = android.graphics.BitmapFactory.decodeFile(avatarPath)
+                avatarBitmap = AvatarHelper.dibujarAvatarConMarco(
+                    this@SolitaireActivity, bmp, nivel, 76)
+            }
+            withContext(Dispatchers.Main) {
+                val ivAlas = dialogView.findViewById<ImageView>(R.id.ivWinAlas)
+
+                if (avatarBitmap != null) {
+                    ivAvatar.setImageBitmap(avatarBitmap)
+                    ivAvatar.visibility = View.VISIBLE
+                    tvEmoji.visibility = View.GONE
+
+                    val alasBitmap = AvatarHelper.dibujarAlas(
+                        this@SolitaireActivity, nivel, 72)
+                    if (alasBitmap != null) {
+                        ivAlas.setImageBitmap(alasBitmap)
+                        ivAlas.visibility = View.VISIBLE
+                    }
+                } else {
+                    ivAvatar.visibility = View.GONE
+                    ivAlas.visibility = View.GONE
+                    tvEmoji.visibility = View.VISIBLE
+                }
+            }
+        }
+
+        // Textos
+        dialogView.findViewById<TextView>(R.id.tvWinTitle).text = "🎉 ¡Ganaste!"
+        dialogView.findViewById<TextView>(R.id.tvWinDificultad).text = difficulty.label
+        dialogView.findViewById<TextView>(R.id.tvWinPuntos).text = "Puntuación: $score${if (bonus > 0) " (+$bonus bonus)" else ""}"
+        dialogView.findViewById<TextView>(R.id.tvWinMonedas).text = "+$monedas 🪙"
+        dialogView.findViewById<TextView>(R.id.tvWinXP).text = "+$xpGanado XP"
+
+        if (subioNivel) {
+            val tvNivelSubido = dialogView.findViewById<TextView>(R.id.tvWinNivel)
+            tvNivelSubido.visibility = View.VISIBLE
+            val nivelActual = 1 + (xpTotal / 2000)
+            tvNivelSubido.text = "⬆️ ¡Subiste al nivel $nivelActual!"
+        } else {
+            dialogView.findViewById<TextView>(R.id.tvWinNivel).visibility = View.GONE
+        }
+
+        // Barra de XP
+        val xpEnNivel = xpTotal % 2000
+        val progressBar = dialogView.findViewById<ProgressBar>(R.id.progressWinXP)
+        progressBar.max = 2000
+        progressBar.progress = 0
+
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setCancelable(false)
+            .create()
+        dialog.show()
+
+        // Animación de monedas contando
+        animarContador(dialogView.findViewById(R.id.tvWinMonedas), monedas, "🪙")
+        animarContador(dialogView.findViewById(R.id.tvWinXP), xpGanado, "XP")
+
+        // Animación barra XP
         android.os.Handler(mainLooper).postDelayed({
-            AlertDialog.Builder(this)
-                .setTitle("🎉 ¡Ganaste!")
-                .setMessage("Dificultad: ${difficulty.label}\nPuntuación: $score${if (bonus > 0) "\nBonus tiempo: +$bonus" else ""}")
-                .setPositiveButton("Nueva partida") { _, _ -> startNewGame() }
-                .setNegativeButton("Salir") { _, _ -> finish() }
-                .show()
-        }, 1500)
+            ObjectAnimator.ofInt(progressBar, "progress", 0, xpEnNivel)
+                .apply { duration = 1200; interpolator = DecelerateInterpolator(); start() }
+        }, 400)
+
+        dialogView.findViewById<Button>(R.id.btnWinNueva).setOnClickListener {
+            dialog.dismiss(); startNewGame()
+        }
+        dialogView.findViewById<Button>(R.id.btnWinSalir).setOnClickListener {
+            dialog.dismiss(); finish()
+        }
+    }
+
+    private fun animarContador(tv: TextView, hasta: Int, sufijo: String) {
+        val anim = ValueAnimator.ofInt(0, hasta)
+        anim.duration = 1000
+        anim.interpolator = DecelerateInterpolator()
+        anim.addUpdateListener { tv.text = "+${it.animatedValue} $sufijo" }
+        android.os.Handler(mainLooper).postDelayed({ anim.start() }, 600)
     }
 
     private fun saveSnapshot() {

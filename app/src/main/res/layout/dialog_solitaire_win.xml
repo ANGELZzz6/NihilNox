@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#1E1E2E"
+    android:padding="20dp">
+
+    <!-- Fila superior: avatar + recompensas -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="16dp">
+
+        <!-- Avatar -->
+        <FrameLayout
+            android:layout_width="120dp"
+            android:layout_height="100dp"
+            android:layout_marginEnd="16dp"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <!-- Alas detrás -->
+            <ImageView
+                android:id="@+id/ivWinAlas"
+                android:layout_width="120dp"
+                android:layout_height="80dp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:visibility="gone"/>
+
+            <!-- Avatar con marco -->
+            <ImageView
+                android:id="@+id/ivWinAvatar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/tvWinEmoji"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:text="🎮"
+                android:textSize="36sp"
+                android:gravity="center"/>
+        </FrameLayout>
+
+        <!-- Recompensas animadas -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView android:id="@+id/tvWinTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFD700"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView android:id="@+id/tvWinDificultad"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#AAAAFF"
+                android:textSize="13sp"
+                android:layout_marginBottom="8dp"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView android:id="@+id/tvWinMonedas"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFD700"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginEnd="16dp"/>
+
+                <TextView android:id="@+id/tvWinXP"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#88FFAA"
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Puntuación -->
+    <TextView android:id="@+id/tvWinPuntos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Subida de nivel -->
+    <TextView android:id="@+id/tvWinNivel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#FFD700"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone"/>
+
+    <!-- Barra XP -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Progreso XP"
+        android:textColor="#888888"
+        android:textSize="11sp"
+        android:layout_marginBottom="4dp"/>
+
+    <ProgressBar
+        android:id="@+id/progressWinXP"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:max="2000"
+        android:progressTint="#88FFAA"
+        android:layout_marginBottom="20dp"/>
+
+    <!-- Botones -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button android:id="@+id/btnWinNueva"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="🔄 Nueva"
+            android:textColor="#FFD700"
+            android:background="@drawable/btn_games_gradient"
+            android:layout_marginEnd="8dp"/>
+
+        <Button android:id="@+id/btnWinSalir"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Salir"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/btn_games_gradient"/>
+    </LinearLayout>
+</LinearLayout>

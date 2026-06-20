@@ -41,4 +41,18 @@ class UserStatsRepository(
             return dao.getStatsOnce()?.monedas ?: 0
         }
     }
+
+    suspend fun addXP(cantidad: Int): Pair<Int, Boolean> {
+        // Retorna (nuevoXPTotal, subioDeNivel)
+        mutex.withLock {
+            val stats = dao.getStatsOnce() ?: UserStats()
+            val xpNuevo = stats.xp + cantidad
+            val nivelNuevo = 1 + (xpNuevo / 2000)
+            val subioNivel = nivelNuevo > stats.nivel
+            dao.update(stats.copy(xp = xpNuevo, nivel = nivelNuevo))
+            return Pair(xpNuevo, subioNivel)
+        }
+    }
+
+    suspend fun getStatsOnce(): UserStats? = dao.getStatsOnce()
 }

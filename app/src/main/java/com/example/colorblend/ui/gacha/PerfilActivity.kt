@@ -204,23 +204,9 @@ class PerfilActivity : AppCompatActivity() {
 
     private fun mostrarAvatarCircular(path: String) {
         val bitmap = BitmapFactory.decodeFile(path) ?: return
-        ivAvatar.setImageBitmap(recortarCircular(bitmap))
+        ivAvatar.setImageBitmap(AvatarHelper.recortarCircular(bitmap))
         ivAvatar.visibility      = View.VISIBLE
         tvAvatarEmoji.visibility = View.GONE
-    }
-
-    private fun recortarCircular(bitmap: Bitmap): Bitmap {
-        val size   = minOf(bitmap.width, bitmap.height)
-        val output = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(output)
-        val paint  = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            shader = BitmapShader(
-                Bitmap.createScaledBitmap(bitmap, size, size, true),
-                Shader.TileMode.CLAMP, Shader.TileMode.CLAMP
-            )
-        }
-        canvas.drawCircle(size / 2f, size / 2f, size / 2f, paint)
-        return output
     }
 
     // ── Block de Notas ────────────────────────────────────────────────────────

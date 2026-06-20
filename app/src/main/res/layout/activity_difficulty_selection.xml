@@ -9,6 +9,95 @@
     android:clipChildren="false"
     android:clipToPadding="false">
 
+    <!-- Perfil del usuario -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/difficulty_card_bg"
+        android:padding="12dp">
+
+        <!-- Avatar -->
+        <FrameLayout
+            android:layout_width="96dp"
+            android:layout_height="80dp"
+            android:layout_marginEnd="12dp"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <!-- Alas detrás, ocupan todo el espacio -->
+            <ImageView
+                android:id="@+id/ivDiffAlas"
+                android:layout_width="96dp"
+                android:layout_height="64dp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:visibility="gone"/>
+
+            <!-- Avatar con marco, tamaño wrap_content centrado -->
+            <ImageView
+                android:id="@+id/ivDiffAvatar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/tvDiffEmoji"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:text="🎮"
+                android:textSize="28sp"
+                android:gravity="center"/>
+        </FrameLayout>
+
+        <!-- Nick + barra XP -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView android:id="@+id/tvDiffNick"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:textSize="15sp"
+                    android:textStyle="bold"/>
+
+                <TextView android:id="@+id/tvDiffNivel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFD700"
+                    android:textSize="13sp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/progressDiffXP"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="6dp"
+                android:layout_marginTop="6dp"
+                android:max="2000"
+                android:progressTint="#88FFAA"
+                android:progressBackgroundTint="#333355"/>
+        </LinearLayout>
+    </LinearLayout>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

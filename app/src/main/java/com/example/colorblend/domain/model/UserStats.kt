@@ -8,5 +8,7 @@ data class UserStats(
     @PrimaryKey val id: Int = 1,
     val monedas: Int = 0,
     val racha: Int = 0,
-    val ultimaFechaCumplida: Long = 0L
+    val ultimaFechaCumplida: Long = 0L,
+    val xp: Int = 0,      // NUEVO
+    val nivel: Int = 1    // NUEVO
 )

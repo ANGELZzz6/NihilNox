@@ -52,15 +52,6 @@
             android:layout_height="80dp"
             android:src="@drawable/ic_reflection"
             app:tint="#7C4DFF" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="REFLEXIÓN"
-            android:textColor="#7C4DFF"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginTop="16dp"/>
     </LinearLayout>
 
     <!-- Card FUEGO -->
@@ -85,15 +76,6 @@
             android:layout_height="80dp"
             android:src="@drawable/ic_fire"
             app:tint="#FF5722" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="FUEGO"
-            android:textColor="#FF5722"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginTop="16dp"/>
     </LinearLayout>
 
     <!-- Botón NEWS -->

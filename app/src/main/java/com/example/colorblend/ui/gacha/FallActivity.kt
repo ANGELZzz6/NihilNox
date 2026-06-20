@@ -18,6 +18,7 @@ import android.widget.TextView
 import android.widget.ImageView
 import android.view.GestureDetector
 import android.view.MotionEvent
+import androidx.core.content.ContextCompat
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -393,7 +394,8 @@ class FallActivity : AppCompatActivity() {
 
         private fun clasificarVideo(holder: VideoViewHolder, file: File, categoria: String) {
             val icon = if (categoria == "FUEGO") holder.iconFuego else holder.iconReflexion
-            val msg = if (categoria == "FUEGO") "🔥 Guardado en Fuego" else "💜 Guardado en Reflexión"
+            val emoji = if (categoria == "FUEGO") "🔥" else "💜"
+            val msg = "$emoji Guardado"
 
             icon.animate().scaleX(1.5f).scaleY(1.5f).setDuration(200).withEndAction {
                 icon.animate().scaleX(1.2f).scaleY(1.2f).alpha(0.8f).setDuration(200).start()
@@ -412,7 +414,17 @@ class FallActivity : AppCompatActivity() {
                     ))
                 }
                 withContext(Dispatchers.Main) {
-                    Snackbar.make(holder.itemView, msg, Snackbar.LENGTH_SHORT).show()
+                    val snack = Snackbar.make(holder.itemView, msg, Snackbar.LENGTH_SHORT)
+                    
+                    // Estilo premium para el snackbar
+                    val snackView = snack.view
+                    snackView.background = ContextCompat.getDrawable(this@FallActivity, R.drawable.card_nutricion)
+                    val tv = snackView.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+                    tv.setTextColor(android.graphics.Color.WHITE)
+                    tv.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 14f)
+                    tv.textAlignment = View.TEXT_ALIGNMENT_CENTER
+                    
+                    snack.show()
                 }
             }
         }

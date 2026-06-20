@@ -27,7 +27,11 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.colorblend.R
 import com.example.colorblend.data.local.AppDatabase
+import com.example.colorblend.data.local.repository.UserStatsRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
 class DashboardActivity : AppCompatActivity() {
@@ -168,33 +172,13 @@ class DashboardActivity : AppCompatActivity() {
     }
 
     private fun mostrarAvatarCircular(path: String) {
-        try {
-            val bitmap = BitmapFactory.decodeFile(path)
-            if (bitmap != null) {
-                val circularBitmap = recortarCircular(bitmap)
-                ivAvatar.setImageBitmap(circularBitmap)
-                ivAvatar.visibility = View.VISIBLE
-                tvAvatarEmoji.visibility = View.GONE
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            ivAvatar.visibility = View.GONE
-            tvAvatarEmoji.visibility = View.VISIBLE
+        val bitmap = BitmapFactory.decodeFile(path)
+        if (bitmap != null) {
+            val circularBitmap = AvatarHelper.recortarCircular(bitmap)
+            ivAvatar.setImageBitmap(circularBitmap)
+            ivAvatar.visibility = View.VISIBLE
+            tvAvatarEmoji.visibility = View.GONE
         }
-    }
-
-    private fun recortarCircular(bitmap: Bitmap): Bitmap {
-        val size   = minOf(bitmap.width, bitmap.height)
-        val output = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(output)
-        val paint  = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            shader = BitmapShader(
-                Bitmap.createScaledBitmap(bitmap, size, size, true),
-                Shader.TileMode.CLAMP, Shader.TileMode.CLAMP
-            )
-        }
-        canvas.drawCircle(size / 2f, size / 2f, size / 2f, paint)
-        return output
     }
 
     // ── Block de Notas (Seguridad) ────────────────────────────────────────────

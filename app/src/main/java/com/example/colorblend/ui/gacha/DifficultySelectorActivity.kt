@@ -1,20 +1,38 @@
 package com.example.colorblend.ui.gacha
 
+import android.animation.ObjectAnimator
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.colorblend.R
+import com.example.colorblend.data.local.AppDatabase
+import com.example.colorblend.data.local.repository.UserStatsRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
 
 class DifficultySelectorActivity : AppCompatActivity() {
+
+    private lateinit var repository: UserStatsRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_difficulty_selection)
         FullScreenHelper.enable(this)
+
+        val db = AppDatabase.getDatabase(this)
+        repository = UserStatsRepository(db.userStatsDao())
+
         iniciarAnimacionesEntrada()
 
         val btnReanudar = findViewById<Button>(R.id.btnReanudar)
@@ -55,6 +73,65 @@ class DifficultySelectorActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.btnBack).setOnClickListener { finish() }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        cargarPerfilYXP()
+    }
+
+    private fun cargarPerfilYXP() {
+        val ivAvatar = findViewById<ImageView>(R.id.ivDiffAvatar)
+        val tvEmoji = findViewById<TextView>(R.id.tvDiffEmoji)
+        val tvNick = findViewById<TextView>(R.id.tvDiffNick)
+        val progressXP = findViewById<ProgressBar>(R.id.progressDiffXP)
+        val tvNivel = findViewById<TextView>(R.id.tvDiffNivel)
+
+        val prefs = getSharedPreferences("perfil_prefs", MODE_PRIVATE)
+        val nick = prefs.getString("nick", "Jugador") ?: "Jugador"
+        val avatarPath = prefs.getString("avatar_path", null)
+        tvNick.text = nick
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val stats = repository.getStatsOnce()
+            val nivel = stats?.nivel ?: 1
+            val xp = stats?.xp ?: 0
+            val xpEnNivel = xp % 2000
+            val config = AvatarHelper.getMarcoConfig(nivel)
+
+            var avatarBitmap: android.graphics.Bitmap? = null
+            if (!avatarPath.isNullOrEmpty() && File(avatarPath).exists()) {
+                val bmp = android.graphics.BitmapFactory.decodeFile(avatarPath)
+                avatarBitmap = AvatarHelper.dibujarAvatarConMarco(
+                    this@DifficultySelectorActivity, bmp, nivel, 56)
+            }
+
+            withContext(Dispatchers.Main) {
+                val ivAlas = findViewById<ImageView>(R.id.ivDiffAlas)
+
+                if (avatarBitmap != null) {
+                    ivAvatar.setImageBitmap(avatarBitmap)
+                    ivAvatar.visibility = View.VISIBLE
+                    tvEmoji.visibility = View.GONE
+
+                    // Alas separadas
+                    val alasBitmap = AvatarHelper.dibujarAlas(
+                        this@DifficultySelectorActivity, nivel, 52)
+                    if (alasBitmap != null) {
+                        ivAlas.setImageBitmap(alasBitmap)
+                        ivAlas.visibility = View.VISIBLE
+                    }
+                } else {
+                    ivAvatar.visibility = View.GONE
+                    ivAlas.visibility = View.GONE
+                    tvEmoji.visibility = View.VISIBLE
+                }
+                tvNivel.text = "Nv.$nivel ${config.nombre}"
+                progressXP.max = 2000
+                ObjectAnimator.ofInt(progressXP, "progress", 0, xpEnNivel)
+                    .apply { duration = 800; interpolator = DecelerateInterpolator(); start() }
+            }
+        }
     }
 
     // Entrada: tarjetas aparecen desde la izquierda igual que en Fall
