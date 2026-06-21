@@ -83,7 +83,7 @@ Reglas:
 """.trimIndent()
 
             val requestBody = org.json.JSONObject().apply {
-                put("model", "llama3-8b-8192")
+                put("model", "llama-3.1-8b-instant")
                 put("max_tokens", 2000)
                 put("temperature", 0.7)
                 put("messages", org.json.JSONArray().apply {
@@ -220,4 +220,10 @@ Reglas:
     }
 
     suspend fun archivarTopic(id: Int) = dao.archivarTopic(id)
+
+    suspend fun eliminarTema(topicId: Int) {
+        dao.deleteCardsByTopic(topicId)
+        dao.deleteQuestionsByTopic(topicId)
+        dao.deleteTopic(topicId)
+    }
 }

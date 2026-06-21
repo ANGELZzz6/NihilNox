@@ -88,6 +88,12 @@ class NewTopicActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            // Animación de carga pulsante mientras la IA trabaja
+            val btn = findViewById<Button>(R.id.btnNewTopicCrear)
+            btn.animate().scaleX(0.96f).scaleY(0.96f).setDuration(100).withEndAction {
+                btn.animate().scaleX(1f).scaleY(1f).setDuration(100).start()
+            }.start()
+
             viewModel.crearTema(
                 titulo = titulo,
                 categoria = categoriaSeleccionada,

@@ -62,4 +62,13 @@ interface LearnDao {
 
     @Query("SELECT * FROM learn_quiz_questions WHERE topicId = :topicId")
     suspend fun getAllQuestions(topicId: Int): List<LearnQuizQuestion>
+
+    @Query("DELETE FROM learn_topics WHERE id = :id")
+    suspend fun deleteTopic(id: Int)
+
+    @Query("DELETE FROM learn_cards WHERE topicId = :topicId")
+    suspend fun deleteCardsByTopic(topicId: Int)
+
+    @Query("DELETE FROM learn_quiz_questions WHERE topicId = :topicId")
+    suspend fun deleteQuestionsByTopic(topicId: Int)
 }

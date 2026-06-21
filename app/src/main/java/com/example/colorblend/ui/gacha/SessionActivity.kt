@@ -95,6 +95,13 @@ class SessionActivity : AppCompatActivity() {
         layoutQuiz.visibility = View.GONE
         layoutCalificacion.visibility = View.GONE
 
+        // Animación de entrada
+        val container = findViewById<View>(R.id.cardFlipContainer)
+        container.alpha = 0f
+        container.translationY = 30f
+        container.animate().alpha(1f).translationY(0f)
+            .setDuration(300).setInterpolator(android.view.animation.DecelerateInterpolator()).start()
+
         findViewById<TextView>(R.id.tvSessionProgreso).text =
             "${indexActual + 1} / ${cards.size}"
         findViewById<ProgressBar>(R.id.progressSession).apply {
@@ -148,6 +155,10 @@ class SessionActivity : AppCompatActivity() {
         findViewById<View>(R.id.layoutCalificacion).visibility = View.GONE
         val layoutQuiz = findViewById<View>(R.id.layoutQuiz)
         layoutQuiz.visibility = View.VISIBLE
+
+        // Animación de entrada
+        layoutQuiz.alpha = 0f
+        layoutQuiz.animate().alpha(1f).setDuration(250).start()
 
         findViewById<TextView>(R.id.tvSessionProgreso).text =
             "${indexActual + 1} / ${quizQuestions.size}"
@@ -212,7 +223,6 @@ class SessionActivity : AppCompatActivity() {
     }
 
     private fun mostrarResumen(state: LearnUiState.SesionCompletada) {
-        // Otorgar recompensas reales
         val db = AppDatabase.getDatabase(this)
         val repo = UserStatsRepository(db.userStatsDao())
         CoroutineScope(Dispatchers.IO).launch {
@@ -226,6 +236,10 @@ class SessionActivity : AppCompatActivity() {
         layoutTarjeta.visibility = View.GONE
         layoutQuiz.visibility = View.GONE
         layoutResumen.visibility = View.VISIBLE
+
+        // Animación de entrada del resumen
+        layoutResumen.alpha = 0f
+        layoutResumen.animate().alpha(1f).setDuration(400).start()
 
         val resumenTexto = if (modoQuiz)
             "Quiz completado\n$correctasQuiz / ${quizQuestions.size} correctas"
@@ -242,6 +256,13 @@ class SessionActivity : AppCompatActivity() {
             if (modoQuiz) viewModel.iniciarQuiz(topicId)
             else viewModel.iniciarSesion(topicId)
             layoutResumen.visibility = View.GONE
+        }
+
+        // Si es quiz, regresar automáticamente después de 3 segundos
+        if (modoQuiz) {
+            android.os.Handler(mainLooper).postDelayed({
+                finish()
+            }, 3000)
         }
     }
 

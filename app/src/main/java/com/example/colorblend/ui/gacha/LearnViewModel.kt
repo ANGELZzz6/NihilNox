@@ -87,6 +87,12 @@ class LearnViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun eliminarTema(topicId: Int) {
+        viewModelScope.launch {
+            repository.eliminarTema(topicId)
+        }
+    }
+
     fun resetState() { _uiState.value = LearnUiState.Idle }
 }
 

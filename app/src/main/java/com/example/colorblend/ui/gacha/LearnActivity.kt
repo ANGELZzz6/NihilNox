@@ -6,6 +6,7 @@ import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -32,6 +33,9 @@ class LearnActivity : AppCompatActivity() {
         observeTopics()
         iniciarAnimacionesEntrada()
 
+        // Programar recordatorio diario a las 7pm
+        LearnScheduler.programarRecordatorioDiario(this, 19, 0)
+
         findViewById<Button>(R.id.btnLearnNuevoTema).setOnClickListener {
             startActivity(Intent(this, NewTopicActivity::class.java))
         }
@@ -51,6 +55,16 @@ class LearnActivity : AppCompatActivity() {
                 intent.putExtra("TOPIC_TITULO", topic.titulo)
                 intent.putExtra("MODO_QUIZ", true)
                 startActivity(intent)
+            },
+            onEliminar = { topic ->
+                AlertDialog.Builder(this)
+                    .setTitle("¿Eliminar tema?")
+                    .setMessage("Se borrarán \"${topic.titulo}\" y todas sus tarjetas permanentemente.")
+                    .setPositiveButton("Eliminar") { _, _ ->
+                        viewModel.eliminarTema(topic.id)
+                    }
+                    .setNegativeButton("Cancelar", null)
+                    .show()
             }
         )
         findViewById<RecyclerView>(R.id.rvLearnTopics).apply {

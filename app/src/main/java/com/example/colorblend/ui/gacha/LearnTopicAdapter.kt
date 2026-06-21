@@ -12,7 +12,8 @@ import com.example.colorblend.domain.model.LearnTopic
 
 class LearnTopicAdapter(
     private val onEstudiar: (LearnTopic) -> Unit,
-    private val onQuiz: (LearnTopic) -> Unit
+    private val onQuiz: (LearnTopic) -> Unit,
+    private val onEliminar: (LearnTopic) -> Unit
 ) : RecyclerView.Adapter<LearnTopicAdapter.ViewHolder>() {
 
     private var topics = listOf<LearnTopic>()
@@ -51,6 +52,10 @@ class LearnTopicAdapter(
             }
             itemView.findViewById<Button>(R.id.btnTopicQuiz).setOnClickListener {
                 animarClick(it) { onQuiz(topic) }
+            }
+
+            itemView.findViewById<Button>(R.id.btnTopicEliminar).setOnClickListener {
+                animarClick(it) { onEliminar(topic) }
             }
         }
 
