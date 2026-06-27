@@ -27,9 +27,12 @@ import com.example.colorblend.data.local.migrations.MIGRATION_26_27
         Cancion::class,
         LearnTopic::class,
         LearnCard::class,
-        LearnQuizQuestion::class
+        LearnQuizQuestion::class,
+        Habito::class,
+        RegistroHabito::class,
+        Identidad::class
     ],
-    version = 28
+    version = 33
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -46,6 +49,9 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun fallVideoDao(): FallVideoDao
     abstract fun cancionDao(): CancionDao
     abstract fun learnDao(): LearnDao
+    abstract fun habitoDao(): HabitoDao
+    abstract fun registroHabitoDao(): RegistroHabitoDao
+    abstract fun identidadDao(): IdentidadDao
 
     companion object {
         @Volatile private var INSTANCE: AppDatabase? = null
@@ -57,7 +63,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "colorblend_db"
                 )
-                    .addMigrations(MIGRATION_24_25, MIGRATION_25_26, MIGRATION_26_27, MIGRATION_27_28)
+                    .addMigrations(MIGRATION_24_25, MIGRATION_25_26, MIGRATION_26_27, MIGRATION_27_28, MIGRATION_28_29, MIGRATION_29_30, MIGRATION_30_31, MIGRATION_31_32, MIGRATION_32_33)
                     .build()
                     .also { INSTANCE = it }
             }
@@ -123,5 +129,66 @@ val MIGRATION_27_28 = object : Migration(27, 28) {
                 explicacion TEXT NOT NULL
             )
         """)
+    }
+}
+
+val MIGRATION_28_29 = object : Migration(28, 29) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("""
+            CREATE TABLE IF NOT EXISTS habitos (
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                nombre TEXT NOT NULL,
+                descripcion TEXT NOT NULL DEFAULT '',
+                fechaCreacion INTEGER NOT NULL,
+                rachaActual INTEGER NOT NULL DEFAULT 0,
+                ultimaFechaCompletado INTEGER,
+                completadoHoy INTEGER NOT NULL DEFAULT 0
+            )
+        """)
+    }
+}
+
+val MIGRATION_29_30 = object : Migration(29, 30) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE habitos ADD COLUMN ancla TEXT NOT NULL DEFAULT ''")
+        database.execSQL("ALTER TABLE habitos ADD COLUMN rachaMaxima INTEGER NOT NULL DEFAULT 0")
+        database.execSQL("ALTER TABLE habitos ADD COLUMN penultimaFechaCompletado INTEGER")
+        database.execSQL("ALTER TABLE habitos ADD COLUMN totalCompletados INTEGER NOT NULL DEFAULT 0")
+    }
+}
+
+val MIGRATION_30_31 = object : Migration(30, 31) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE habitos ADD COLUMN notificacionHabilitada INTEGER NOT NULL DEFAULT 0")
+        database.execSQL("ALTER TABLE habitos ADD COLUMN notificacionHora INTEGER NOT NULL DEFAULT 8")
+        database.execSQL("ALTER TABLE habitos ADD COLUMN notificacionMinuto INTEGER NOT NULL DEFAULT 0")
+    }
+}
+
+val MIGRATION_31_32 = object : Migration(31, 32) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("""
+            CREATE TABLE IF NOT EXISTS registros_habito (
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                habitoId INTEGER NOT NULL,
+                fechaDia INTEGER NOT NULL,
+                FOREIGN KEY(habitoId) REFERENCES habitos(id) ON DELETE CASCADE
+            )
+        """)
+        database.execSQL("CREATE INDEX IF NOT EXISTS index_registros_habito_habitoId ON registros_habito(habitoId)")
+    }
+}
+
+val MIGRATION_32_33 = object : Migration(32, 33) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("""
+            CREATE TABLE IF NOT EXISTS identidades (
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                declaracion TEXT NOT NULL,
+                fechaCreacion INTEGER NOT NULL,
+                votosTotal INTEGER NOT NULL DEFAULT 0
+            )
+        """)
+        database.execSQL("ALTER TABLE habitos ADD COLUMN identidadId INTEGER")
     }
 }

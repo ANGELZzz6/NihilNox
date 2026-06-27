@@ -38,6 +38,10 @@ kotlinOptions {
 
     buildToolsVersion = "34.0.0"
 
+    buildFeatures {
+        viewBinding = true
+    }
+
     packaging {
         jniLibs {
             useLegacyPackaging = true

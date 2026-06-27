@@ -3,4 +3,24 @@
     <string name="add_mezcla">Agregar Mezcla</string>
     <string name="image_desc">Descripción de la imagen</string>
     <string name="mezcla_image">Descripción de la mezcla</string>
+
+    <string name="icono_estadisticas">📊</string>
+    <string name="icono_identidad">🎯</string>
+    <string name="icono_notificacion">🔔</string>
+    <string name="sin_recordatorio">🔔 Sin recordatorio</string>
+    <string name="habitos_titulo">HÁBITOS DIARIOS</string>
+    <string name="estadisticas_titulo">ESTADÍSTICAS</string>
+    <string name="identidad_titulo">MI IDENTIDAD</string>
+    <string name="identidad_subtitulo">Cada hábito que completas es un voto por la persona que estás eligiendo ser.</string>
+    <string name="consistencia_label">CONSISTENCIA — ÚLTIMOS 7 DÍAS</string>
+    <string name="por_habito_label">POR HÁBITO</string>
+
+    <string name="widget_desc_gacha">NihilNox: Invocación</string>
+    <string name="widget_desc_musica">NihilNox: Música</string>
+    <string name="widget_desc_notas">NihilNox: Notas</string>
+    <string name="widget_desc_nutricion">NihilNox: Nutrición</string>
+    <string name="widget_desc_perfil">NihilNox: Mi Perfil</string>
+    <string name="widget_desc_fall">NihilNox: Fall</string>
+    <string name="widget_desc_academia">NihilNox: Academia</string>
+    <string name="widget_desc_habitos">NihilNox: Hábitos</string>
 </resources>

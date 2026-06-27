@@ -151,6 +151,12 @@
         <activity android:name=".ui.gacha.metas.CrearMetaActivity"/>
         <activity android:name=".ui.gacha.GamesActivity"/>
         <activity android:name=".ui.gacha.LearnActivity"/>
+        <activity android:name=".ui.gacha.HabitosActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.gacha.EstadisticasActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.gacha.IdentidadActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".ui.gacha.NewTopicActivity"/>
         <activity android:name=".ui.gacha.SessionActivity"/>
         <activity android:name=".ui.gacha.SolitaireActivity"/>
@@ -162,6 +168,43 @@
 
         <receiver android:name=".ui.gacha.LearnReminderReceiver"
             android:exported="false"/>
+
+        <receiver android:name=".ui.gacha.HabitoReminderReceiver"
+            android:exported="false"/>
+
+        <!-- Widgets -->
+        <receiver android:name=".ui.gacha.WidgetGacha" android:exported="true">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE"/></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_gacha_info"/>
+        </receiver>
+        <receiver android:name=".ui.gacha.WidgetMusica" android:exported="true">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE"/></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_musica_info"/>
+        </receiver>
+        <receiver android:name=".ui.gacha.WidgetNotas" android:exported="true">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE"/></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_notas_info"/>
+        </receiver>
+        <receiver android:name=".ui.gacha.WidgetNutricion" android:exported="true">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE"/></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_nutricion_info"/>
+        </receiver>
+        <receiver android:name=".ui.gacha.WidgetPerfil" android:exported="true">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE"/></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_perfil_info"/>
+        </receiver>
+        <receiver android:name=".ui.gacha.WidgetFall" android:exported="true">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE"/></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_fall_info"/>
+        </receiver>
+        <receiver android:name=".ui.gacha.WidgetAcademia" android:exported="true">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE"/></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_academia_info"/>
+        </receiver>
+        <receiver android:name=".ui.gacha.WidgetHabitos" android:exported="true">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE"/></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_habitos_info"/>
+        </receiver>
 
     </application>
 

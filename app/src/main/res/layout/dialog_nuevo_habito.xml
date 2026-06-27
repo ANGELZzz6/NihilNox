@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/dialog_habito_bg">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="NUEVO VOTO"
+        android:fontFamily="@font/opensauce"
+        android:textColor="#FFD700"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:letterSpacing="0.1"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="¿Qué identidad estás eligiendo hoy?"
+        android:fontFamily="@font/opensauce"
+        android:textColor="#777777"
+        android:textSize="12sp"
+        android:gravity="center"
+        android:layout_marginBottom="24dp"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilNombre"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nombre del hábito"
+        app:hintTextColor="#FFD700"
+        app:boxStrokeColor="#FFD700"
+        app:boxStrokeWidthFocused="2dp"
+        app:startIconDrawable="@android:drawable/ic_menu_edit"
+        app:startIconTint="#555555"
+        android:layout_marginBottom="16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etNombreHabito"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/opensauce"
+            android:textColor="#FFFFFF"
+            android:inputType="textCapSentences"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilAncla"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Ancla (Habit Stacking)"
+        app:hintTextColor="#FFD700"
+        app:boxStrokeColor="#FFD700"
+        app:startIconDrawable="@android:drawable/ic_menu_today"
+        app:startIconTint="#555555"
+        android:layout_marginBottom="16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etAnclaHabito"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/opensauce"
+            android:textColor="#FFFFFF"
+            android:hint="Después de..."/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="IDENTIDAD VINCULADA"
+        android:fontFamily="@font/opensauce"
+        android:textColor="#FFD700"
+        android:textSize="10sp"
+        android:letterSpacing="0.1"
+        android:layout_marginBottom="8dp"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/habito_card_bg"
+        android:paddingHorizontal="12dp"
+        android:layout_marginBottom="24dp">
+
+        <Spinner
+            android:id="@+id/spinnerIdentidad"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:backgroundTint="#FFD700"
+            android:spinnerMode="dropdown"/>
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCancelar"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CANCELAR"
+            android:textColor="#777777"
+            android:fontFamily="@font/opensauce"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAgregar"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="AGREGAR"
+            android:textColor="#121212"
+            app:backgroundTint="#FFD700"
+            android:fontFamily="@font/opensauce"
+            android:layout_marginStart="12dp"/>
+    </LinearLayout>
+
+</LinearLayout>

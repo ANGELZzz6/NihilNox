@@ -116,6 +116,13 @@ class DashboardActivity : AppCompatActivity() {
             }
         }
 
+        findViewById<Button>(R.id.btnHabitos).setOnClickListener {
+            animarBoton(it) {
+                startActivity(Intent(this, HabitosActivity::class.java))
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            }
+        }
+
         findViewById<Button>(R.id.btnDashApiKeys).setOnClickListener {
             animarBoton(it) {
                 startActivity(Intent(this, ApiKeysActivity::class.java))
@@ -125,6 +132,11 @@ class DashboardActivity : AppCompatActivity() {
         // ── Interceptar Intent de Archivo Excel ───────────────────────────
         intent?.let { manejarIntent(it) }
 
+        // Interceptar apertura desde Widget de Notas
+        if (intent?.getBooleanExtra("abrir_notas_con_seguridad", false) == true) {
+            abrirBlockNotas()
+        }
+
         iniciarAnimacionesEntrada()
     }
 
@@ -132,6 +144,10 @@ class DashboardActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
         manejarIntent(intent)
+        
+        if (intent.getBooleanExtra("abrir_notas_con_seguridad", false)) {
+            abrirBlockNotas()
+        }
     }
 
     private fun manejarIntent(intent: Intent) {
@@ -262,7 +278,7 @@ class DashboardActivity : AppCompatActivity() {
         val botones = listOf(
             R.id.btnDashGacha, R.id.btnDashReproductor, R.id.btnDashBlockNotas,
             R.id.btnDashNutricion, R.id.btnDashPerfil, R.id.btnDashFall,
-            R.id.btnDashLearn, R.id.btnDashGames
+            R.id.btnDashLearn, R.id.btnHabitos, R.id.btnDashGames
         ).map { findViewById<View>(it) }
 
         listOf(avatar, nombre).forEachIndexed { i, v ->

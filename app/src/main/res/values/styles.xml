@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
         <item name="colorPrimary">#121212</item>
         <item name="colorPrimaryDark">#121212</item>
         <item name="colorAccent">#FFD700</item>
@@ -41,6 +41,13 @@
 
     <style name="CustomSeekBar">
         <item name="android:layout_height">40dp</item>
+    </style>
+
+    <style name="DialogoOscuro" parent="Theme.MaterialComponents.Dialog.Alert">
+        <item name="android:background">#1E1E1E</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="colorAccent">#FFD700</item>
+        <item name="android:fontFamily">@font/opensauce</item>
     </style>
 
 </resources>
