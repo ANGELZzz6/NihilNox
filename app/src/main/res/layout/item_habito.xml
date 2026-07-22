@@ -123,4 +123,16 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/btnEditarBurbuja"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="✏ Editar burbuja"
+        android:fontFamily="@font/opensauce"
+        android:textColor="#FFD700"
+        android:textSize="12sp"
+        android:padding="8dp"
+        android:visibility="gone"
+        android:background="?attr/selectableItemBackgroundBorderless"/>
+
 </LinearLayout>

@@ -25,6 +25,15 @@
             android:textStyle="bold"/>
 
         <TextView
+            android:id="@+id/btnInfoBurbuja"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ⓘ"
+            android:textSize="20sp"
+            android:padding="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
+
+        <TextView
             android:id="@+id/btnIdentidad"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

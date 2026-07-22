@@ -31,6 +31,9 @@ interface RegistroHabitoDao {
     @Query("SELECT COUNT(DISTINCT habitoId) FROM registros_habito WHERE fechaDia = :fecha")
     suspend fun contarHabitosCompletadosEnFecha(fecha: Long): Int
 
+    @Query("SELECT habitoId FROM registros_habito WHERE fechaDia = :fecha")
+    suspend fun getIdsHabitosCompletadosEnFecha(fecha: Long): List<Int>
+
     @Query("""
         SELECT r.habitoId, h.nombre, r.fechaDia 
         FROM registros_habito r

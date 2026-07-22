@@ -16,7 +16,8 @@ class HabitosAdapter(
     private val onCompletar: (Habito) -> Unit,
     private val onEliminar: (Habito) -> Unit,
     private val onConfigurarNotif: (Habito) -> Unit,
-    private val onDesactivarNotif: (Habito) -> Unit
+    private val onDesactivarNotif: (Habito) -> Unit,
+    private val onEditarBurbuja: (Habito) -> Unit
 ) : ListAdapter<HabitoConEstado, HabitosAdapter.ViewHolder>(DiffCallback()) {
 
     private var lastPosition = -1
@@ -114,6 +115,9 @@ class HabitosAdapter(
                 if (isChecked) onConfigurarNotif(habito)
                 else onDesactivarNotif(habito)
             }
+
+            btnEditarBurbuja.visibility = if (habito.enabledBurbuja) View.VISIBLE else View.GONE
+            btnEditarBurbuja.setOnClickListener { onEditarBurbuja(habito) }
 
             btnCompletar.setOnClickListener {
                 if (!habito.completadoHoy) {

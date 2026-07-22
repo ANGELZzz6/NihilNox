@@ -20,4 +20,7 @@ interface HabitoDao {
 
     @Delete
     suspend fun eliminar(habito: Habito)
+
+    @Query("SELECT * FROM habitos WHERE id = :id")
+    suspend fun getById(id: Int): Habito?
 }

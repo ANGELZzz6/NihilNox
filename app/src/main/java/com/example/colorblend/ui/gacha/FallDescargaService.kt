@@ -137,12 +137,7 @@ class FallDescargaService : Service() {
     }
 
     private fun detenerServicio() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            stopForeground(STOP_FOREGROUND_DETACH)
-        } else {
-            @Suppress("DEPRECATION")
-            stopForeground(false)
-        }
+        stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
     }
 
@@ -175,9 +170,6 @@ class FallDescargaService : Service() {
     private fun mostrarNotificacionFinal(texto: String) {
         val notificationManager = getSystemService(NotificationManager::class.java)
         
-        // Cancelar la notificación de progreso activa (la de Foreground)
-        notificationManager.cancel(NOTIF_ID)
-
         val notif = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("FALL Downloader")
             .setContentText(texto)

@@ -60,14 +60,16 @@ class HabitosViewModel(
     }
     .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), List(7) { 0f })
 
-    fun agregarHabito(nombre: String, descripcion: String, ancla: String, identidadId: Int? = null) {
+    fun agregarHabito(nombre: String, descripcion: String, ancla: String, identidadId: Int? = null, enabledBurbuja: Boolean = false, anticipacion: Int = 15) {
         if (nombre.isBlank()) return
         viewModelScope.launch {
             repository.insertar(Habito(
                 nombre = nombre.trim(), 
                 descripcion = descripcion.trim(),
                 ancla = ancla.trim(),
-                identidadId = identidadId
+                identidadId = identidadId,
+                enabledBurbuja = enabledBurbuja,
+                tiempoAnticipacion = anticipacion
             ))
         }
     }
@@ -106,13 +108,38 @@ class HabitosViewModel(
             )
             repository.actualizar(actualizado)
             HabitoNotificationScheduler.programar(context, actualizado)
+            // Re-programar burbuja si está habilitada
+            HabitoAlarmManager.programarBurbuja(context, actualizado)
         }
     }
 
     fun desactivarNotificacion(habito: Habito, context: Context) {
         viewModelScope.launch {
-            repository.actualizar(habito.copy(notificacionHabilitada = false))
+            val actualizado = habito.copy(notificacionHabilitada = false)
+            repository.actualizar(actualizado)
             HabitoNotificationScheduler.cancelar(context, habito.id)
+            HabitoAlarmManager.cancelarBurbuja(context, habito.id)
+        }
+    }
+
+    suspend fun getHabitoById(id: Int): Habito? = repository.getHabitoById(id)
+
+    fun actualizarHabito(habito: Habito) {
+        viewModelScope.launch { repository.actualizar(habito) }
+    }
+
+    fun configurarBurbuja(habito: Habito, enabled: Boolean, anticipacion: Int, context: Context) {
+        viewModelScope.launch {
+            val actualizado = habito.copy(
+                enabledBurbuja = enabled,
+                tiempoAnticipacion = anticipacion
+            )
+            repository.actualizar(actualizado)
+            if (actualizado.notificacionHabilitada) {
+                HabitoAlarmManager.programarBurbuja(context, actualizado)
+            } else {
+                HabitoAlarmManager.cancelarBurbuja(context, habito.id)
+            }
         }
     }
 

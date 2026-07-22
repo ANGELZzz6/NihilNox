@@ -131,7 +131,7 @@ class DescargaService : Service() {
             terminado = true
 
             actualizarNotificacion("Listo — ${canciones.size} canciones", totalCanciones, totalCanciones)
-            stopForeground(false)
+            stopForeground(STOP_FOREGROUND_DETACH)
 
             withContext(Dispatchers.Main) {
                 onFaseChanged?.invoke(faseActual)
@@ -217,7 +217,7 @@ class DescargaService : Service() {
             }
 
             mostrarNotificacionFinal(exitosos, fallidos)
-            stopForeground(false)
+            stopForeground(STOP_FOREGROUND_REMOVE)
             stopSelf()
         }
     }

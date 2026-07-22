@@ -23,4 +23,15 @@
     <string name="widget_desc_fall">NihilNox: Fall</string>
     <string name="widget_desc_academia">NihilNox: Academia</string>
     <string name="widget_desc_habitos">NihilNox: Hábitos</string>
+
+    <string name="info_burbuja_titulo">Sistema de Burbujas</string>
+    <string name="info_burbuja_contenido">
+        • La burbuja aparece automáticamente minutos antes de tu hábito.\n
+        • Se mueve para llamar tu atención.\n
+        • 1er TOQUE: Marca como completado (cambia a verde).\n
+        • 2do TOQUE: Guarda el progreso y se cierra.\n\n
+        Nota: Requiere permiso de \"Mostrar sobre otras apps\".
+    </string>
+    <string name="probar_burbuja">PROBAR BURBUJA</string>
+    <string name="editar_burbuja_titulo">EDITAR BURBUJA</string>
 </resources>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/back_global">
+
+    <!-- Header -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_secure_note"
+            android:rotation="180"
+            app:tint="#FFD700" />
+
+        <TextView
+            android:id="@+id/tvMesAño"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Julio 2026"
+            android:textColor="#FFD700"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true">
+
+            <ImageButton
+                android:id="@+id/btnMesAnterior"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_secure_note"
+                android:rotation="180"
+                app:tint="#FFFFFF" />
+
+            <ImageButton
+                android:id="@+id/btnMesSiguiente"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_secure_note"
+                app:tint="#FFFFFF" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <!-- Dias de la semana -->
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="7"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp">
+        <TextView android:text="L" style="@style/DiaSemanaStyle" />
+        <TextView android:text="M" style="@style/DiaSemanaStyle" />
+        <TextView android:text="X" style="@style/DiaSemanaStyle" />
+        <TextView android:text="J" style="@style/DiaSemanaStyle" />
+        <TextView android:text="V" style="@style/DiaSemanaStyle" />
+        <TextView android:text="S" style="@style/DiaSemanaStyle" />
+        <TextView android:text="D" style="@style/DiaSemanaStyle" />
+    </GridLayout>
+
+    <!-- Grid de Calendario -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvCalendario"
+        android:layout_width="match_parent"
+        android:layout_height="320dp"
+        android:layout_margin="8dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#33FFD700"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp" />
+
+    <TextView
+        android:id="@+id/tvFechaSeleccionada"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="Tareas para hoy"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="italic" />
+
+    <!-- Lista de Tareas -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvTareasDia"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabNuevaTarea"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="24dp"
+        android:src="@android:drawable/ic_input_add"
+        app:backgroundTint="#FFD700"
+        app:tint="#121212" />
+
+</LinearLayout>

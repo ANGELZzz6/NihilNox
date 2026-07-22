@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/back_global"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="NUEVA TAREA"
+            android:textColor="#FFD700"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="24dp" />
+
+        <EditText
+            android:id="@+id/etTitulo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Título de la tarea"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#66FFFFFF"
+            android:background="@drawable/input_background"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp" />
+
+        <EditText
+            android:id="@+id/etDescripcion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Descripción (opcional)"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#66FFFFFF"
+            android:background="@drawable/input_background"
+            android:padding="16dp"
+            android:gravity="top"
+            android:minLines="3"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Fecha y Hora -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <Button
+                android:id="@+id/btnFecha"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Fecha: 21/07/2026"
+                android:background="@drawable/btn_nav_gradient"
+                android:textColor="#FFFFFF"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btnHora"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Hora: 10:30"
+                android:background="@drawable/btn_nav_gradient"
+                android:textColor="#FFFFFF"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/cbNotificacion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Habilitar recordatorio"
+            android:textColor="#FFFFFF"
+            android:buttonTint="#FFD700"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Recurrencia -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Repetir estos días:"
+            android:textColor="#FFD700"
+            android:textSize="14sp"
+            android:layout_marginBottom="12dp" />
+
+        <LinearLayout
+            android:id="@+id/containerDiasSemana"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="24dp">
+
+            <TextView android:id="@+id/tvDiaL" android:text="L" style="@style/DiaSelectorStyle" />
+            <TextView android:id="@+id/tvDiaM" android:text="M" style="@style/DiaSelectorStyle" />
+            <TextView android:id="@+id/tvDiaX" android:text="X" style="@style/DiaSelectorStyle" />
+            <TextView android:id="@+id/tvDiaJ" android:text="J" style="@style/DiaSelectorStyle" />
+            <TextView android:id="@+id/tvDiaV" android:text="V" style="@style/DiaSelectorStyle" />
+            <TextView android:id="@+id/tvDiaS" android:text="S" style="@style/DiaSelectorStyle" />
+            <TextView android:id="@+id/tvDiaD" android:text="D" style="@style/DiaSelectorStyle" />
+
+        </LinearLayout>
+
+        <!-- Color -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Color de la tarea"
+            android:textColor="#FFD700"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:id="@+id/containerColores"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="32dp">
+            <!-- Colores se añadirán programáticamente -->
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnGuardar"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="GUARDAR TAREA"
+            android:textStyle="bold"
+            android:background="@drawable/btn_gacha_gold_gradient"
+            android:textColor="#1A1200" />
+
+    </LinearLayout>
+</ScrollView>

@@ -50,4 +50,29 @@
         <item name="android:fontFamily">@font/opensauce</item>
     </style>
 
+    <style name="DiaSemanaStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_columnWeight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">#6666AA</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+    </style>
+
+    <style name="DiaSelectorStyle">
+        <item name="android:layout_width">36dp</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:layout_margin">4dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">#AAAAAA</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:background">@drawable/avatar_background</item>
+        <item name="android:alpha">0.6</item>
+    </style>
+
 </resources>

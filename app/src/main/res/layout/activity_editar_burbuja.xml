@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#121212">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="EDITAR BURBUJA"
+            android:fontFamily="@font/opensauce"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Preview de la burbuja -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:gravity="center"
+            android:background="@drawable/habito_card_bg"
+            android:layout_marginBottom="24dp">
+
+            <include
+                android:id="@+id/previewBurbuja"
+                layout="@layout/layout_bubble"/>
+
+        </LinearLayout>
+
+        <!-- Campo: texto personalizado -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Texto de la burbuja"
+            android:fontFamily="@font/opensauce"
+            android:textColor="#777777"
+            android:textSize="11sp"
+            android:layout_marginBottom="6dp"/>
+
+        <EditText
+            android:id="@+id/etBurbujaTexto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Dejar vacío para usar nombre del hábito"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#555555"
+            android:fontFamily="@font/opensauce"
+            android:background="@drawable/habito_card_bg"
+            android:padding="12dp"
+            android:maxLines="2"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- Selector de color -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Color de la burbuja"
+            android:fontFamily="@font/opensauce"
+            android:textColor="#777777"
+            android:textSize="11sp"
+            android:layout_marginBottom="10dp"/>
+
+        <LinearLayout
+            android:id="@+id/layoutColores"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="20dp">
+            <!-- Los círculos se añaden por código -->
+        </LinearLayout>
+
+        <!-- Toggle: usar imagen -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
+
+            <TextView
+                android:id="@+id/tvUsarImagen"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Usar imagen personalizada"
+                android:fontFamily="@font/opensauce"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"/>
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchUsarImagen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:thumbTint="#FFD700"
+                app:trackTint="#3A3A3A"
+                xmlns:app="http://schemas.android.com/apk/res-auto"/>
+
+        </LinearLayout>
+
+        <!-- Botón seleccionar imagen -->
+        <Button
+            android:id="@+id/btnSeleccionarImagen"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Seleccionar imagen de galería"
+            android:fontFamily="@font/opensauce"
+            android:textColor="#121212"
+            android:backgroundTint="#FFD700"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/tvImagenSeleccionada"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sin imagen seleccionada"
+            android:fontFamily="@font/opensauce"
+            android:textColor="#555555"
+            android:textSize="12sp"
+            android:layout_marginBottom="32dp"
+            android:visibility="gone"/>
+
+        <!-- Guardar -->
+        <Button
+            android:id="@+id/btnGuardarBurbuja"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="GUARDAR"
+            android:fontFamily="@font/opensauce"
+            android:textColor="#121212"
+            android:backgroundTint="#FFD700"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+</ScrollView>

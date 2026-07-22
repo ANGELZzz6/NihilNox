@@ -19,5 +19,12 @@ data class Habito(
     val notificacionHabilitada: Boolean = false,
     val notificacionHora: Int = 8,    // hora en formato 24h (0-23)
     val notificacionMinuto: Int = 0,
-    val identidadId: Int? = null
+    val identidadId: Int? = null,
+    val diasSemana: String = "1,2,3,4,5,6,7", // Ej: "1,3,5,7" (1=Lunes, 7=Domingo)
+    val tiempoAnticipacion: Int = 15,          // minutos antes
+    val enabledBurbuja: Boolean = false,
+    val burbujaTexto: String? = null,           // null = usar nombre del hábito
+    val burbujaColor: String = "#FFD700",       // hex color del fondo
+    val burbujaImagenUri: String? = null,       // URI de imagen local
+    val burbujaUsarImagen: Boolean = false      // si true, mostrar imagen en vez de texto
 )

@@ -19,6 +19,8 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
 
 
     <application
@@ -155,6 +157,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".ui.gacha.EstadisticasActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".ui.gacha.EditarBurbujaActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".ui.gacha.IdentidadActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".ui.gacha.NewTopicActivity"/>
@@ -205,6 +209,30 @@
             <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE"/></intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_habitos_info"/>
         </receiver>
+
+        <service android:name=".ui.gacha.BurbujaHabitoService"
+            android:foregroundServiceType="specialUse"
+            android:exported="false" />
+
+        <receiver android:name=".ui.gacha.HabitoAlarmReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.example.colorblend.HABITO_ALARM" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".ui.gacha.HabitoBootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
+        <activity android:name=".ui.gacha.CalendarioActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ui.gacha.CrearTareaActivity" android:screenOrientation="portrait"/>
+
+        <receiver android:name=".ui.gacha.TareaAlarmReceiver" android:exported="false"/>
 
     </application>
 

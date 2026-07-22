@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bubbleRaiz"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="4dp">
+
+    <!-- Fondo circular con color dinámico -->
+    <ImageView
+        android:id="@+id/ivBubbleFondo"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:background="@drawable/bubble_background"
+        android:scaleType="centerCrop"/>
+
+    <!-- Imagen personalizada (visible si burbujaUsarImagen = true) -->
+    <ImageView
+        android:id="@+id/ivBubbleImagen"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:background="@drawable/bubble_background"
+        android:scaleType="centerCrop"
+        android:visibility="gone"/>
+
+    <!-- Texto del hábito (visible si burbujaUsarImagen = false) -->
+    <TextView
+        android:id="@+id/tvBubbleNombre"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_gravity="center"
+        android:textColor="#121212"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:maxLines="3"
+        android:ellipsize="end"
+        android:padding="8dp"/>
+
+    <!-- Check al completar -->
+    <ImageView
+        android:id="@+id/ivBubbleCheck"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center"
+        android:src="@android:drawable/checkbox_on_background"
+        android:tint="#FFFFFF"
+        android:visibility="gone"/>
+
+</FrameLayout>

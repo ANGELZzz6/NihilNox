@@ -96,4 +96,6 @@ class HabitosRepository(
     suspend fun insertarIdentidad(identidad: Identidad) = identidadDao.insertar(identidad)
     suspend fun eliminarIdentidad(identidad: Identidad) = identidadDao.eliminar(identidad)
     suspend fun getIdentidadById(id: Int) = identidadDao.getById(id)
+
+    suspend fun getHabitoById(id: Int) = dao.getById(id)
 }

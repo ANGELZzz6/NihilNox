@@ -30,9 +30,10 @@ import com.example.colorblend.data.local.migrations.MIGRATION_26_27
         LearnQuizQuestion::class,
         Habito::class,
         RegistroHabito::class,
-        Identidad::class
+        Identidad::class,
+        Tarea::class
     ],
-    version = 33
+    version = 36
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -52,6 +53,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun habitoDao(): HabitoDao
     abstract fun registroHabitoDao(): RegistroHabitoDao
     abstract fun identidadDao(): IdentidadDao
+    abstract fun tareaDao(): TareaDao
 
     companion object {
         @Volatile private var INSTANCE: AppDatabase? = null
@@ -63,7 +65,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "colorblend_db"
                 )
-                    .addMigrations(MIGRATION_24_25, MIGRATION_25_26, MIGRATION_26_27, MIGRATION_27_28, MIGRATION_28_29, MIGRATION_29_30, MIGRATION_30_31, MIGRATION_31_32, MIGRATION_32_33)
+                    .addMigrations(MIGRATION_24_25, MIGRATION_25_26, MIGRATION_26_27, MIGRATION_27_28, MIGRATION_28_29, MIGRATION_29_30, MIGRATION_30_31, MIGRATION_31_32, MIGRATION_32_33, MIGRATION_33_34, MIGRATION_34_35, MIGRATION_35_36)
                     .build()
                     .also { INSTANCE = it }
             }
@@ -190,5 +192,42 @@ val MIGRATION_32_33 = object : Migration(32, 33) {
             )
         """)
         database.execSQL("ALTER TABLE habitos ADD COLUMN identidadId INTEGER")
+    }
+}
+
+val MIGRATION_33_34 = object : Migration(33, 34) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE habitos ADD COLUMN diasSemana TEXT NOT NULL DEFAULT '1,2,3,4,5,6,7'")
+        database.execSQL("ALTER TABLE habitos ADD COLUMN tiempoAnticipacion INTEGER NOT NULL DEFAULT 15")
+        database.execSQL("ALTER TABLE habitos ADD COLUMN enabledBurbuja INTEGER NOT NULL DEFAULT 0")
+    }
+}
+
+val MIGRATION_34_35 = object : Migration(34, 35) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE habitos ADD COLUMN burbujaTexto TEXT")
+        database.execSQL("ALTER TABLE habitos ADD COLUMN burbujaColor TEXT NOT NULL DEFAULT '#FFD700'")
+        database.execSQL("ALTER TABLE habitos ADD COLUMN burbujaImagenUri TEXT")
+        database.execSQL("ALTER TABLE habitos ADD COLUMN burbujaUsarImagen INTEGER NOT NULL DEFAULT 0")
+    }
+}
+
+val MIGRATION_35_36 = object : Migration(35, 36) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("""
+            CREATE TABLE IF NOT EXISTS `tareas` (
+                `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                `titulo` TEXT NOT NULL, 
+                `descripcion` TEXT NOT NULL DEFAULT '', 
+                `fecha` INTEGER NOT NULL, 
+                `hora` INTEGER NOT NULL DEFAULT 0, 
+                `minuto` INTEGER NOT NULL DEFAULT 0, 
+                `notificacionHabilitada` INTEGER NOT NULL DEFAULT 0, 
+                `recurrencia` TEXT NOT NULL DEFAULT 'UNA_VEZ', 
+                `diasSemana` TEXT NOT NULL DEFAULT '', 
+                `color` TEXT NOT NULL DEFAULT '#FFD700', 
+                `completada` INTEGER NOT NULL DEFAULT 0
+            )
+        """.trimIndent())
     }
 }
