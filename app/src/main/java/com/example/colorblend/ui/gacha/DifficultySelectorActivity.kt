@@ -24,11 +24,14 @@ import java.io.File
 class DifficultySelectorActivity : AppCompatActivity() {
 
     private lateinit var repository: UserStatsRepository
+    private lateinit var loadingOverlay: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_difficulty_selection)
         FullScreenHelper.enable(this)
+
+        loadingOverlay = findViewById(R.id.loadingDifficulty)
 
         val db = AppDatabase.getDatabase(this)
         repository = UserStatsRepository(db.userStatsDao())
@@ -77,6 +80,7 @@ class DifficultySelectorActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        loadingOverlay.visibility = View.GONE
         cargarPerfilYXP()
     }
 
@@ -189,7 +193,12 @@ class DifficultySelectorActivity : AppCompatActivity() {
                         v.animate()
                             .scaleX(1f).scaleY(1f)
                             .setDuration(80)
-                            .withEndAction { action() }
+                            .withEndAction { 
+                                loadingOverlay.visibility = View.VISIBLE
+                                loadingOverlay.alpha = 0f
+                                loadingOverlay.animate().alpha(1f).setDuration(200).start()
+                                action() 
+                            }
                             .start()
                     }.start()
             }.start()

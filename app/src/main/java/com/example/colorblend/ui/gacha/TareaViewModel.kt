@@ -28,10 +28,18 @@ class TareaViewModel(application: Application) : AndroidViewModel(application) {
         return registroDao.getIdsHabitosCompletadosEnFecha(normalizeToStartOfDay(fecha))
     }
 
-    fun insertarTarea(tarea: Tarea) {
+    suspend fun insertarTarea(tarea: Tarea): Long {
+        return dao.insertTarea(tarea)
+    }
+
+    fun actualizarTarea(tarea: Tarea) {
         viewModelScope.launch {
-            dao.insertTarea(tarea)
+            dao.updateTarea(tarea)
         }
+    }
+
+    suspend fun getTareaById(id: Int): Tarea? {
+        return dao.getTareaById(id)
     }
 
     fun marcarCompletada(tarea: Tarea, completada: Boolean) {

@@ -1,7 +1,4 @@
-- [x] Crear clase sellada `CalendarItem` para unificar Tareas y Hábitos
-- [x] Actualizar `TareaViewModel` para incluir acceso a Hábitos y Registros
-- [x] Modificar `TareaResumenAdapter` para soportar ambos tipos de items
-- [x] Actualizar `CalendarioActivity` para combinar datos de Tareas y Hábitos
-- [x] Actualizar `CalendarioAdapter` para mostrar indicadores de Hábitos en el grid
-- [x] Implementar lógica de completado de hábitos desde el calendario
-- [x] Verificación final
+- [ ] Añadir `loadingOverlay` a `activity_difficulty_selection.xml`
+- [ ] Mostrar carga al seleccionar dificultad en `DifficultySelectorActivity.kt`
+- [ ] Forzar refresco de lista de música en `ReproductorActivity.kt` (Fix `onResume`)
+- [ ] Verificación final

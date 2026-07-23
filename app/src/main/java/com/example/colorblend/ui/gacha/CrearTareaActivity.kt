@@ -7,8 +7,10 @@ import android.view.View
 import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.colorblend.R
 import com.example.colorblend.domain.model.Tarea
+import kotlinx.coroutines.launch
 import java.util.*
 
 class CrearTareaActivity : AppCompatActivity() {
@@ -21,12 +23,13 @@ class CrearTareaActivity : AppCompatActivity() {
     private lateinit var btnHora: Button
     private lateinit var cbNotificacion: CheckBox
     private lateinit var containerColores: LinearLayout
-    private val selectedDays = mutableSetOf<Int>() // 1=L, 2=M... 7=D
+    private val selectedDays = mutableSetOf<Int>() // 1=D, 2=L... 7=S (Java Calendar)
     
     private var fechaSeleccionada = Calendar.getInstance()
     private var hora = 10
     private var minuto = 30
     private var colorSeleccionado = "#FFD700"
+    private var editingTareaId: Int = -1
 
     private val colores = listOf("#FFD700", "#FF5555", "#55FF55", "#5555FF", "#FF55FF", "#55FFFF")
 
@@ -35,9 +38,6 @@ class CrearTareaActivity : AppCompatActivity() {
         setContentView(R.layout.activity_crear_tarea)
         FullScreenHelper.enable(this)
 
-        val fechaInicial = intent.getLongExtra("fecha_inicial", System.currentTimeMillis())
-        fechaSeleccionada.timeInMillis = fechaInicial
-
         etTitulo = findViewById(R.id.etTitulo)
         etDescripcion = findViewById(R.id.etDescripcion)
         btnFecha = findViewById(R.id.btnFecha)
@@ -45,14 +45,48 @@ class CrearTareaActivity : AppCompatActivity() {
         cbNotificacion = findViewById(R.id.cbNotificacion)
         containerColores = findViewById(R.id.containerColores)
 
+        editingTareaId = intent.getIntExtra("tarea_id", -1)
+        
         setupUI()
         setupDaySelectors()
+
+        if (editingTareaId != -1) {
+            cargarDatosTarea(editingTareaId)
+            findViewById<TextView>(R.id.btnGuardar).text = "ACTUALIZAR TAREA"
+        } else {
+            val fechaInicial = intent.getLongExtra("fecha_inicial", System.currentTimeMillis())
+            fechaSeleccionada.timeInMillis = fechaInicial
+            actualizarFechaBoton()
+            actualizarHoraBoton()
+        }
+    }
+
+    private fun cargarDatosTarea(id: Int) {
+        lifecycleScope.launch {
+            val tarea = tareaViewModel.getTareaById(id)
+            tarea?.let { t ->
+                etTitulo.setText(t.titulo)
+                etDescripcion.setText(t.descripcion)
+                fechaSeleccionada.timeInMillis = t.fecha
+                hora = t.hora
+                minuto = t.minuto
+                cbNotificacion.isChecked = t.notificacionHabilitada
+                colorSeleccionado = t.color
+                
+                if (t.recurrencia == "DIAS_SELECCIONADOS") {
+                    val dias = t.diasSemana.split(",").filter { it.isNotEmpty() }.map { it.toInt() }
+                    selectedDays.addAll(dias)
+                    marcarDiasSeleccionados()
+                }
+                
+                actualizarFechaBoton()
+                actualizarHoraBoton()
+                resaltarColorSeleccionado()
+            }
+        }
     }
 
     private fun setupUI() {
-        actualizarFechaBoton()
-        actualizarHoraBoton()
-
         btnFecha.setOnClickListener {
             DatePickerDialog(this, { _, y, m, d ->
                 fechaSeleccionada.set(y, m, d)
@@ -77,13 +111,13 @@ class CrearTareaActivity : AppCompatActivity() {
 
     private fun setupDaySelectors() {
         val days = listOf(
-            R.id.tvDiaL to 2, // Calendar.MONDAY
-            R.id.tvDiaM to 3, // Calendar.TUESDAY
-            R.id.tvDiaX to 4,
-            R.id.tvDiaJ to 5,
-            R.id.tvDiaV to 6,
-            R.id.tvDiaS to 7,
-            R.id.tvDiaD to 1  // Calendar.SUNDAY
+            R.id.tvDiaL to Calendar.MONDAY,
+            R.id.tvDiaM to Calendar.TUESDAY,
+            R.id.tvDiaX to Calendar.WEDNESDAY,
+            R.id.tvDiaJ to Calendar.THURSDAY,
+            R.id.tvDiaV to Calendar.FRIDAY,
+            R.id.tvDiaS to Calendar.SATURDAY,
+            R.id.tvDiaD to Calendar.SUNDAY
         )
 
         for ((id, dayValue) in days) {
@@ -101,16 +135,49 @@ class CrearTareaActivity : AppCompatActivity() {
         }
     }
 
+    private fun marcarDiasSeleccionados() {
+        val daysMap = mapOf(
+            Calendar.MONDAY to R.id.tvDiaL,
+            Calendar.TUESDAY to R.id.tvDiaM,
+            Calendar.WEDNESDAY to R.id.tvDiaX,
+            Calendar.THURSDAY to R.id.tvDiaJ,
+            Calendar.FRIDAY to R.id.tvDiaV,
+            Calendar.SATURDAY to R.id.tvDiaS,
+            Calendar.SUNDAY to R.id.tvDiaD
+        )
+        for ((value, id) in daysMap) {
+            val view = findViewById<TextView>(id)
+            if (selectedDays.contains(value)) {
+                view.alpha = 1.0f
+                view.setTextColor(android.graphics.Color.parseColor("#FFD700"))
+            } else {
+                view.alpha = 0.6f
+                view.setTextColor(android.graphics.Color.parseColor("#AAAAAA"))
+            }
+        }
+    }
+
     private fun setupSelectorColores() {
+        containerColores.removeAllViews()
         for (colorHex in colores) {
             val view = View(this).apply {
-                layoutParams = LinearLayout.LayoutParams(100, 100).apply {
-                    setMargins(8, 0, 8, 0)
+                val size = (32 * resources.displayMetrics.density).toInt()
+                layoutParams = LinearLayout.LayoutParams(size, size).apply {
+                    setMargins(12, 0, 12, 0)
                 }
-                setBackgroundColor(android.graphics.Color.parseColor(colorHex))
+                
+                val bg = android.graphics.drawable.GradientDrawable().apply {
+                    shape = android.graphics.drawable.GradientDrawable.OVAL
+                    setColor(android.graphics.Color.parseColor(colorHex))
+                    if (colorHex == colorSeleccionado) {
+                        setStroke(4, android.graphics.Color.WHITE)
+                    }
+                }
+                background = bg
+                
                 setOnClickListener {
                     colorSeleccionado = colorHex
-                    resaltarColorSeleccionado()
+                    setupSelectorColores() // Refrescar para mostrar el borde en el seleccionado
                 }
             }
             containerColores.addView(view)
@@ -118,7 +185,7 @@ class CrearTareaActivity : AppCompatActivity() {
     }
 
     private fun resaltarColorSeleccionado() {
-        // Implementar un borde o algo para indicar seleccion
+        setupSelectorColores()
     }
 
     private fun actualizarFechaBoton() {
@@ -149,6 +216,7 @@ class CrearTareaActivity : AppCompatActivity() {
         fechaSeleccionada.set(Calendar.MILLISECOND, 0)
 
         val tarea = Tarea(
+            id = if (editingTareaId != -1) editingTareaId else 0,
             titulo = titulo,
             descripcion = etDescripcion.text.toString(),
             fecha = fechaSeleccionada.timeInMillis,
@@ -160,12 +228,19 @@ class CrearTareaActivity : AppCompatActivity() {
             color = colorSeleccionado
         )
 
-        tareaViewModel.insertarTarea(tarea)
-        
-        if (tarea.notificacionHabilitada) {
-            TareaAlarmScheduler.programar(this, tarea)
+        lifecycleScope.launch {
+            if (editingTareaId != -1) {
+                tareaViewModel.actualizarTarea(tarea)
+                if (tarea.notificacionHabilitada) {
+                    TareaAlarmScheduler.programar(this@CrearTareaActivity, tarea)
+                }
+            } else {
+                val newId = tareaViewModel.insertarTarea(tarea)
+                if (tarea.notificacionHabilitada) {
+                    TareaAlarmScheduler.programar(this@CrearTareaActivity, tarea.copy(id = newId.toInt()))
+                }
+            }
+            finish()
         }
-
-        finish()
     }
 }

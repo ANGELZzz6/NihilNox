@@ -495,9 +495,8 @@ class ReproductorActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val todas = musicaService?.getCancionesCompletas() ?: emptyList()
-        if (todas.isNotEmpty()) actualizarLista(todas)
-        else cargarCancionesDescargadas()
+        // Forzar recarga de canciones del disco y del servicio para detectar nuevas descargas
+        cargarCancionesDescargadas()
     }
 
     private fun actualizarLista(canciones: List<String>) {

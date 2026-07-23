@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.view.View
 import com.example.colorblend.R
 import kotlinx.coroutines.*
+import androidx.lifecycle.lifecycleScope
 import androidx.core.view.children
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
@@ -63,6 +64,7 @@ class SolitaireActivity : AppCompatActivity() {
     private lateinit var tvScore: TextView
     private lateinit var tvTimer: TextView
     private lateinit var tvDifficulty: TextView
+    private lateinit var loadingOverlay: FrameLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,6 +110,7 @@ class SolitaireActivity : AppCompatActivity() {
         columns[6] = findViewById(R.id.col6)
 
         btnCompletar = findViewById(R.id.btnCompletar)
+        loadingOverlay = findViewById(R.id.loadingOverlay)
     }
 
     // ── Nueva partida ──────────────────────────────────────────────────
@@ -120,10 +123,37 @@ class SolitaireActivity : AppCompatActivity() {
         isAutoCompleting = false
         isAnimating = false
         btnCompletar.visibility = View.GONE
-        game.deal(difficulty)
-        renderBoard()
-        animarReparto {}
-        startTimer()
+        
+        loadingOverlay.visibility = View.VISIBLE
+        loadingOverlay.alpha = 0f
+        loadingOverlay.animate().alpha(1f).setDuration(200).start()
+
+        lifecycleScope.launch(Dispatchers.Default) {
+            var solved = false
+            var attempts = 0
+            val maxAttempts = 30 // Menos intentos = carga más rápida
+            
+            while (!solved && attempts < maxAttempts) {
+                game.deal(difficulty)
+                // En el último intento, aceptamos lo que sea para no bloquear al usuario
+                if (attempts == maxAttempts - 1) {
+                    solved = true
+                } else {
+                    solved = SolitaireSolver.isSolvable(game, difficulty)
+                }
+                attempts++
+            }
+
+            withContext(Dispatchers.Main) {
+                loadingOverlay.animate().alpha(0f).setDuration(200).withEndAction {
+                    loadingOverlay.visibility = View.GONE
+                }.start()
+                
+                renderBoard()
+                animarReparto {}
+                startTimer()
+            }
+        }
     }
 
     // ── Timer ──────────────────────────────────────────────────────────

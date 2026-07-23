@@ -153,7 +153,7 @@ class CalendarioActivity : AppCompatActivity() {
     private fun esTareaParaElDia(tarea: Tarea, cal: Calendar): Boolean {
         val calTarea = Calendar.getInstance().apply { timeInMillis = tarea.fecha }
         if (esMismoDia(calTarea, cal)) return true
-        if (cal.timeInMillis < tarea.fecha && !esMismoDia(calTarea, cal)) return false
+        if ((cal.timeInMillis < tarea.fecha) && !esMismoDia(calTarea, cal)) return false
 
         return when (tarea.recurrencia) {
             "DIARIO" -> true
@@ -186,6 +186,26 @@ class CalendarioActivity : AppCompatActivity() {
     }
 
     private fun mostrarMenuTarea(tarea: Tarea) {
+        val opciones = arrayOf("Editar", "Eliminar")
+        androidx.appcompat.app.AlertDialog.Builder(this, R.style.DialogoOscuro)
+            .setTitle(tarea.titulo)
+            .setItems(opciones) { _, which ->
+                when (which) {
+                    0 -> editarTarea(tarea)
+                    1 -> confirmarEliminacion(tarea)
+                }
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private fun editarTarea(tarea: Tarea) {
+        val intent = Intent(this, CrearTareaActivity::class.java)
+        intent.putExtra("tarea_id", tarea.id)
+        startActivity(intent)
+    }
+
+    private fun confirmarEliminacion(tarea: Tarea) {
         androidx.appcompat.app.AlertDialog.Builder(this, R.style.DialogoOscuro)
             .setTitle("Eliminar Tarea")
             .setMessage("¿Estás seguro de que quieres eliminar esta tarea?")
