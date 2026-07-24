@@ -97,7 +97,7 @@ class NutricionViewModel(application: Application) : AndroidViewModel(applicatio
         cargarResumenSemana()
         cargarAnalisisHoy()
         cargarHistorial()
-        verificarAnalisisAyer()
+        procesarDiasPendientes()
     }
 
     // ── Observadores ──────────────────────────────────────────────────────────
@@ -243,33 +243,39 @@ class NutricionViewModel(application: Application) : AndroidViewModel(applicatio
         _cargandoAnalisis.value = false
     }
 
-    // ── Análisis automático ayer (CON monedas — día completo) ─────────────────
-    private fun verificarAnalisisAyer() = viewModelScope.launch {
-        val ayer = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).let { fmt ->
-            val cal = java.util.Calendar.getInstance()
-            cal.add(java.util.Calendar.DAY_OF_YEAR, -1)
-            fmt.format(cal.time)
-        }
-        val yaAnalizado = repo.getAnalisisPorFecha(ayer)
-        if (yaAnalizado != null) return@launch
-
-        val alimentosAyer = repo.getAlimentosDia(ayer)
-        if (alimentosAyer.isEmpty()) return@launch
-
+    // ── Análisis automático de días pendientes (CON monedas — día completo) ──
+    private fun procesarDiasPendientes() = viewModelScope.launch {
+        val fmt = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val perfil = repo.getPerfil() ?: return@launch
         val groqKey = com.example.colorblend.data.local.ApiKeysManager.get(
             getApplication(), com.example.colorblend.data.local.ApiKeysManager.KEY_GROQ
         )
         if (groqKey.isBlank()) return@launch
 
-        repo.analizarDiaCompletadoConIA(ayer, alimentosAyer, perfil, groqKey)
-            .onSuccess { analisis ->
-                val recompensa = repo.calcularRecompensaConIA(
-                    analisis.resumenTexto, perfil, groqKey
-                )
-                repo.guardarMonedasRecompensa(ayer, recompensa.monedas)
-                cargarHistorial()
-            }
+        // Revisamos los últimos 7 días
+        for (i in 1..7) {
+            val cal = java.util.Calendar.getInstance()
+            cal.add(java.util.Calendar.DAY_OF_YEAR, -i)
+            val fechaRevisar = fmt.format(cal.time)
+
+            // Si ya está analizado, saltamos
+            val yaAnalizado = repo.getAnalisisPorFecha(fechaRevisar)
+            if (yaAnalizado != null) continue
+
+            // Si no tiene alimentos, no hay nada que analizar
+            val alimentosEseDia = repo.getAlimentosDia(fechaRevisar)
+            if (alimentosEseDia.isEmpty()) continue
+
+            // Analizamos automáticamente
+            repo.analizarDiaCompletadoConIA(fechaRevisar, alimentosEseDia, perfil, groqKey)
+                .onSuccess { analisis ->
+                    val recompensa = repo.calcularRecompensaConIA(
+                        analisis.resumenTexto, perfil, groqKey
+                    )
+                    repo.guardarMonedasRecompensa(fechaRevisar, recompensa.monedas)
+                }
+        }
+        cargarHistorial()
     }
 
     // ── El usuario reclama su recompensa manualmente ──────────────────────────────

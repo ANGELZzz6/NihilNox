@@ -1,4 +1,10 @@
-- [ ] Añadir `loadingOverlay` a `activity_difficulty_selection.xml`
-- [ ] Mostrar carga al seleccionar dificultad en `DifficultySelectorActivity.kt`
-- [ ] Forzar refresco de lista de música en `ReproductorActivity.kt` (Fix `onResume`)
-- [ ] Verificación final
+# Tareas: Mejora Visual Dashboard y Burbuja
+
+- [x] Actualizar Iconos Dashboard
+    - [x] Crear `ic_habitos_white.xml`
+    - [x] Crear `ic_lifestream_white.xml`
+    - [x] Aplicar en `activity_dashboard.xml`
+- [x] Mejorar Burbuja de Hábitos
+    - [x] Actualizar `layout_bubble.xml` (bordes y sombras)
+    - [x] Implementar animación de pulsación en `BurbujaHabitoService.kt`
+    - [x] Refinar transición de completado

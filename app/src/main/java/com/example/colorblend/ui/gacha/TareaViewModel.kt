@@ -7,6 +7,7 @@ import com.example.colorblend.data.local.AppDatabase
 import com.example.colorblend.domain.model.Habito
 import com.example.colorblend.domain.model.Tarea
 import com.example.colorblend.domain.model.RegistroHabito
+import com.example.colorblend.domain.model.RegistroTarea
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
@@ -15,6 +16,7 @@ class TareaViewModel(application: Application) : AndroidViewModel(application) {
     private val dao = db.tareaDao()
     private val habitoDao = db.habitoDao()
     private val registroDao = db.registroHabitoDao()
+    private val registroTareaDao = db.registroTareaDao()
 
     val todasLasTareas: Flow<List<Tarea>> = dao.getAllTareas()
     val todosLosHabitos: Flow<List<Habito>> = habitoDao.getTodos()
@@ -45,12 +47,22 @@ class TareaViewModel(application: Application) : AndroidViewModel(application) {
     fun marcarCompletada(tarea: Tarea, completada: Boolean) {
         viewModelScope.launch {
             dao.updateTarea(tarea.copy(completada = completada))
+            
+            // Guardar registro histórico
+            val hoy = normalizeToStartOfDay(System.currentTimeMillis())
+            if (completada) {
+                registroTareaDao.insertar(RegistroTarea(tareaId = tarea.id, fechaDia = hoy))
+            }
+            
+            // Notificar al widget
+            WidgetLifeStream.forzarActualizacion(getApplication())
         }
     }
 
     fun eliminarTarea(tarea: Tarea) {
         viewModelScope.launch {
             dao.deleteTarea(tarea)
+            WidgetLifeStream.forzarActualizacion(getApplication())
         }
     }
 
@@ -63,6 +75,8 @@ class TareaViewModel(application: Application) : AndroidViewModel(application) {
             if (inicioDia == hoy) {
                 habitoDao.actualizar(habito.copy(completadoHoy = true, ultimaFechaCompletado = System.currentTimeMillis()))
             }
+            
+            WidgetLifeStream.forzarActualizacion(getApplication())
         }
     }
 

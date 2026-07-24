@@ -5,20 +5,35 @@
     android:layout_height="wrap_content"
     android:padding="4dp">
 
+    <!-- Sombra suave -->
+    <View
+        android:layout_width="74dp"
+        android:layout_height="74dp"
+        android:layout_gravity="center"
+        android:background="@drawable/bubble_shadow"/>
+
     <!-- Fondo circular con color dinámico -->
     <ImageView
         android:id="@+id/ivBubbleFondo"
         android:layout_width="72dp"
         android:layout_height="72dp"
+        android:layout_gravity="center"
         android:background="@drawable/bubble_background"
         android:scaleType="centerCrop"/>
 
-    <!-- Imagen personalizada (visible si burbujaUsarImagen = true) -->
+    <!-- Borde Premium -->
+    <View
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_gravity="center"
+        android:background="@drawable/bubble_border"/>
+
+    <!-- Imagen personalizada -->
     <ImageView
         android:id="@+id/ivBubbleImagen"
         android:layout_width="72dp"
         android:layout_height="72dp"
-        android:background="@drawable/bubble_background"
+        android:layout_gravity="center"
         android:scaleType="centerCrop"
         android:visibility="gone"/>
 

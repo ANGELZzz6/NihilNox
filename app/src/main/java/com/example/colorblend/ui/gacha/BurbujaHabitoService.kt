@@ -36,6 +36,8 @@ class BurbujaHabitoService : Service() {
 
     private val CHANNEL_ID = "burbuja_habito_channel"
     private var autoCloseJob: Job? = null
+    private var pulseAnimator: ValueAnimator? = null
+    private var moveAnimator: ValueAnimator? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -61,6 +63,7 @@ class BurbujaHabitoService : Service() {
                 windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
                 mostrarBurbuja()
                 iniciarAnimacionMovimiento()
+                iniciarAnimacionPulsacion()
                 reiniciarTemporizadorCierre()
             }
         }
@@ -155,9 +158,26 @@ class BurbujaHabitoService : Service() {
     
     private fun marcarComoCompletado() {
         isCompleted = true
+        
+        // Animación de escala al completar
+        bubbleView?.animate()
+            ?.scaleX(1.2f)
+            ?.scaleY(1.2f)
+            ?.setDuration(200)
+            ?.withEndAction {
+                bubbleView?.animate()?.scaleX(1.0f)?.scaleY(1.0f)?.setDuration(200)?.start()
+            }
+            ?.start()
+
         bubbleView?.findViewById<ImageView>(R.id.ivBubbleFondo)?.backgroundTintList = 
             ColorStateList.valueOf(Color.parseColor("#4CAF50"))
-        bubbleView?.findViewById<ImageView>(R.id.ivBubbleCheck)?.visibility = View.VISIBLE
+        
+        bubbleView?.findViewById<ImageView>(R.id.ivBubbleCheck)?.apply {
+            visibility = View.VISIBLE
+            alpha = 0f
+            animate().alpha(1f).setDuration(300).start()
+        }
+        
         bubbleView?.findViewById<TextView>(R.id.tvBubbleNombre)?.visibility = View.GONE
         bubbleView?.findViewById<ImageView>(R.id.ivBubbleImagen)?.visibility = View.GONE
     }
@@ -183,13 +203,13 @@ class BurbujaHabitoService : Service() {
         val screenWidth = displayMetrics.widthPixels
         val screenHeight = displayMetrics.heightPixels
 
-        val animator = ValueAnimator.ofFloat(0f, 1f).apply {
-            duration = 8000
+        moveAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
+            duration = 10000 // un poco más lento
             repeatCount = ValueAnimator.INFINITE
             repeatMode = ValueAnimator.REVERSE
         }
         
-        animator.addUpdateListener { animation ->
+        moveAnimator?.addUpdateListener { animation ->
             val fraction = animation.animatedValue as Float
             val bubble = bubbleView ?: return@addUpdateListener
             val params = bubble.layoutParams as WindowManager.LayoutParams
@@ -202,7 +222,21 @@ class BurbujaHabitoService : Service() {
             } catch (e: Exception) {}
         }
         
-        animator.start()
+        moveAnimator?.start()
+    }
+
+    private fun iniciarAnimacionPulsacion() {
+        pulseAnimator = ValueAnimator.ofFloat(1.0f, 1.05f).apply {
+            duration = 1500
+            repeatCount = ValueAnimator.INFINITE
+            repeatMode = ValueAnimator.REVERSE
+        }
+        pulseAnimator?.addUpdateListener { anim ->
+            val scale = anim.animatedValue as Float
+            bubbleView?.scaleX = scale
+            bubbleView?.scaleY = scale
+        }
+        pulseAnimator?.start()
     }
 
     private fun reiniciarTemporizadorCierre() {
@@ -226,6 +260,8 @@ class BurbujaHabitoService : Service() {
     
     override fun onDestroy() {
         super.onDestroy()
+        moveAnimator?.cancel()
+        pulseAnimator?.cancel()
         bubbleView?.let { 
             try {
                 windowManager.removeView(it)

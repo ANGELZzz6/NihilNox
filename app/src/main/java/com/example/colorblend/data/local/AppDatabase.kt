@@ -31,9 +31,10 @@ import com.example.colorblend.data.local.migrations.MIGRATION_26_27
         Habito::class,
         RegistroHabito::class,
         Identidad::class,
-        Tarea::class
+        Tarea::class,
+        RegistroTarea::class
     ],
-    version = 36
+    version = 37
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -54,6 +55,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun registroHabitoDao(): RegistroHabitoDao
     abstract fun identidadDao(): IdentidadDao
     abstract fun tareaDao(): TareaDao
+    abstract fun registroTareaDao(): RegistroTareaDao
 
     companion object {
         @Volatile private var INSTANCE: AppDatabase? = null
@@ -65,7 +67,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "colorblend_db"
                 )
-                    .addMigrations(MIGRATION_24_25, MIGRATION_25_26, MIGRATION_26_27, MIGRATION_27_28, MIGRATION_28_29, MIGRATION_29_30, MIGRATION_30_31, MIGRATION_31_32, MIGRATION_32_33, MIGRATION_33_34, MIGRATION_34_35, MIGRATION_35_36)
+                    .addMigrations(MIGRATION_24_25, MIGRATION_25_26, MIGRATION_26_27, MIGRATION_27_28, MIGRATION_28_29, MIGRATION_29_30, MIGRATION_30_31, MIGRATION_31_32, MIGRATION_32_33, MIGRATION_33_34, MIGRATION_34_35, MIGRATION_35_36, MIGRATION_36_37)
                     .build()
                     .also { INSTANCE = it }
             }
@@ -229,5 +231,19 @@ val MIGRATION_35_36 = object : Migration(35, 36) {
                 `completada` INTEGER NOT NULL DEFAULT 0
             )
         """.trimIndent())
+    }
+}
+
+val MIGRATION_36_37 = object : Migration(36, 37) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("""
+            CREATE TABLE IF NOT EXISTS `registros_tarea` (
+                `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                `tareaId` INTEGER NOT NULL, 
+                `fechaDia` INTEGER NOT NULL, 
+                FOREIGN KEY(`tareaId`) REFERENCES `tareas`(`id`) ON DELETE CASCADE
+            )
+        """.trimIndent())
+        database.execSQL("CREATE INDEX IF NOT EXISTS `index_registros_tarea_tareaId` ON `registros_tarea`(`tareaId`)")
     }
 }

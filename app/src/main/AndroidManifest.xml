@@ -211,6 +211,15 @@
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_habitos_info"/>
         </receiver>
 
+        <receiver android:name=".ui.gacha.WidgetLifeStream" android:exported="true">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE"/></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_lifestream_info"/>
+        </receiver>
+
+        <service android:name=".ui.gacha.LifeStreamRemoteViewsService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"
+            android:exported="false" />
+
         <service android:name=".ui.gacha.BurbujaHabitoService"
             android:foregroundServiceType="specialUse"
             android:exported="false" />
@@ -232,6 +241,7 @@
 
         <activity android:name=".ui.gacha.CalendarioActivity" android:screenOrientation="portrait"/>
         <activity android:name=".ui.gacha.CrearTareaActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ui.gacha.LifeStreamActivity" android:screenOrientation="portrait"/>
 
         <receiver android:name=".ui.gacha.TareaAlarmReceiver" android:exported="false"/>
 

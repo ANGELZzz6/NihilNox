@@ -46,11 +46,13 @@ class NutricionRepository(private val dao: NutricionDao) {
         peso: Float, altura: Int, edad: Int,
         sexo: String, nivelActividad: String, objetivo: String
     ): PerfilNutricion {
+        // Fórmula Mifflin-St Jeor (Estándar moderno más preciso)
         val tmb = if (sexo == "Hombre") {
-            88.36f + (13.4f * peso) + (4.8f * altura) - (5.7f * edad)
+            (10f * peso) + (6.25f * altura) - (5f * edad) + 5
         } else {
-            447.6f + (9.2f * peso) + (3.1f * altura) - (4.3f * edad)
+            (10f * peso) + (6.25f * altura) - (5f * edad) - 161
         }
+
         val factorActividad = when (nivelActividad) {
             "Sedentario" -> 1.2f
             "Ligero"     -> 1.375f
@@ -59,24 +61,37 @@ class NutricionRepository(private val dao: NutricionDao) {
             "Muy activo" -> 1.9f
             else         -> 1.55f
         }
+
         val tdee = tmb * factorActividad
+
+        // Ajuste según objetivo
         val calorias = when (objetivo) {
-            "Ganar músculo" -> (tdee + 300).toInt()
+            "Ganar músculo" -> (tdee + 400).toInt()
             "Bajar peso"    -> (tdee - 500).toInt()
-            "Definición"    -> (tdee - 250).toInt()
+            "Definición"    -> (tdee - 300).toInt()
             else            -> tdee.toInt()
         }
+
+        // Distribución de Macros basada en estándares de nutrición deportiva
         val proteina = when (objetivo) {
             "Ganar músculo" -> (peso * 2.2f).toInt()
             "Bajar peso"    -> (peso * 2.0f).toInt()
             "Definición"    -> (peso * 2.4f).toInt()
-            else            -> (peso * 1.6f).toInt()
+            else            -> (peso * 1.8f).toInt()
         }
-        val caloriasProteina  = proteina * 4
-        val caloriasRestantes = calorias - caloriasProteina
-        val grasas = ((caloriasRestantes * 0.30f) / 9f).toInt()
-        val carbos = ((caloriasRestantes * 0.70f) / 4f).toInt()
-        val fibra  = if (sexo == "Hombre") 38 else 25
+
+        // Grasas: ~1g por kg de peso es lo ideal para salud hormonal
+        val grasas = (peso * 1.0f).toInt().coerceIn(40, 120)
+
+        // Carbohidratos: El resto de las calorías
+        val caloriasProteina = proteina * 4
+        val caloriasGrasas   = grasas * 9
+        val caloriasRestantes = (calorias - caloriasProteina - caloriasGrasas).coerceAtLeast(0)
+        val carbos = (caloriasRestantes / 4f).toInt()
+
+        // Fibra: Estándar diario
+        val fibra = if (sexo == "Hombre") 38 else 25
+
         return PerfilNutricion(
             peso = peso, altura = altura, edad = edad, sexo = sexo,
             objetivo = objetivo, nivelActividad = nivelActividad,
