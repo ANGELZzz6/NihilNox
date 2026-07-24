@@ -115,6 +115,23 @@ class EditarBurbujaActivity : AppCompatActivity() {
         })
 
         binding.btnGuardarBurbuja.setOnClickListener { guardar() }
+
+        binding.btnLanzarAhora.setOnClickListener { lanzarBurbujaReal() }
+    }
+
+    private fun lanzarBurbujaReal() {
+        val h = habito ?: return
+        val intent = android.content.Intent(this, BurbujaHabitoService::class.java).apply {
+            putExtra("habito_id", h.id)
+            putExtra("habito_nombre", h.nombre)
+            putExtra("force_now", true)
+        }
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            startForegroundService(intent)
+        } else {
+            startService(intent)
+        }
+        android.widget.Toast.makeText(this, "🚀 Lanzando burbuja real...", android.widget.Toast.LENGTH_SHORT).show()
     }
 
     private fun cargarDatosActuales(h: Habito) {

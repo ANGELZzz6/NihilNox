@@ -1,9 +1,8 @@
-# Tareas: Refuerzo de Burbujas
+# Tareas: Sincronización LifeStream
 
-- [x] Actualizar `BurbujaHabitoService.kt`
-    - [x] Implementar soporte para ID de prueba (-99)
-    - [x] Implementar lógica de arrastre (Drag & Drop)
-    - [x] Sincronizar animaciones con el arrastre
-- [x] Mejorar `HabitosActivity.kt`
-    - [x] Añadir feedback visual al lanzar prueba
-- [x] Verificación final
+- [x] Integrar actualizaciones en Servicios
+    - [x] Notificar a LifeStream desde `BurbujaHabitoService.kt`
+    - [x] Notificar a LifeStream desde `HabitosViewModel.kt`
+- [x] Optimizar Data Source del Widget
+    - [x] Ajustar lógica de tiempo en `LifeStreamRemoteViewsService.kt`
+- [x] Verificación Final

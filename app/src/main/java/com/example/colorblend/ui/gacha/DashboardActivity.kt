@@ -14,8 +14,10 @@ import android.widget.*
 import java.util.*
 import java.text.SimpleDateFormat
 import org.json.JSONArray
+import android.view.animation.OvershootInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.AnticipateOvershootInterpolator
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
@@ -346,41 +348,83 @@ class DashboardActivity : AppCompatActivity() {
     private fun animarBoton(view: View, action: () -> Unit) {
         SonidoHelper.reproducir(this)
         
-        // Animación de feedback táctil extra
+        // Animación elástica táctil
         view.animate()
-            .scaleX(0.95f)
-            .scaleY(0.95f)
-            .setDuration(100)
+            .scaleX(0.92f)
+            .scaleY(0.92f)
+            .setDuration(120)
+            .setInterpolator(DecelerateInterpolator())
             .withEndAction {
                 view.animate()
                     .scaleX(1f)
                     .scaleY(1f)
-                    .setDuration(100)
+                    .setDuration(300)
+                    .setInterpolator(OvershootInterpolator(2f))
                     .withEndAction { action() }
                     .start()
             }
             .start()
     }
 
-    // ── Entrada suave ──────────────────────────────────────────────────────
+    // ── Entrada Bubble (Overshoot) ──────────────────────────────────────────
     private fun iniciarAnimacionesEntrada() {
         val topBar = findViewById<View>(R.id.layoutTopBar)
         val gacha = findViewById<View>(R.id.btnDashGacha)
         val bento = findViewById<View>(R.id.layoutBento)
         val lista = findViewById<View>(R.id.layoutLista)
         val grid2 = findViewById<View>(R.id.btnHabitos).parent as View
+        val social = findViewById<View>(R.id.btnDashLifeStream).parent as View
         
-        val elementos = listOf(topBar, gacha, bento, lista, grid2)
+        val elementos = listOf(topBar, gacha, bento, lista, grid2, social)
 
         elementos.forEachIndexed { i, v ->
-            v.translationY = 100f
+            v.scaleX = 0.7f
+            v.scaleY = 0.7f
             v.alpha = 0f
+            v.translationY = 120f
             v.animate()
+                .scaleX(1f).scaleY(1f)
                 .translationY(0f).alpha(1f)
-                .setDuration(600).setStartDelay(i * 100L)
-                .setInterpolator(DecelerateInterpolator())
+                .setDuration(700)
+                .setStartDelay(i * 120L)
+                .setInterpolator(OvershootInterpolator(1.2f))
+                .withEndAction {
+                    if (v == bento || v == grid2 || v == social) {
+                        aplicarRespiracionAContenedor(v)
+                    }
+                }
                 .start()
         }
+    }
+
+    private fun aplicarRespiracionAContenedor(container: View) {
+        if (container is android.view.ViewGroup) {
+            for (i in 0 until container.childCount) {
+                val child = container.getChildAt(i)
+                if (child.id != View.NO_ID) {
+                    animarRespiracionBento(child, i * 150L)
+                }
+            }
+        } else {
+            animarRespiracionBento(container, 0L)
+        }
+    }
+
+    private fun animarRespiracionBento(v: View, delay: Long) {
+        v.animate()
+            .scaleX(1.025f).scaleY(1.025f)
+            .setDuration(2500)
+            .setStartDelay(delay)
+            .setInterpolator(AccelerateDecelerateInterpolator())
+            .withEndAction {
+                v.animate()
+                    .scaleX(1f).scaleY(1f)
+                    .setDuration(2500)
+                    .setStartDelay(0)
+                    .setInterpolator(AccelerateDecelerateInterpolator())
+                    .withEndAction { animarRespiracionBento(v, 0L) }
+                    .start()
+            }.start()
     }
 
     // ── Loop idle botones (escala mínima, sin recorte visual) ─────────────

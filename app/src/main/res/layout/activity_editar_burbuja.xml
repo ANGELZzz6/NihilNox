@@ -133,11 +133,23 @@
             android:id="@+id/btnGuardarBurbuja"
             android:layout_width="match_parent"
             android:layout_height="52dp"
-            android:text="GUARDAR"
+            android:text="GUARDAR CONFIGURACIÓN"
             android:fontFamily="@font/opensauce"
             android:textColor="#121212"
             android:backgroundTint="#FFD700"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Lanzar ahora -->
+        <Button
+            android:id="@+id/btnLanzarAhora"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="LANZAR BURBUJA AHORA"
+            android:fontFamily="@font/opensauce"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#2A2A2A"
+            android:textStyle="normal"/>
 
     </LinearLayout>
 </ScrollView>

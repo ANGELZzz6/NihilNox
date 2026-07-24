@@ -6,7 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
+import com.example.colorblend.data.local.AppDatabase
 import com.example.colorblend.domain.model.Habito
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -15,6 +20,28 @@ object HabitoAlarmManager {
         cancelarBurbuja(context, habito.id)
         if (!habito.enabledBurbuja) return
 
+        val now = Calendar.getInstance()
+        val hoyTimestamp = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0)
+        }.timeInMillis
+
+        // Verificar si ya está completado hoy antes de programar
+        CoroutineScope(Dispatchers.IO).launch {
+            val db = AppDatabase.getDatabase(context.applicationContext)
+            val completados = db.registroHabitoDao().getIdsHabitosCompletadosEnFecha(hoyTimestamp)
+            if (completados.contains(habito.id)) {
+                Log.d("BurbujaScheduler", "Hábito ${habito.nombre} ya completado hoy. No se programa.")
+                return@launch
+            }
+
+            withContext(Dispatchers.Main) {
+                realizarProgramacion(context, habito, now)
+            }
+        }
+    }
+
+    private fun realizarProgramacion(context: Context, habito: Habito, now: Calendar) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(context, HabitoAlarmReceiver::class.java).apply {
             putExtra("habito_id", habito.id)
@@ -27,8 +54,7 @@ object HabitoAlarmManager {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         
-        val now = Calendar.getInstance()
-        var calendar = Calendar.getInstance().apply {
+        val calendar = Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, habito.notificacionHora)
             set(Calendar.MINUTE, habito.notificacionMinuto)
             set(Calendar.SECOND, 0)
@@ -61,31 +87,68 @@ object HabitoAlarmManager {
             daysAdded++
         }
 
-        // Fallback final: si no encontró día válido en 8 días, programar para mañana
-        if (daysAdded >= 8) {
-            calendar = Calendar.getInstance().apply {
-                add(Calendar.DAY_OF_MONTH, 1)
-                set(Calendar.HOUR_OF_DAY, habito.notificacionHora)
-                set(Calendar.MINUTE, habito.notificacionMinuto)
-                set(Calendar.SECOND, 0)
-                set(Calendar.MILLISECOND, 0)
-            }
-        }
-
         Log.d("BurbujaScheduler", 
             "Burbuja programada — habitoId:${habito.id} " +
             "nombre:${habito.nombre} " +
             "para:${SimpleDateFormat("dd/MM HH:mm", Locale.getDefault()).format(calendar.time)}"
         )
 
+        setAlarm(alarmManager, calendar.timeInMillis, pendingIntent)
+    }
+
+    fun reprogramarParaMasTarde(context: Context, habitoId: Int) {
+        if (habitoId == -99) return
+        
+        CoroutineScope(Dispatchers.IO).launch {
+            val db = AppDatabase.getDatabase(context.applicationContext)
+            val habito = db.habitoDao().getById(habitoId) ?: return@launch
+            
+            val hoyTimestamp = Calendar.getInstance().apply {
+                set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0)
+                set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0)
+            }.timeInMillis
+            
+            val completados = db.registroHabitoDao().getIdsHabitosCompletadosEnFecha(hoyTimestamp)
+            if (completados.contains(habitoId)) return@launch
+
+            // Programar para dentro de 60 minutos
+            val proximoLanzamiento = Calendar.getInstance().apply {
+                add(Calendar.MINUTE, 60)
+            }
+            
+            // Si el reintento se pasa al día siguiente, mejor dejar que la programación normal tome el mando
+            if (proximoLanzamiento.get(Calendar.DAY_OF_YEAR) != Calendar.getInstance().get(Calendar.DAY_OF_YEAR)) {
+                return@launch
+            }
+
+            withContext(Dispatchers.Main) {
+                val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                val intent = Intent(context, HabitoAlarmReceiver::class.java).apply {
+                    putExtra("habito_id", habito.id)
+                    putExtra("habito_nombre", habito.nombre)
+                }
+                val pendingIntent = PendingIntent.getBroadcast(
+                    context, 
+                    habito.id + 10000,
+                    intent, 
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+                
+                setAlarm(alarmManager, proximoLanzamiento.timeInMillis, pendingIntent)
+                Log.d("BurbujaScheduler", "Reintento programado para ${habito.nombre} a las ${SimpleDateFormat("HH:mm", Locale.getDefault()).format(proximoLanzamiento.time)}")
+            }
+        }
+    }
+
+    private fun setAlarm(alarmManager: AlarmManager, timeInMillis: Long, pendingIntent: PendingIntent) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (alarmManager.canScheduleExactAlarms()) {
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent)
             } else {
-                alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
+                alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent)
             }
         } else {
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent)
         }
     }
     

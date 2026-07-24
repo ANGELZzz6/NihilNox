@@ -29,7 +29,14 @@ class LifeStreamRemoteViewsFactory(private val context: Context) : RemoteViewsSe
             try {
                 val db = AppDatabase.getDatabase(context)
                 val habitos = db.habitoDao().getTodosUnaVez()
-                val tareas = db.tareaDao().getTareasDelDia(0)
+                
+                val cal = Calendar.getInstance().apply {
+                    set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0)
+                }
+                val hoy = cal.timeInMillis
+                
+                val tareas = db.tareaDao().getTareasDelDia(hoy)
 
                 val newItems = mutableListOf<StreamItem>()
                 

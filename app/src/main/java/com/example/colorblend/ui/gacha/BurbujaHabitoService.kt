@@ -48,6 +48,7 @@ class BurbujaHabitoService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         habitoId = intent?.getIntExtra("habito_id", -1) ?: -1
         habitoNombre = intent?.getStringExtra("habito_nombre") ?: "Hábito"
+        val forceNow = intent?.getBooleanExtra("force_now", false) ?: false
 
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("Hábito activo: $habitoNombre")
@@ -57,6 +58,12 @@ class BurbujaHabitoService : Service() {
             .build()
         startForeground(1001, notification)
         
+        if (forceNow) {
+            // Posición central para lanzamientos manuales
+            anchorX = (resources.displayMetrics.widthPixels / 2) - (40 * resources.displayMetrics.density).toInt()
+            anchorY = (resources.displayMetrics.heightPixels / 2) - (40 * resources.displayMetrics.density).toInt()
+        }
+
         scope.launch(Dispatchers.IO) {
             if (habitoId == -99) {
                 habitoActual = Habito(
@@ -248,6 +255,7 @@ class BurbujaHabitoService : Service() {
                 repository.marcarCompletado(it)
                 HabitoAlarmManager.programarBurbuja(applicationContext, it)
                 WidgetHabitos.forzarActualizacion(applicationContext)
+                WidgetLifeStream.forzarActualizacion(applicationContext)
             }
             withContext(Dispatchers.Main) {
                 stopSelf()
@@ -320,6 +328,12 @@ class BurbujaHabitoService : Service() {
         super.onDestroy()
         moveAnimator?.cancel()
         pulseAnimator?.cancel()
+
+        // REPROGRAMAR si se cerró sin completar (y no es de prueba)
+        if (!isCompleted && habitoId != -99 && habitoId != -1) {
+            HabitoAlarmManager.reprogramarParaMasTarde(applicationContext, habitoId)
+        }
+
         bubbleView?.let { 
             try {
                 windowManager.removeView(it)

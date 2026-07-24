@@ -1,26 +1,24 @@
-# Refuerzo y Validación de Burbujas de Hábito
+# Sincronización Total: LifeStream Widget
 
-Se ha mejorado la robustez y la interactividad de las burbujas de hábitos, permitiendo una validación inmediata y una mejor experiencia de usuario.
+Se ha corregido el problema de actualización del widget LifeStream, integrando notificaciones de cambio en todos los puntos críticos del flujo de hábitos.
 
 ## Cambios Realizados
 
-### 1. Soporte para Pruebas (Preview)
-- **ID de Prueba (-99)**: En [BurbujaHabitoService.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/BurbujaHabitoService.kt), ahora se detecta si el ID es `-99`. Si es así, se genera un hábito ficticio dorado. Esto permite que el botón "Probar Burbuja" de los ajustes funcione perfectamente aunque no tengas un hábito real activado en ese momento.
-- **Feedback Visual**: Al pulsar el botón de prueba en [HabitosActivity.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/HabitosActivity.kt), ahora aparece un mensaje de confirmación "🚀 Lanzando burbuja de prueba...".
+### 1. Sincronización desde la Burbuja
+- Se ha modificado [BurbujaHabitoService.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/BurbujaHabitoService.kt) para que, al confirmar la finalización de un hábito desde la burbuja flotante, el sistema avise inmediatamente al widget de **Life Stream** para que refresque su gráfico de ondas.
 
-### 2. Burbuja Arrastrable (Draggable)
-- **Control Total**: La burbuja ya no solo flota sola. Ahora puedes **tocarla y arrastrarla** a cualquier lugar de la pantalla si te estorba para leer algo.
-- **Sincronización de Animación**: Mientras la estás arrastrando, la animación de balanceo automático se pausa. Al soltarla, la animación se reanuda desde su nueva posición.
+### 2. Sincronización desde la App
+- En [HabitosViewModel.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/HabitosViewModel.kt), se han añadido llamadas de actualización forzada del widget tanto al **marcar como completado** un hábito como al **eliminarlo**. Esto garantiza que la lista del widget siempre sea un reflejo fiel de tus datos actuales.
 
-### 3. Lógica de Completado
-- Se ha asegurado que el "Confirmar y Cerrar" funcione correctamente en el modo de prueba sin intentar acceder a una base de datos con un ID inexistente.
+### 3. Corrección de la Lógica de Datos del Widget
+- Se ha actualizado [LifeStreamRemoteViewsService.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/LifeStreamRemoteViewsService.kt) para que deje de usar un timestamp nulo (`0`) al cargar las tareas. Ahora obtiene el **timestamp de hoy** correctamente, lo que permite mostrar las tareas recurrentes y pendientes del día vigente.
 
 ## Verificación
 
-### Pruebas de Interacción
-- [x] **Arrastre**: La burbuja sigue el dedo con precisión y fluidez.
-- [x] **Diferenciación Click vs Arrastre**: Al tocarla suavemente (click), se marca como completada. Al moverla, se desplaza sin marcarse.
-- [x] **Modo Prueba**: Se verificó que el botón de prueba lanza la burbuja con el texto "PRUEBA" y color dorado.
+### Sincronización en Tiempo Real
+- [x] **Check desde Burbuja**: Al dar OK en la burbuja, la onda del Life Stream se actualiza visualmente en la pantalla de inicio sin demora.
+- [x] **Gestión de Lista**: Al borrar un hábito de la lista en la app, desaparece automáticamente del widget.
+- [x] **Datos Vigentes**: El widget ahora muestra correctamente las tareas del día actual gracias al ajuste de tiempo.
 
 > [!TIP]
-> ¡Pruébalo ahora mismo! Ve a la pantalla de hábitos, pulsa el icono de información arriba a la derecha y dale a "Probar Burbuja". ¡Podrás moverla por toda tu pantalla!
+> Si el widget todavía no se actualiza la primera vez, puedes forzarlo entrando a la app y saliendo, pero a partir de ahora cualquier cambio en tus hábitos disparará el refresco automático.

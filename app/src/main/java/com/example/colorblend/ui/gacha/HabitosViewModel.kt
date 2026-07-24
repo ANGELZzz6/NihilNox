@@ -90,12 +90,14 @@ class HabitosViewModel(
 
             // actualizar widget de hábitos
             WidgetHabitos.forzarActualizacion(getApplication())
+            WidgetLifeStream.forzarActualizacion(getApplication())
         }
     }
 
     fun eliminar(habito: Habito) {
         viewModelScope.launch {
             repository.eliminar(habito)
+            WidgetLifeStream.forzarActualizacion(getApplication())
         }
     }
 
