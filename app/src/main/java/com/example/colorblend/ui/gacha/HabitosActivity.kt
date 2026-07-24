@@ -241,6 +241,7 @@ class HabitosActivity : AppCompatActivity() {
         } else {
             startService(intent)
         }
+        android.widget.Toast.makeText(this, "🚀 Lanzando burbuja de prueba...", android.widget.Toast.LENGTH_SHORT).show()
     }
 
     private fun mostrarTimePicker(habito: Habito) {

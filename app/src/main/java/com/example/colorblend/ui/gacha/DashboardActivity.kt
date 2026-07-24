@@ -10,12 +10,10 @@ import android.graphics.Paint
 import android.graphics.Shader
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import java.util.*
+import java.text.SimpleDateFormat
+import org.json.JSONArray
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.appcompat.app.AlertDialog
@@ -58,37 +56,37 @@ class DashboardActivity : AppCompatActivity() {
         tvNick = findViewById(R.id.tvDashNick)
 
         // ── Botones ───────────────────────────────────────────────────────
-        findViewById<Button>(R.id.btnDashGacha).setOnClickListener {
+        findViewById<View>(R.id.btnDashGacha).setOnClickListener {
             animarBoton(it) {
                 startActivity(Intent(this, MainActivity::class.java))
             }
         }
 
-        findViewById<Button>(R.id.btnDashReproductor).setOnClickListener {
+        findViewById<View>(R.id.btnDashReproductor).setOnClickListener {
             animarBoton(it) {
                 startActivity(Intent(this, ReproductorActivity::class.java))
             }
         }
 
-        findViewById<Button>(R.id.btnDashBlockNotas).setOnClickListener {
+        findViewById<View>(R.id.btnDashBlockNotas).setOnClickListener {
             animarBoton(it) {
                 abrirBlockNotas()
             }
         }
 
-        findViewById<Button>(R.id.btnDashNutricion).setOnClickListener {
+        findViewById<View>(R.id.btnDashNutricion).setOnClickListener {
             animarBoton(it) {
                 startActivity(Intent(this, NutricionActivity::class.java))
             }
         }
 
-        findViewById<Button>(R.id.btnDashPerfil).setOnClickListener {
+        findViewById<View>(R.id.btnDashPerfil).setOnClickListener {
             animarBoton(it) {
                 startActivity(Intent(this, PerfilActivity::class.java))
             }
         }
 
-        findViewById<Button>(R.id.btnDashFall).setOnClickListener {
+        findViewById<View>(R.id.btnDashFall).setOnClickListener {
             animarBoton(it) {
                 lifecycleScope.launch {
                     val dao = AppDatabase.getDatabase(this@DashboardActivity).fallVideoDao()
@@ -104,38 +102,55 @@ class DashboardActivity : AppCompatActivity() {
             }
         }
 
-        findViewById<Button>(R.id.btnDashGames).setOnClickListener {
+        findViewById<View>(R.id.btnDashGames).setOnClickListener {
             animarBoton(it) {
                 startActivity(Intent(this, GamesActivity::class.java))
             }
         }
 
-        findViewById<Button>(R.id.btnDashLearn).setOnClickListener {
+        // ── Bottom Nav ────────────────────────────────────────────────────
+        findViewById<View>(R.id.navHabitos).setOnClickListener {
+            startActivity(Intent(this, HabitosActivity::class.java))
+        }
+        findViewById<View>(R.id.navNutricion).setOnClickListener {
+            startActivity(Intent(this, NutricionActivity::class.java))
+        }
+        findViewById<View>(R.id.navNotas).setOnClickListener {
+            abrirBlockNotas()
+        }
+
+        findViewById<View>(R.id.btnDashLearn).setOnClickListener {
             animarBoton(it) {
                 startActivity(Intent(this, LearnActivity::class.java))
             }
         }
 
-        findViewById<Button>(R.id.btnHabitos).setOnClickListener {
+        findViewById<View>(R.id.btnHabitos).setOnClickListener {
             animarBoton(it) {
                 startActivity(Intent(this, HabitosActivity::class.java))
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
             }
         }
 
-        findViewById<Button>(R.id.btnDashCalendario).setOnClickListener {
+        findViewById<View>(R.id.btnDashCalendario).setOnClickListener {
             animarBoton(it) {
                 startActivity(Intent(this, CalendarioActivity::class.java))
             }
         }
 
-        findViewById<Button>(R.id.btnDashLifeStream).setOnClickListener {
+        findViewById<View>(R.id.btnDashLifeStream).setOnClickListener {
             animarBoton(it) {
                 startActivity(Intent(this, LifeStreamActivity::class.java))
             }
         }
 
-        findViewById<Button>(R.id.btnDashApiKeys).setOnClickListener {
+        findViewById<View>(R.id.btnDashApiKeys).setOnClickListener {
+            animarBoton(it) {
+                startActivity(Intent(this, ApiKeysActivity::class.java))
+            }
+        }
+
+        findViewById<View>(R.id.btnSettings).setOnClickListener {
             animarBoton(it) {
                 startActivity(Intent(this, ApiKeysActivity::class.java))
             }
@@ -188,6 +203,56 @@ class DashboardActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         cargarDatosPerfil()
+        cargarDatosDashboard()
+    }
+
+    private fun cargarDatosDashboard() = lifecycleScope.launch {
+        val db = AppDatabase.getDatabase(this@DashboardActivity)
+        
+        // 1. Contador de Notas (SharedPreferences)
+        val notasCount = getCountNotas()
+        findViewById<TextView>(R.id.tvCountNotas).text = "$notasCount NOTAS"
+
+        // 2. Nutrición (Calorías hoy)
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val hoyStr = sdf.format(Date())
+        val alimentos = withContext(Dispatchers.IO) { db.nutricionDao().getAlimentosDia(hoyStr) }
+        val calHoy = alimentos.sumOf { it.calorias }
+        val perfil = withContext(Dispatchers.IO) { db.nutricionDao().getPerfil() }
+        
+        findViewById<TextView>(R.id.tvCalDash).text = String.format("%,d", calHoy)
+        perfil?.let {
+            findViewById<ProgressBar>(R.id.progressNutriDash).apply {
+                max = it.metaCalorias
+                progress = calHoy
+            }
+        }
+
+        // 3. Hábitos (Progreso hoy)
+        val cal = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+        val hoyTimestamp = cal.timeInMillis
+        
+        val habitosTotal = withContext(Dispatchers.IO) { db.habitoDao().getTodosUnaVez().size }
+        val completadosHoy = withContext(Dispatchers.IO) { db.registroHabitoDao().getIdsHabitosCompletadosEnFecha(hoyTimestamp).size }
+        val progreso = if (habitosTotal > 0) (completadosHoy * 100) / habitosTotal else 0
+        findViewById<TextView>(R.id.tvHabitoProg).text = "PROGRESS: $progreso%"
+
+        // 4. Calendario (Tareas hoy)
+        val tareasHoy = withContext(Dispatchers.IO) { db.tareaDao().getTareasDelDia(hoyTimestamp).size }
+        findViewById<TextView>(R.id.tvTaskDash).text = "$tareasHoy TAREAS HOY"
+    }
+
+    private fun getCountNotas(): Int {
+        val prefs = getSharedPreferences("block_notas", Context.MODE_PRIVATE)
+        val json = prefs.getString("notas", "[]") ?: "[]"
+        return try {
+            JSONArray(json).length()
+        } catch (e: Exception) { 0 }
     }
 
     private fun cargarDatosPerfil() {
@@ -280,42 +345,41 @@ class DashboardActivity : AppCompatActivity() {
 
     private fun animarBoton(view: View, action: () -> Unit) {
         SonidoHelper.reproducir(this)
-        action()
+        
+        // Animación de feedback táctil extra
+        view.animate()
+            .scaleX(0.95f)
+            .scaleY(0.95f)
+            .setDuration(100)
+            .withEndAction {
+                view.animate()
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .setDuration(100)
+                    .withEndAction { action() }
+                    .start()
+            }
+            .start()
     }
 
     // ── Entrada suave ──────────────────────────────────────────────────────
     private fun iniciarAnimacionesEntrada() {
-        val avatar = findViewById<FrameLayout>(R.id.flDashAvatar)
-        val nombre = findViewById<TextView>(R.id.tvDashNick)
-        val botones = listOf(
-            R.id.btnDashGacha, R.id.btnDashReproductor, R.id.btnDashBlockNotas,
-            R.id.btnDashNutricion, R.id.btnDashPerfil, R.id.btnDashFall,
-            R.id.btnDashLearn, R.id.btnHabitos, R.id.btnDashCalendario, 
-            R.id.btnDashLifeStream, R.id.btnDashGames
-        ).map { findViewById<View>(it) }
+        val topBar = findViewById<View>(R.id.layoutTopBar)
+        val gacha = findViewById<View>(R.id.btnDashGacha)
+        val bento = findViewById<View>(R.id.layoutBento)
+        val lista = findViewById<View>(R.id.layoutLista)
+        val grid2 = findViewById<View>(R.id.btnHabitos).parent as View
+        
+        val elementos = listOf(topBar, gacha, bento, lista, grid2)
 
-        listOf(avatar, nombre).forEachIndexed { i, v ->
-            v.translationY = -60f
+        elementos.forEachIndexed { i, v ->
+            v.translationY = 100f
             v.alpha = 0f
             v.animate()
                 .translationY(0f).alpha(1f)
-                .setDuration(500).setStartDelay(i * 80L)
-                .setInterpolator(DecelerateInterpolator()).start()
-        }
-
-        botones.forEachIndexed { i, v ->
-            v.translationY = 80f
-            v.alpha = 0f
-            v.animate()
-                .translationY(0f).alpha(1f)
-                .setDuration(450).setStartDelay(150L + i * 70L)
+                .setDuration(600).setStartDelay(i * 100L)
                 .setInterpolator(DecelerateInterpolator())
-                .withEndAction {
-                    if (i == botones.size - 1) {
-                        iniciarLoopIdle(botones)
-                        iniciarLoopAvatar(avatar)
-                    }
-                }.start()
+                .start()
         }
     }
 

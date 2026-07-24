@@ -10,5 +10,19 @@
     <color name="gray">#505050</color>
     <color name="tab_lateral">#D7D7D7</color>
 
+    <!-- Dashboard Bento Colors -->
+    <color name="dash_background">#131318</color>
+    <color name="dash_primary">#C7C4DE</color>
+    <color name="dash_on_primary_container">#8D8BA3</color>
+    <color name="dash_secondary_gold">#E9C400</color>
+    <color name="dash_surface_high">#2A292F</color>
+    <color name="dash_surface_low">#1B1B20</color>
+    <color name="dash_tertiary">#DCB8FF</color>
+    <color name="dash_error">#FFB4AB</color>
+    <color name="dash_on_surface_variant">#C8C5CD</color>
+    <color name="dash_outline">#928F97</color>
+    <color name="dash_card_bg">#252438</color>
+    <color name="dash_bottom_nav_bg">#CC1F1F24</color>
+
 
 </resources>

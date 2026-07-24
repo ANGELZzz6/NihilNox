@@ -1,10 +1,9 @@
-# Tareas: Mejora Visual Dashboard y Burbuja
+# Tareas: Refuerzo de Burbujas
 
-- [x] Actualizar Iconos Dashboard
-    - [x] Crear `ic_habitos_white.xml`
-    - [x] Crear `ic_lifestream_white.xml`
-    - [x] Aplicar en `activity_dashboard.xml`
-- [x] Mejorar Burbuja de Hábitos
-    - [x] Actualizar `layout_bubble.xml` (bordes y sombras)
-    - [x] Implementar animación de pulsación en `BurbujaHabitoService.kt`
-    - [x] Refinar transición de completado
+- [x] Actualizar `BurbujaHabitoService.kt`
+    - [x] Implementar soporte para ID de prueba (-99)
+    - [x] Implementar lógica de arrastre (Drag & Drop)
+    - [x] Sincronizar animaciones con el arrastre
+- [x] Mejorar `HabitosActivity.kt`
+    - [x] Añadir feedback visual al lanzar prueba
+- [x] Verificación final

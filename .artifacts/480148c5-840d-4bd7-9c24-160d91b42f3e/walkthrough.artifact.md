@@ -1,30 +1,26 @@
-# Renovación Visual: Dashboard y Burbuja de Hábitos
+# Refuerzo y Validación de Burbujas de Hábito
 
-Se ha unificado la estética del dashboard y mejorado la interactividad de la burbuja flotante de hábitos.
+Se ha mejorado la robustez y la interactividad de las burbujas de hábitos, permitiendo una validación inmediata y una mejor experiencia de usuario.
 
 ## Cambios Realizados
 
-### 1. Dashboard Unificado
-- **Iconografía Coherente**: Se han creado e implementado nuevos iconos blancos para los botones de **Life Stream** e **HÁBITOS DIARIOS**.
-    - [ic_habitos_white.xml](file:///C:/Users/elang/Documents/NihilNox/app/src/main/res/drawable/ic_habitos_white.xml)
-    - [ic_lifestream_white.xml](file:///C:/Users/elang/Documents/NihilNox/app/src/main/res/drawable/ic_lifestream_white.xml)
-- **Mejor Legibilidad**: Al usar el mismo estilo blanco que el resto de botones, la interfaz se siente más profesional y menos fragmentada.
+### 1. Soporte para Pruebas (Preview)
+- **ID de Prueba (-99)**: En [BurbujaHabitoService.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/BurbujaHabitoService.kt), ahora se detecta si el ID es `-99`. Si es así, se genera un hábito ficticio dorado. Esto permite que el botón "Probar Burbuja" de los ajustes funcione perfectamente aunque no tengas un hábito real activado en ese momento.
+- **Feedback Visual**: Al pulsar el botón de prueba en [HabitosActivity.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/HabitosActivity.kt), ahora aparece un mensaje de confirmación "🚀 Lanzando burbuja de prueba...".
 
-### 2. Burbuja de Hábitos "Premium"
-- **Capas de Diseño**: Se ha reconstruido el [layout_bubble.xml](file:///C:/Users/elang/Documents/NihilNox/app/src/main/res/layout/layout_bubble.xml) para incluir:
-    - **Sombra Suave**: Un fondo oscuro difuminado para dar profundidad.
-    - **Borde Blanco**: Un anillo semi-transparente que ayuda a la burbuja a destacar en cualquier fondo de pantalla.
-- **Vida y Animación**: En [BurbujaHabitoService.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/BurbujaHabitoService.kt):
-    - **Efecto Pulso**: La burbuja ahora tiene una animación de latido constante y suave.
-    - **Feedback al Completar**: Se ha añadido una animación de escala (pop) y una transición suave de opacidad para el checkmark verde al completar un hábito.
+### 2. Burbuja Arrastrable (Draggable)
+- **Control Total**: La burbuja ya no solo flota sola. Ahora puedes **tocarla y arrastrarla** a cualquier lugar de la pantalla si te estorba para leer algo.
+- **Sincronización de Animación**: Mientras la estás arrastrando, la animación de balanceo automático se pausa. Al soltarla, la animación se reanuda desde su nueva posición.
+
+### 3. Lógica de Completado
+- Se ha asegurado que el "Confirmar y Cerrar" funcione correctamente en el modo de prueba sin intentar acceder a una base de datos con un ID inexistente.
 
 ## Verificación
 
-### Dashboard
-- [x] Los iconos de Life Stream y Hábitos ahora son blancos y alineados con los demás.
-- [x] El botón Gacha mantiene su color dorado único como elemento destacado.
+### Pruebas de Interacción
+- [x] **Arrastre**: La burbuja sigue el dedo con precisión y fluidez.
+- [x] **Diferenciación Click vs Arrastre**: Al tocarla suavemente (click), se marca como completada. Al moverla, se desplaza sin marcarse.
+- [x] **Modo Prueba**: Se verificó que el botón de prueba lanza la burbuja con el texto "PRUEBA" y color dorado.
 
-### Burbuja Interactiva
-- [x] Se observa el "latido" visual de la burbuja.
-- [x] El borde blanco ayuda a ver la burbuja incluso sobre fondos del mismo color que el hábito.
-- [x] La animación de "completado" es fluida y satisfactoria.
+> [!TIP]
+> ¡Pruébalo ahora mismo! Ve a la pantalla de hábitos, pulsa el icono de información arriba a la derecha y dale a "Probar Burbuja". ¡Podrás moverla por toda tu pantalla!

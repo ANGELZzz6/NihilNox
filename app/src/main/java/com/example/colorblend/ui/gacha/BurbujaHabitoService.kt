@@ -11,12 +11,10 @@ import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Build
 import android.os.IBinder
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.WindowManager
+import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import com.example.colorblend.R
 import com.example.colorblend.data.local.AppDatabase
@@ -38,6 +36,9 @@ class BurbujaHabitoService : Service() {
     private var autoCloseJob: Job? = null
     private var pulseAnimator: ValueAnimator? = null
     private var moveAnimator: ValueAnimator? = null
+    
+    private var anchorX: Int = 100
+    private var anchorY: Int = 500
 
     override fun onCreate() {
         super.onCreate()
@@ -57,8 +58,19 @@ class BurbujaHabitoService : Service() {
         startForeground(1001, notification)
         
         scope.launch(Dispatchers.IO) {
-            val db = AppDatabase.getDatabase(applicationContext)
-            habitoActual = db.habitoDao().getById(habitoId)
+            if (habitoId == -99) {
+                habitoActual = Habito(
+                    id = -99,
+                    nombre = "Hábito de Prueba",
+                    burbujaTexto = "PRUEBA",
+                    burbujaColor = "#E9C400",
+                    enabledBurbuja = true
+                )
+            } else {
+                val db = AppDatabase.getDatabase(applicationContext)
+                habitoActual = db.habitoDao().getById(habitoId)
+            }
+            
             withContext(Dispatchers.Main) {
                 windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
                 mostrarBurbuja()
@@ -89,8 +101,8 @@ class BurbujaHabitoService : Service() {
             PixelFormat.TRANSLUCENT
         ).apply {
             gravity = Gravity.TOP or Gravity.START
-            x = 100
-            y = 100
+            x = anchorX
+            y = anchorY
         }
 
         val inflater = LayoutInflater.from(this)
@@ -104,6 +116,47 @@ class BurbujaHabitoService : Service() {
                 marcarComoCompletado()
             } else {
                 confirmarYCerrar()
+            }
+        }
+
+        // Lógica de Arrastre (Drag)
+        var initialX = 0
+        var initialY = 0
+        var initialTouchX = 0f
+        var initialTouchY = 0f
+
+        bubbleView?.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    initialX = params.x
+                    initialY = params.y
+                    initialTouchX = event.rawX
+                    initialTouchY = event.rawY
+                    moveAnimator?.pause()
+                    true
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    anchorX = initialX + (event.rawX - initialTouchX).toInt()
+                    anchorY = initialY + (event.rawY - initialTouchY).toInt()
+                    params.x = anchorX
+                    params.y = anchorY
+                    try {
+                        windowManager.updateViewLayout(bubbleView, params)
+                    } catch (e: Exception) {}
+                    true
+                }
+                MotionEvent.ACTION_UP -> {
+                    val diffX = Math.abs(event.rawX - initialTouchX)
+                    val diffY = Math.abs(event.rawY - initialTouchY)
+                    if (diffX < 10 && diffY < 10) {
+                        v.performClick()
+                    } else {
+                        // Reanudar flotación en la nueva posición
+                        moveAnimator?.resume()
+                    }
+                    true
+                }
+                else -> false
             }
         }
         
@@ -183,6 +236,10 @@ class BurbujaHabitoService : Service() {
     }
     
     private fun confirmarYCerrar() {
+        if (habitoId == -99) {
+            stopSelf()
+            return
+        }
         scope.launch(Dispatchers.IO) {
             val db = AppDatabase.getDatabase(applicationContext)
             val repository = HabitosRepository(db.habitoDao(), db.registroHabitoDao(), db.identidadDao())
@@ -199,12 +256,8 @@ class BurbujaHabitoService : Service() {
     }
     
     private fun iniciarAnimacionMovimiento() {
-        val displayMetrics = resources.displayMetrics
-        val screenWidth = displayMetrics.widthPixels
-        val screenHeight = displayMetrics.heightPixels
-
         moveAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
-            duration = 10000 // un poco más lento
+            duration = 4000 
             repeatCount = ValueAnimator.INFINITE
             repeatMode = ValueAnimator.REVERSE
         }
@@ -214,8 +267,13 @@ class BurbujaHabitoService : Service() {
             val bubble = bubbleView ?: return@addUpdateListener
             val params = bubble.layoutParams as WindowManager.LayoutParams
             
-            params.x = (screenWidth * 0.05 + (screenWidth * 0.8 * fraction)).toInt()
-            params.y = (screenHeight * 0.2 + (Math.sin(fraction.toDouble() * Math.PI * 4) * 150).toInt()).toInt()
+            // Movimiento suave "bobbing" (flotación local)
+            // Se mueve +-15dp horizontalmente y +-25dp verticalmente desde su ancla
+            val rangeX = (10 * resources.displayMetrics.density).toInt()
+            val rangeY = (20 * resources.displayMetrics.density).toInt()
+            
+            params.x = anchorX + (Math.sin(fraction.toDouble() * Math.PI * 2) * rangeX).toInt()
+            params.y = anchorY + (Math.cos(fraction.toDouble() * Math.PI * 2) * rangeY).toInt()
             
             try {
                 windowManager.updateViewLayout(bubble, params)

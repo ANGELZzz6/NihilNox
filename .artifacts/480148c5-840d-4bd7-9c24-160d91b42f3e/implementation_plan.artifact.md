@@ -1,50 +1,44 @@
-# Rediseño Dashboard: Estilo Bento & Material Next
+# Dashboard Premium: Animaciones "Bubble" y Refinamiento Visual
 
-Este plan detalla la implementación del nuevo diseño del Dashboard basado en el prototipo visual (HTML/Tailwind), adaptándolo a componentes nativos de Android para una experiencia fluida y coherente.
+Este plan eleva la calidad del Dashboard implementando micro-interacciones avanzadas y un sistema de animaciones orgánicas ("respiración") que hacen que el panel se sienta vivo y fluido.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> El cambio es radical: pasamos de una lista simple de botones a una **Bento Grid** (cuadrícula dinámica). Esto mejora la jerarquía visual y permite ver más información de un vistazo.
+> Implementaremos un **efecto de respiración (breathing)** individual para cada tarjeta. Esto significa que cada elemento del dashboard se expandirá y contraerá sutilmente de forma asíncrona, simulando el comportamiento de burbujas flotantes.
 
 > [!TIP]
-> Implementaremos tarjetas con estados dinámicos (como la barra de progreso en Nutrición y contadores de notas) para que el Dashboard no solo sea un lanzador, sino un panel de información real.
+> Mejoraremos el estilo de las tarjetas añadiendo un **borde de cristal (glassmorphism)** más refinado y sombras internas que darán una mayor sensación de profundidad.
 
 ## Proposed Changes
 
-### [Resources & Styling]
+### [Visual Styling]
 
-#### [MODIFY] [colors.xml](file:///C:/Users/elang/Documents/NihilNox/app/src/main/res/values/colors.xml)
-- Añadir la paleta de colores del prototipo (Surface, Primary Container, Tertiary, etc.).
+#### [MODIFY] [bg_card_bento.xml](file:///C:/Users/elang/Documents/NihilNox/app/src/main/res/drawable/bg_card_bento.xml)
+- Añadir un sutil gradiente radial o lineal para simular profundidad.
+- Refinar el borde para que sea más "metálico/premium".
 
-#### [NEW] [drawables](file:///C:/Users/elang/Documents/NihilNox/app/src/main/res/drawable/)
-- `bg_card_bento.xml`: Fondo para las tarjetas del grid con bordes sutiles.
-- `bg_gacha_banner.xml`: Degradado dorado premium para la acción principal.
-- `ic_chevron_right.xml`: Icono de navegación para las listas.
+#### [NEW] [bg_card_glass_light.xml](file:///C:/Users/elang/Documents/NihilNox/app/src/main/res/drawable/bg_card_glass_light.xml)
+- Variante más clara para tarjetas secundarias (Life Stream, Games).
+
+### [Animations & Logic]
+
+#### [MODIFY] [DashboardActivity.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/DashboardActivity.kt)
+- **Sistema de Respiración**:
+    - Crear una función `animarRespiracionBento(view: View, delay: Long)` que aplique una escala de 1.0 a 1.02 de forma infinita con `AccelerateDecelerateInterpolator`.
+    - Aplicar esta animación a cada tarjeta del grid y de la lista con un desfase temporal para evitar sincronía perfecta.
+- **Pop-In Entrance**:
+    - Actualizar `iniciarAnimacionesEntrada` para usar `OvershootInterpolator`, haciendo que los elementos aparezcan "inflandose" como burbujas.
+- **Feedback Táctil**: Refinar `animarBoton` para que el escalado sea más elástico.
 
 ### [Layout UI]
 
 #### [MODIFY] [activity_dashboard.xml](file:///C:/Users/elang/Documents/NihilNox/app/src/main/res/layout/activity_dashboard.xml)
-- **Header**: Avatar circular a la izquierda, textos de bienvenida y botón de ajustes a la derecha.
-- **Sección Gacha**: Banner horizontal destacado.
-- **Bento Grid (ConstraintLayout)**:
-    - Tarjeta Reproductor (Cuadrante superior izquierdo).
-    - Tarjeta Notas (Cuadrante superior derecho).
-    - Tarjeta Nutrición (Fila completa con barra de progreso).
-- **Sección Listado**: Perfil, Fall y Academia en una lista compacta.
-- **Grid Secundario**: Hábitos y Calendario.
-- **Bottom Bar**: Barra de navegación fija con desenfoque (blur).
-
-### [Logic & Integration]
-
-#### [MODIFY] [DashboardActivity.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/DashboardActivity.kt)
-- Vincular los nuevos IDs de tarjetas y botones.
-- **Datos Dinámicos**: Implementar la carga de calorías actuales y conteo de notas para mostrarlos en las tarjetas.
-- **Animaciones**: Actualizar la entrada en "cascada" para que coincida con la nueva disposición modular.
+- Ajustar márgenes y paddings para dar más "aire" entre los elementos, reforzando la estética Bento.
 
 ## Verification Plan
 
 ### Manual Verification
-1. **Navegación**: Verificar que todos los módulos abren su actividad correspondiente al tocar las tarjetas.
-2. **Estética**: Validar que los colores y contrastes coinciden con el diseño "Dark Premium" propuesto.
-3. **Scroll**: Asegurar que en pantallas pequeñas el contenido se puede desplazar sin que se corten los elementos críticos.
+1. **Sensación de Vida**: Observar el dashboard durante 10 segundos y confirmar que todas las tarjetas tienen un movimiento sutil e independiente.
+2. **Entrada**: Reiniciar la actividad y verificar que los elementos aparecen con un rebote suave (efecto bubble).
+3. **Consistencia**: Comprobar que no hay saltos visuales al navegar entre el dashboard y otras pantallas.
