@@ -12,8 +12,10 @@ He implementado un sistema de gestión de inventario inteligente para el Pool Lo
 - **Reponimiento Específico**: Si un usuario realiza muchas tiradas de un solo género (ej. solo femenino), la app detectará el agotamiento de stock y disparará una recarga prioritaria **específicamente de ese género** en segundo plano.
 - **Mantenimiento del 50/50**: El objetivo del sistema es mantener siempre una proporción equilibrada (aprox. 75 personajes de cada género) dentro del pool de 150.
 
-### 3. Optimización de la Experiencia de Usuario
-- Gracias a este balanceo dinámico, las tiradas filtradas (Femenino/Masculino) serán **instantáneas casi el 100% de las veces**, eliminando la necesidad de recurrir a la carga de red lenta durante la tirada.
+### 3. Estabilidad y Robustez de APIs
+- **AniList (Anime)**: He reducido el rango de búsqueda de páginas aleatorias a las primeras 200. Esto evita el error HTTP 400 que surgía cuando el sistema intentaba acceder a páginas demasiado profundas que la API no permite.
+- **IGDB (Videojuegos)**: Se ha añadido una detección específica para el error 401. Si el Access Token caduca, la app ahora lo indicará claramente en el log para que sepas que debes renovarlo en los ajustes.
+- **Manejo de Errores**: El sistema es ahora más tolerante; si una API falla, las demás compensan automáticamente el stock del Pool Local.
 
 ## Verificación
 

@@ -48,6 +48,11 @@ class IGDBRepository(private val context: Context) {
                 it.write(query); it.flush()
             }
 
+            if (connection.responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                android.util.Log.e("IGDB", "Error 401: El Access Token ha caducado o es inválido. Por favor, actualízalo.")
+                return emptyList()
+            }
+
             if (connection.responseCode != HttpURLConnection.HTTP_OK) {
                 android.util.Log.e("IGDB", "Error HTTP: ${connection.responseCode}")
                 return emptyList()

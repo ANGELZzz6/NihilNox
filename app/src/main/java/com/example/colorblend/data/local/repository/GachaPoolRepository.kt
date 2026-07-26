@@ -182,9 +182,10 @@ class GachaPoolRepository(
         var paginasProbadas = 0
         
         // Estrategia de muestreo: saltar entre páginas aleatorias
+        // Usamos un rango de 200 para evitar errores 400 (Bad Request) por páginas muy profundas
         while (lista.size < cantidad && paginasProbadas < 5) {
             paginasProbadas++
-            val page = Random.nextInt(1, 400)
+            val page = Random.nextInt(1, 200)
             try {
                 val response = ApolloClientProvider.apolloClient
                     .query(GetRandomCharactersQuery(page = page, perPage = 25))
@@ -219,7 +220,12 @@ class GachaPoolRepository(
                     ))
                 }
             } catch (e: Exception) {
-                Log.e("GachaPool", "Error fetching anime page $page: ${e.message}")
+                val errorMsg = e.message ?: ""
+                if (errorMsg.contains("400")) {
+                    Log.e("GachaPool", "AniList: Página $page fuera de rango o inválida (400).")
+                } else {
+                    Log.e("GachaPool", "Error fetching anime page $page: $errorMsg")
+                }
             }
         }
         return lista
