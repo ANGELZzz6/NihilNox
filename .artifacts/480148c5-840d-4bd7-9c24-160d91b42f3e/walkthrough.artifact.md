@@ -9,12 +9,10 @@ He implementado la nueva pantalla "Zen" para recordar frases y palabras, integr�
 - **[FraseZenDao.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/FraseZenDao.kt)**: Operaciones CRUD (Insertar, Eliminar, Obtener Aleatoria).
 - **[AppDatabase.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/AppDatabase.kt)**: Actualizada a la versión 38 con una migración automática para la nueva tabla.
 
-### 2. Interfaz de Usuario
-- **[activity_zen_recordar.xml](file:///C:/Users/elang/Documents/NihilNox/app/src/main/res/layout/activity_zen_recordar.xml)**:
-    - Fondo negro absoluto (`#000000`).
-    - Texto blanco central con estilo minimalista.
-    - Botón de agregar sutil en la esquina inferior derecha.
-- **[Dashboard Activity](file:///C:/Users/elang/Documents/NihilNox/app/src/main/res/layout/activity_dashboard.xml)**: Añadido el botón "RECALL" justo debajo de "FALL", manteniendo la estética de los otros botones (icono dorado `ic_sparkles`).
+### 2. Interfaz de Usuario e Identidad Visual
+- **[ic_zen_recall.xml](file:///C:/Users/elang/Documents/NihilNox/app/src/main/res/drawable/ic_zen_recall.xml)**: Nuevo icono personalizado que representa una pila de piedras Zen (Cairn), simbolizando equilibrio y memoria.
+- **[Dashboard Activity](file:///C:/Users/elang/Documents/NihilNox/app/src/main/res/layout/activity_dashboard.xml)**: El botón "RECALL" ahora usa el nuevo icono de piedras Zen, dándole una identidad propia y coherente con el resto de la app.
+- **[activity_zen_recordar.xml](file:///C:/Users/elang/Documents/NihilNox/app/src/main/res/layout/activity_zen_recordar.xml)**: Actualizado el botón de acción para usar un icono de suma (`ic_plus`) más intuitivo.
 
 ### 3. Lógica y Animaciones
 - **[ZenRecordarActivity.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/ZenRecordarActivity.kt)**:

@@ -29,7 +29,12 @@
     - [x] Implementar lógica de reinicio del contador tras inactividad.
     - [x] Crear función `spawnFraseAleatoria` para generar `TextViews` dinámicos.
     - [x] Asegurar la auto-eliminación de vistas para evitar fugas de memoria.
-- [x] **8. Verificación**
+- [x] **8. Identidad Visual**
+    - [x] Crear icono `ic_zen_recall.xml` (Piedras Zen).
+    - [x] Crear icono `ic_plus.xml`.
+    - [x] Actualizar `activity_dashboard.xml` con el nuevo icono.
+    - [x] Actualizar `activity_zen_recordar.xml` con el icono de suma.
+- [x] **9. Verificación**
     - [x] Confirmar que el modo normal sigue funcionando (una frase al centro).
     - [x] Probar la activación del modo lluvia tras 30 clics rápidos.
     - [x] Verificar que las frases aparecen en posiciones aleatorias y caen de forma independiente.

@@ -436,7 +436,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:layout_centerVertical="true"
-                        android:src="@drawable/ic_sparkles"
+                        android:src="@drawable/ic_zen_recall"
                         app:tint="@color/dash_secondary_gold"/>
                     <TextView
                         android:layout_width="wrap_content"

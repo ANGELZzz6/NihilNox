@@ -32,7 +32,7 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:padding="12dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/ic_sparkles"
+        android:src="@drawable/ic_plus"
         android:contentDescription="Agregar frase"
         app:tint="#FFFFFF" />
 
