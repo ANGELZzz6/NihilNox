@@ -23,6 +23,8 @@
     <string name="widget_desc_fall">NihilNox: Fall</string>
     <string name="widget_desc_academia">NihilNox: Academia</string>
     <string name="widget_desc_habitos">NihilNox: Hábitos</string>
+    <string name="widget_desc_lifestream">NihilNox: LifeStream</string>
+    <string name="widget_desc_calendario">NihilNox: Calendario</string>
 
     <string name="info_burbuja_titulo">Sistema de Burbujas</string>
     <string name="info_burbuja_contenido">

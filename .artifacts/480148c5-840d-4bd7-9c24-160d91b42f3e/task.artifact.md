@@ -1,8 +1,36 @@
-# Tareas: Sincronización LifeStream
+# Tareas: Implementación de Pantalla Zen de Recordatorios
 
-- [x] Integrar actualizaciones en Servicios
-    - [x] Notificar a LifeStream desde `BurbujaHabitoService.kt`
-    - [x] Notificar a LifeStream desde `HabitosViewModel.kt`
-- [x] Optimizar Data Source del Widget
-    - [x] Ajustar lógica de tiempo en `LifeStreamRemoteViewsService.kt`
-- [x] Verificación Final
+- [x] **1. Persistencia y Modelos**
+    - [x] Crear la entidad `FraseZen` en `domain/model/FraseZen.kt`.
+    - [x] Crear el DAO `FraseZenDao` en `data/local/FraseZenDao.kt`.
+    - [x] Registrar la nueva entidad y el DAO en `AppDatabase.kt`.
+- [x] **2. Recursos UI**
+    - [x] Crear el layout `activity_zen_recordar.xml`.
+    - [x] Asegurar que el fondo sea negro absoluto y el texto blanco.
+- [x] **3. Implementación de la Activity**
+    - [x] Crear `ZenRecordarActivity.kt`.
+    - [x] Implementar la detección de clics para mostrar frases aleatorias.
+    - [x] Implementar la animación de "pop" (overshoot).
+    - [x] Implementar un diálogo sencillo para añadir nuevas frases.
+- [x] **4. Integración en el Dashboard**
+    - [x] Añadir el botón `btnDashRecall` en `activity_dashboard.xml` debajo de "FALL".
+    - [x] Configurar el click listener y la animación de entrada en `DashboardActivity.kt`.
+    - [x] Registrar la actividad en `AndroidManifest.xml`.
+- [x] **5. Refinamiento de Animación y Lógica**
+    - [x] Cambiar inicio para que la pantalla esté vacía (totalmente negra) al abrir.
+    - [x] Implementar desvanecimiento rápido (fade-out) de la frase anterior antes de mostrar la nueva.
+    - [x] Ajustar animación de entrada para que sea más suave.
+- [x] **6. Ajustes de Velocidad de Caída**
+    - [x] Crear layout `dialog_zen_settings.xml` para el control de velocidad y texto.
+    - [x] Implementar `SharedPreferences` para guardar el retraso de caída.
+    - [x] Integrar el ajuste de velocidad dentro del mismo diálogo de agregar frases.
+- [x] **7. Modo "Lluvia Zen" (Easter Egg)**
+    - [x] Implementar contador de clics rápidos en `ZenRecordarActivity`.
+    - [x] Implementar lógica de reinicio del contador tras inactividad.
+    - [x] Crear función `spawnFraseAleatoria` para generar `TextViews` dinámicos.
+    - [x] Asegurar la auto-eliminación de vistas para evitar fugas de memoria.
+- [x] **8. Verificación**
+    - [x] Confirmar que el modo normal sigue funcionando (una frase al centro).
+    - [x] Probar la activación del modo lluvia tras 30 clics rápidos.
+    - [x] Verificar que las frases aparecen en posiciones aleatorias y caen de forma independiente.
+    - [x] Confirmar que el sistema vuelve al modo normal tras 5 segundos de calma.

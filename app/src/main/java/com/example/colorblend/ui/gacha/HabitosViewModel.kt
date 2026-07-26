@@ -88,6 +88,9 @@ class HabitosViewModel(
                 }
             }
 
+            // Actualizar alarmas para el día siguiente
+            HabitoAlarmManager.programarBurbuja(getApplication(), habito)
+
             // actualizar widget de hábitos
             WidgetHabitos.forzarActualizacion(getApplication())
             WidgetLifeStream.forzarActualizacion(getApplication())

@@ -31,12 +31,15 @@ class TareaViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     suspend fun insertarTarea(tarea: Tarea): Long {
-        return dao.insertTarea(tarea)
+        val id = dao.insertTarea(tarea)
+        WidgetCalendario.forzarActualizacion(getApplication())
+        return id
     }
 
     fun actualizarTarea(tarea: Tarea) {
         viewModelScope.launch {
             dao.updateTarea(tarea)
+            WidgetCalendario.forzarActualizacion(getApplication())
         }
     }
 
@@ -52,9 +55,12 @@ class TareaViewModel(application: Application) : AndroidViewModel(application) {
             val hoy = normalizeToStartOfDay(System.currentTimeMillis())
             if (completada) {
                 registroTareaDao.insertar(RegistroTarea(tareaId = tarea.id, fechaDia = hoy))
+            } else {
+                registroTareaDao.eliminarRegistro(tarea.id, hoy)
             }
             
             // Notificar al widget
+            WidgetCalendario.forzarActualizacion(getApplication())
             WidgetLifeStream.forzarActualizacion(getApplication())
         }
     }
@@ -62,6 +68,7 @@ class TareaViewModel(application: Application) : AndroidViewModel(application) {
     fun eliminarTarea(tarea: Tarea) {
         viewModelScope.launch {
             dao.deleteTarea(tarea)
+            WidgetCalendario.forzarActualizacion(getApplication())
             WidgetLifeStream.forzarActualizacion(getApplication())
         }
     }

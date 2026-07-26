@@ -422,6 +422,41 @@
                         android:textStyle="bold"/>
                 </RelativeLayout>
 
+                <!-- Recall (Zen) -->
+                <RelativeLayout
+                    android:id="@+id/btnDashRecall"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="@drawable/bg_card_bento"
+                    android:layout_marginBottom="8dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
+                    <ImageView
+                        android:id="@+id/icRecall"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_sparkles"
+                        app:tint="@color/dash_secondary_gold"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/icRecall"
+                        android:layout_marginStart="16dp"
+                        android:text="RECALL"
+                        android:textColor="@color/white"
+                        android:textSize="15sp"/>
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_lifestream_white"
+                        android:rotation="-90"
+                        app:tint="@color/dash_outline"/>
+                </RelativeLayout>
+
                 <!-- Academia -->
                 <RelativeLayout
                     android:id="@+id/btnDashLearn"

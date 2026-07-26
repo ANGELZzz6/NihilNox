@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:background="#1B1B20">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="AÑADIR FRASE"
+        android:textColor="#C7C4DE"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.1"
+        android:layout_marginBottom="8dp"/>
+
+    <EditText
+        android:id="@+id/etZenFraseInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Escribe algo para recordar..."
+        android:textColor="#FFFFFF"
+        android:textColorHint="#666666"
+        android:background="@drawable/input_background"
+        android:padding="12dp"
+        android:textSize="15sp"
+        android:layout_marginBottom="24dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#333333"
+        android:layout_marginBottom="24dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TIEMPO ANTES DE CAER"
+        android:textColor="#C7C4DE"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.1"
+        android:layout_marginBottom="8dp"/>
+
+    <SeekBar
+        android:id="@+id/sbZenSpeed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="10"
+        android:progress="3"
+        android:progressTint="#E9C400"
+        android:thumbTint="#E9C400" />
+
+    <TextView
+        android:id="@+id/tvZenSpeedLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="3 segundos"
+        android:textColor="#928F97"
+        android:textSize="13sp"
+        android:layout_marginTop="4dp"/>
+
+</LinearLayout>

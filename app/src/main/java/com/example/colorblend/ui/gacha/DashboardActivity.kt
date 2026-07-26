@@ -110,6 +110,12 @@ class DashboardActivity : AppCompatActivity() {
             }
         }
 
+        findViewById<View>(R.id.btnDashRecall).setOnClickListener {
+            animarBoton(it) {
+                startActivity(Intent(this, ZenRecordarActivity::class.java))
+            }
+        }
+
         // ── Bottom Nav ────────────────────────────────────────────────────
         findViewById<View>(R.id.navHabitos).setOnClickListener {
             startActivity(Intent(this, HabitosActivity::class.java))
@@ -374,8 +380,9 @@ class DashboardActivity : AppCompatActivity() {
         val lista = findViewById<View>(R.id.layoutLista)
         val grid2 = findViewById<View>(R.id.btnHabitos).parent as View
         val social = findViewById<View>(R.id.btnDashLifeStream).parent as View
+        val recall = findViewById<View>(R.id.btnDashRecall)
         
-        val elementos = listOf(topBar, gacha, bento, lista, grid2, social)
+        val elementos = listOf(topBar, gacha, bento, lista, recall, grid2, social)
 
         elementos.forEachIndexed { i, v ->
             v.scaleX = 0.7f

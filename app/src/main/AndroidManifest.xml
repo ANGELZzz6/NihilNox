@@ -113,6 +113,8 @@
         <activity
             android:name=".ui.gacha.MainActivity"
             android:exported="true" />
+        <activity android:name=".ui.gacha.ZenRecordarActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".ui.gacha.NutricionActivity"/>
         <activity android:name=".ui.gacha.NutricionOnboardingActivity"/>
         <activity android:name=".ui.gacha.AgregarAlimentoActivity"/>
@@ -216,7 +218,19 @@
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_lifestream_info"/>
         </receiver>
 
+        <receiver android:name=".ui.gacha.WidgetCalendario" android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="com.example.colorblend.ui.gacha.ACTION_COMPLETE_CALENDAR_TASK" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_calendario_info"/>
+        </receiver>
+
         <service android:name=".ui.gacha.LifeStreamRemoteViewsService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"
+            android:exported="false" />
+
+        <service android:name=".ui.gacha.CalendarioRemoteViewsService"
             android:permission="android.permission.BIND_REMOTEVIEWS"
             android:exported="false" />
 

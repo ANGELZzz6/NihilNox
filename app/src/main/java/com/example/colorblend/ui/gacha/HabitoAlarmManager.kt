@@ -16,6 +16,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 object HabitoAlarmManager {
+    
+    private const val ACTION_HABITO_ALARM = "com.example.colorblend.HABITO_ALARM"
+
     fun programarBurbuja(context: Context, habito: Habito) {
         cancelarBurbuja(context, habito.id)
         if (!habito.enabledBurbuja) return
@@ -26,24 +29,25 @@ object HabitoAlarmManager {
             set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0)
         }.timeInMillis
 
-        // Verificar si ya está completado hoy antes de programar
         CoroutineScope(Dispatchers.IO).launch {
             val db = AppDatabase.getDatabase(context.applicationContext)
             val completados = db.registroHabitoDao().getIdsHabitosCompletadosEnFecha(hoyTimestamp)
-            if (completados.contains(habito.id)) {
-                Log.d("BurbujaScheduler", "Hábito ${habito.nombre} ya completado hoy. No se programa.")
-                return@launch
-            }
-
+            
             withContext(Dispatchers.Main) {
-                realizarProgramacion(context, habito, now)
+                if (completados.contains(habito.id)) {
+                    val nextDay = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, 1) }
+                    realizarProgramacion(context, habito, nextDay)
+                } else {
+                    realizarProgramacion(context, habito, now)
+                }
             }
         }
     }
 
-    private fun realizarProgramacion(context: Context, habito: Habito, now: Calendar) {
+    private fun realizarProgramacion(context: Context, habito: Habito, startingFrom: Calendar) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(context, HabitoAlarmReceiver::class.java).apply {
+            action = ACTION_HABITO_ALARM
             putExtra("habito_id", habito.id)
             putExtra("habito_nombre", habito.nombre)
         }
@@ -54,113 +58,90 @@ object HabitoAlarmManager {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         
-        val calendar = Calendar.getInstance().apply {
+        val now = Calendar.getInstance()
+        val habitTime = Calendar.getInstance().apply {
+            timeInMillis = startingFrom.timeInMillis
             set(Calendar.HOUR_OF_DAY, habito.notificacionHora)
             set(Calendar.MINUTE, habito.notificacionMinuto)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
+            set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0)
+        }
+
+        val bubbleTime = (habitTime.clone() as Calendar).apply {
             add(Calendar.MINUTE, -habito.tiempoAnticipacion)
         }
 
-        // Si la hora de hoy ya pasó, empezar a buscar desde mañana
-        if (calendar.timeInMillis <= now.timeInMillis) {
-            calendar.add(Calendar.DAY_OF_MONTH, 1)
-        }
-
-        // Buscar el próximo día válido
-        var daysAdded = 0
-        val diasPermitidos = habito.diasSemana
-            .split(",")
-            .mapNotNull { it.trim().toIntOrNull() }
-            .filter { it in 1..7 }
-
-        // Fallback: si diasPermitidos está vacío, usar todos los días
+        // Obtener días permitidos
+        val diasPermitidos = habito.diasSemana.split(",").mapNotNull { it.trim().toIntOrNull() }
         val diasEfectivos = if (diasPermitidos.isEmpty()) listOf(1,2,3,4,5,6,7) else diasPermitidos
-
         val roomToCalendar = mapOf(1 to 2, 2 to 3, 3 to 4, 4 to 5, 5 to 6, 6 to 7, 7 to 1)
         val calendarAllowedDays = diasEfectivos.mapNotNull { roomToCalendar[it] }
 
-        while (daysAdded < 8) {
-            val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
-            if (calendarAllowedDays.contains(dayOfWeek)) break
-            calendar.add(Calendar.DAY_OF_MONTH, 1)
-            daysAdded++
+        // LÓGICA DE DISPARO INMEDIATO (CATCH-UP)
+        if (startingFrom.get(Calendar.DAY_OF_YEAR) == now.get(Calendar.DAY_OF_YEAR) &&
+            now.after(bubbleTime) && now.before(habitTime)) {
+            
+            Log.d("BurbujaScheduler", "Catch-up: Disparando '${habito.nombre}' ahora.")
+            
+            // Programar primero la siguiente ocurrencia futura
+            val nextCycle = (habitTime.clone() as Calendar).apply { add(Calendar.DAY_OF_YEAR, 1) }
+            while (!calendarAllowedDays.contains(nextCycle.get(Calendar.DAY_OF_WEEK))) {
+                nextCycle.add(Calendar.DAY_OF_MONTH, 1)
+            }
+            setAlarm(alarmManager, nextCycle.timeInMillis, pendingIntent)
+
+            // Disparar la actual
+            try { pendingIntent.send() } catch (e: Exception) {}
+            return
         }
 
-        Log.d("BurbujaScheduler", 
-            "Burbuja programada — habitoId:${habito.id} " +
-            "nombre:${habito.nombre} " +
-            "para:${SimpleDateFormat("dd/MM HH:mm", Locale.getDefault()).format(calendar.time)}"
-        )
+        // Ajustar bubbleTime al próximo día válido
+        if (bubbleTime.before(now)) {
+            bubbleTime.add(Calendar.DAY_OF_MONTH, 1)
+        }
+        while (!calendarAllowedDays.contains(bubbleTime.get(Calendar.DAY_OF_WEEK))) {
+            bubbleTime.add(Calendar.DAY_OF_MONTH, 1)
+        }
 
-        setAlarm(alarmManager, calendar.timeInMillis, pendingIntent)
+        Log.d("BurbujaScheduler", "Programada '${habito.nombre}' para ${SimpleDateFormat("dd/MM HH:mm", Locale.getDefault()).format(bubbleTime.time)}")
+        setAlarm(alarmManager, bubbleTime.timeInMillis, pendingIntent)
     }
 
     fun reprogramarParaMasTarde(context: Context, habitoId: Int) {
         if (habitoId == -99) return
-        
         CoroutineScope(Dispatchers.IO).launch {
             val db = AppDatabase.getDatabase(context.applicationContext)
             val habito = db.habitoDao().getById(habitoId) ?: return@launch
-            
             val hoyTimestamp = Calendar.getInstance().apply {
                 set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0)
                 set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0)
             }.timeInMillis
-            
-            val completados = db.registroHabitoDao().getIdsHabitosCompletadosEnFecha(hoyTimestamp)
-            if (completados.contains(habitoId)) return@launch
+            if (db.registroHabitoDao().getIdsHabitosCompletadosEnFecha(hoyTimestamp).contains(habitoId)) return@launch
 
-            // Programar para dentro de 60 minutos
-            val proximoLanzamiento = Calendar.getInstance().apply {
-                add(Calendar.MINUTE, 60)
-            }
-            
-            // Si el reintento se pasa al día siguiente, mejor dejar que la programación normal tome el mando
-            if (proximoLanzamiento.get(Calendar.DAY_OF_YEAR) != Calendar.getInstance().get(Calendar.DAY_OF_YEAR)) {
-                return@launch
-            }
+            val proximo = Calendar.getInstance().apply { add(Calendar.MINUTE, 60) }
+            if (proximo.get(Calendar.DAY_OF_YEAR) != Calendar.getInstance().get(Calendar.DAY_OF_YEAR)) return@launch
 
             withContext(Dispatchers.Main) {
-                val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
                 val intent = Intent(context, HabitoAlarmReceiver::class.java).apply {
+                    action = ACTION_HABITO_ALARM
                     putExtra("habito_id", habito.id)
                     putExtra("habito_nombre", habito.nombre)
                 }
-                val pendingIntent = PendingIntent.getBroadcast(
-                    context, 
-                    habito.id + 10000,
-                    intent, 
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                )
-                
-                setAlarm(alarmManager, proximoLanzamiento.timeInMillis, pendingIntent)
-                Log.d("BurbujaScheduler", "Reintento programado para ${habito.nombre} a las ${SimpleDateFormat("HH:mm", Locale.getDefault()).format(proximoLanzamiento.time)}")
+                val pendingIntent = PendingIntent.getBroadcast(context, habito.id + 10000, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+                setAlarm(context.getSystemService(Context.ALARM_SERVICE) as AlarmManager, proximo.timeInMillis, pendingIntent)
             }
         }
     }
 
     private fun setAlarm(alarmManager: AlarmManager, timeInMillis: Long, pendingIntent: PendingIntent) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            if (alarmManager.canScheduleExactAlarms()) {
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent)
-            } else {
-                alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent)
-            }
-        } else {
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent)
-        }
+            if (alarmManager.canScheduleExactAlarms()) alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent)
+            else alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent)
+        } else alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent)
     }
     
     fun cancelarBurbuja(context: Context, habitoId: Int) {
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(context, HabitoAlarmReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            habitoId + 10000,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-        alarmManager.cancel(pendingIntent)
+        val intent = Intent(context, HabitoAlarmReceiver::class.java).apply { action = ACTION_HABITO_ALARM }
+        val pendingIntent = PendingIntent.getBroadcast(context, habitoId + 10000, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        (context.getSystemService(Context.ALARM_SERVICE) as AlarmManager).cancel(pendingIntent)
     }
 }

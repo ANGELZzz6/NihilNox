@@ -1,24 +1,37 @@
-# Sincronización Total: LifeStream Widget
+# Walkthrough: Pantalla Zen "RECALL"
 
-Se ha corregido el problema de actualización del widget LifeStream, integrando notificaciones de cambio en todos los puntos críticos del flujo de hábitos.
+He implementado la nueva pantalla "Zen" para recordar frases y palabras, integrándola en el Dashboard principal.
 
 ## Cambios Realizados
 
-### 1. Sincronización desde la Burbuja
-- Se ha modificado [BurbujaHabitoService.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/BurbujaHabitoService.kt) para que, al confirmar la finalización de un hábito desde la burbuja flotante, el sistema avise inmediatamente al widget de **Life Stream** para que refresque su gráfico de ondas.
+### 1. Persistencia (Room)
+- **[FraseZen.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/domain/model/FraseZen.kt)**: Nueva entidad para almacenar las frases.
+- **[FraseZenDao.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/FraseZenDao.kt)**: Operaciones CRUD (Insertar, Eliminar, Obtener Aleatoria).
+- **[AppDatabase.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/AppDatabase.kt)**: Actualizada a la versión 38 con una migración automática para la nueva tabla.
 
-### 2. Sincronización desde la App
-- En [HabitosViewModel.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/HabitosViewModel.kt), se han añadido llamadas de actualización forzada del widget tanto al **marcar como completado** un hábito como al **eliminarlo**. Esto garantiza que la lista del widget siempre sea un reflejo fiel de tus datos actuales.
+### 2. Interfaz de Usuario
+- **[activity_zen_recordar.xml](file:///C:/Users/elang/Documents/NihilNox/app/src/main/res/layout/activity_zen_recordar.xml)**:
+    - Fondo negro absoluto (`#000000`).
+    - Texto blanco central con estilo minimalista.
+    - Botón de agregar sutil en la esquina inferior derecha.
+- **[Dashboard Activity](file:///C:/Users/elang/Documents/NihilNox/app/src/main/res/layout/activity_dashboard.xml)**: Añadido el botón "RECALL" justo debajo de "FALL", manteniendo la estética de los otros botones (icono dorado `ic_sparkles`).
 
-### 3. Corrección de la Lógica de Datos del Widget
-- Se ha actualizado [LifeStreamRemoteViewsService.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/LifeStreamRemoteViewsService.kt) para que deje de usar un timestamp nulo (`0`) al cargar las tareas. Ahora obtiene el **timestamp de hoy** correctamente, lo que permite mostrar las tareas recurrentes y pendientes del día vigente.
+### 3. Lógica y Animaciones
+- **[ZenRecordarActivity.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/ZenRecordarActivity.kt)**:
+    - **Inicio Silencioso**: Pantalla totalmente negra al abrir.
+    - **Efecto de Gravedad**: Ahora las frases no se quedan estáticas. Después de 3 segundos, la frase "cae" hacia la parte inferior de la pantalla mientras se desvanece, regresando la pantalla al negro absoluto.
+    - **Modo Lluvia Zen (Combo 30x)**: Se ha implementado un modo especial. Si el usuario realiza **30 clics rápidos** (menos de 600ms entre ellos), la pantalla entra en "Modo Lluvia".
+    - **Comportamiento Multitarea**: En el modo lluvia, cada clic genera una nueva frase en una posición aleatoria de la pantalla. Las frases no se reemplazan entre sí, permitiendo tener múltiples pensamientos cayendo al mismo tiempo.
+    - **Gestión Inteligente de Memoria**: Cada frase generada dinámicamente se elimina automáticamente del sistema una vez que termina su animación de caída.
+    - **Retorno a la Calma**: Si el usuario deja de interactuar por 5 segundos, el contador se reinicia y la app vuelve al modo de frase única central.
 
 ## Verificación
 
-### Sincronización en Tiempo Real
-- [x] **Check desde Burbuja**: Al dar OK en la burbuja, la onda del Life Stream se actualiza visualmente en la pantalla de inicio sin demora.
-- [x] **Gestión de Lista**: Al borrar un hábito de la lista en la app, desaparece automáticamente del widget.
-- [x] **Datos Vigentes**: El widget ahora muestra correctamente las tareas del día actual gracias al ajuste de tiempo.
+> [!IMPORTANT]
+> El modo lluvia respeta la configuración de velocidad de caída elegida por el usuario. Si aumentas la velocidad en los ajustes, la "lluvia" caerá más rápido también.
 
 > [!TIP]
-> Si el widget todavía no se actualiza la primera vez, puedes forzarlo entrando a la app y saliendo, pero a partir de ahora cualquier cambio en tus hábitos disparará el refresco automático.
+> ¡Intenta llegar al combo de 30! Verás cómo tu pantalla se llena de pensamientos flotantes que caen al abismo.
+
+> [!TIP]
+> Observa cómo la frase parece "pesar" y caer al vacío después de que terminas de leerla. Esto refuerza el concepto de dejar ir los pensamientos.

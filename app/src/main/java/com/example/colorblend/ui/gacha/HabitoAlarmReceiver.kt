@@ -18,8 +18,10 @@ class HabitoAlarmReceiver : BroadcastReceiver() {
         
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                if (habitoId != -99) {
-                    val db = AppDatabase.getDatabase(context.applicationContext)
+                val db = AppDatabase.getDatabase(context.applicationContext)
+                val habito = db.habitoDao().getById(habitoId)
+                
+                if (habitoId != -99 && habito != null) {
                     val cal = java.util.Calendar.getInstance().apply {
                         set(java.util.Calendar.HOUR_OF_DAY, 0); set(java.util.Calendar.MINUTE, 0)
                         set(java.util.Calendar.SECOND, 0); set(java.util.Calendar.MILLISECOND, 0)
@@ -27,14 +29,13 @@ class HabitoAlarmReceiver : BroadcastReceiver() {
                     val completados = db.registroHabitoDao().getIdsHabitosCompletadosEnFecha(cal.timeInMillis)
                     
                     if (completados.contains(habitoId)) {
-                        // Ya se completó, reprogramar para mañana y salir
-                        val habito = db.habitoDao().getById(habitoId)
-                        habito?.let { HabitoAlarmManager.programarBurbuja(context.applicationContext, it) }
+                        // Ya se completó hoy, simplemente reprogramar para mañana/próximo día
+                        HabitoAlarmManager.programarBurbuja(context.applicationContext, habito)
                         return@launch
                     }
                 }
 
-                // Si llegamos aquí, o es de prueba o no se ha completado
+                // Lanzar servicio si no está completado o es prueba
                 withContext(Dispatchers.Main) {
                     val serviceIntent = Intent(context, BurbujaHabitoService::class.java).apply {
                         putExtra("habito_id", habitoId)
@@ -48,14 +49,11 @@ class HabitoAlarmReceiver : BroadcastReceiver() {
                     }
                 }
 
-                // Reprogramar para mañana si es un lanzamiento normal
-                if (habitoId != -99) {
-                    val db = AppDatabase.getDatabase(context.applicationContext)
-                    val habito = db.habitoDao().getById(habitoId)
-                    habito?.let {
-                        HabitoAlarmManager.programarBurbuja(context.applicationContext, it)
-                    }
+                // Reprogramar para el siguiente ciclo
+                if (habitoId != -99 && habito != null) {
+                    HabitoAlarmManager.programarBurbuja(context.applicationContext, habito)
                 }
+                
             } finally {
                 pendingResult.finish()
             }

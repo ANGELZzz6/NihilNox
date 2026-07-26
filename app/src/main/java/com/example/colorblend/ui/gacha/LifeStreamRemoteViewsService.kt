@@ -6,6 +6,7 @@ import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import com.example.colorblend.R
 import com.example.colorblend.data.local.AppDatabase
+import com.example.colorblend.domain.model.Tarea
 import kotlinx.coroutines.runBlocking
 import java.util.Calendar
 
@@ -36,7 +37,8 @@ class LifeStreamRemoteViewsFactory(private val context: Context) : RemoteViewsSe
                 }
                 val hoy = cal.timeInMillis
                 
-                val tareas = db.tareaDao().getTareasDelDia(hoy)
+                val tareasFromDb = db.tareaDao().getTareasDelDia(hoy)
+                val filteredTareas = tareasFromDb.filter { esTareaParaElDia(it, cal) }
 
                 val newItems = mutableListOf<StreamItem>()
                 
@@ -44,7 +46,7 @@ class LifeStreamRemoteViewsFactory(private val context: Context) : RemoteViewsSe
                     newItems.add(StreamItem(h.id, h.nombre, getHistoryHabito(db, h.id), h.burbujaColor, false))
                 }
                 
-                tareas.filter { it.recurrencia != "UNA_VEZ" }.forEach { t ->
+                filteredTareas.filter { it.recurrencia != "UNA_VEZ" }.forEach { t ->
                     newItems.add(StreamItem(t.id, t.titulo, getHistoryTarea(db, t.id), t.color, true))
                 }
                 
@@ -53,6 +55,27 @@ class LifeStreamRemoteViewsFactory(private val context: Context) : RemoteViewsSe
                 e.printStackTrace()
             }
         }
+    }
+
+    private fun esTareaParaElDia(tarea: Tarea, cal: Calendar): Boolean {
+        val calTarea = Calendar.getInstance().apply { timeInMillis = tarea.fecha }
+        if (esMismoDia(calTarea, cal)) return true
+        if (cal.timeInMillis < tarea.fecha && !esMismoDia(calTarea, cal)) return false
+
+        return when (tarea.recurrencia) {
+            "DIARIO" -> true
+            "SEMANAL" -> cal.get(Calendar.DAY_OF_WEEK) == calTarea.get(Calendar.DAY_OF_WEEK)
+            "DIAS_SELECCIONADOS" -> {
+                val diasValidos = tarea.diasSemana.split(",").filter { it.isNotEmpty() }.map { it.toInt() }
+                diasValidos.contains(cal.get(Calendar.DAY_OF_WEEK))
+            }
+            else -> false
+        }
+    }
+
+    private fun esMismoDia(cal1: Calendar, cal2: Calendar): Boolean {
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR)
     }
 
     private suspend fun getHistoryHabito(db: AppDatabase, id: Int): List<Boolean> {

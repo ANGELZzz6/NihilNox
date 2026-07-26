@@ -46,7 +46,14 @@ class BurbujaHabitoService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        habitoId = intent?.getIntExtra("habito_id", -1) ?: -1
+        val newHabitoId = intent?.getIntExtra("habito_id", -1) ?: -1
+        
+        // Si ya hay una burbuja del MISMO hábito, ignorar el comando para evitar parpadeos
+        if (newHabitoId == habitoId && bubbleView != null) {
+            return START_NOT_STICKY
+        }
+
+        habitoId = newHabitoId
         habitoNombre = intent?.getStringExtra("habito_nombre") ?: "Hábito"
         val forceNow = intent?.getBooleanExtra("force_now", false) ?: false
 
