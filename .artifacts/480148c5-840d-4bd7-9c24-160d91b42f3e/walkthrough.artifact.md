@@ -6,9 +6,8 @@ He implementado una nueva fuente de imágenes de alta calidad para los personaje
 
 ### 1. Motor de Búsqueda Safebooru
 - **[SafebooruRepository.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/repository/SafebooruRepository.kt)**: Nuevo repositorio encargado de conectar con el API de Safebooru.
-    - Convierte nombres de personajes a etiquetas compatibles (ej: "Saeko Busujima" -> `saeko_busujima`).
-    - Solicita hasta 15 imágenes de alta calidad por cada petición.
-    - Incluye gestión de red segura y `User-Agent` personalizado.
+    - **Smart Search**: El sistema ahora es más inteligente. Si no encuentra al personaje por su nombre normal, intenta invertirlo (Apellido_Nombre) o buscar solo por el primer nombre. Esto aumenta drásticamente las posibilidades de encontrar imágenes.
+    - **Manejo de Errores Silencioso**: Se ha corregido el error `End of input` gestionando correctamente las respuestas vacías del servidor.
 
 ### 2. Sistema Multifuente Inteligente
 - **[ColeccionPersonajesAdapter.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/ColeccionPersonajesAdapter.kt)**: Se ha actualizado la lógica del botón "Cargar más imágenes".
