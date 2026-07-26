@@ -216,12 +216,57 @@ class ColeccionPersonajesAdapter(
             val dialogFavs   = dialog.findViewById<TextView>(R.id.dialogFavoritos)
             val btnCargar    = dialog.findViewById<Button>(R.id.btnCargarImagenes)
             val btnMisFotos  = dialog.findViewById<Button>(R.id.btnMisFotos)
+            val btnGestionar = dialog.findViewById<Button>(R.id.btnGestionarGaleria)
             val dialogCerrar = dialog.findViewById<Button>(R.id.dialogCerrar)
             val stripe       = dialog.findViewById<View>(R.id.dialogRarezaStripe)
 
             stripe?.setBackgroundColor(Color.parseColor(colorHex))
 
-            val pagerAdapter = ImagenPagerAdapter(listOf(personaje.imagenUrl))
+            val jikanRepo = JikanRepository(
+                AppDatabase.getDatabase(context).imagenPersonajeDao()
+            )
+            val safebooruRepo = com.example.colorblend.data.local.repository.SafebooruRepository(
+                AppDatabase.getDatabase(context).imagenPersonajeDao()
+            )
+
+            // Declarar pagerAdapter primero para poder usarlo en las funciones de borrado
+            lateinit var pagerAdapter: ImagenPagerAdapter
+
+            fun actualizarGaleria() {
+                lifecycleOwner.lifecycleScope.launch {
+                    val guardadas = withContext(Dispatchers.IO) {
+                        AppDatabase.getDatabase(context).imagenPersonajeDao().getImagenesPorPersonaje(personaje.id)
+                    }
+                    val urls = (listOf(personaje.imagenUrl) + guardadas.map { it.imageUrl }).distinct()
+                    pagerAdapter.update(urls)
+                    val total = urls.size
+                    val actual = (viewPager.currentItem + 1).coerceAtMost(total)
+                    indicador.text = "$actual / $total"
+                }
+            }
+
+            pagerAdapter = ImagenPagerAdapter(listOf(personaje.imagenUrl)) { urlToDelete ->
+                if (urlToDelete == personaje.imagenUrl) {
+                    Toast.makeText(context, "No puedes borrar la imagen principal", Toast.LENGTH_SHORT).show()
+                    return@ImagenPagerAdapter
+                }
+
+                androidx.appcompat.app.AlertDialog.Builder(context)
+                    .setTitle("Eliminar imagen")
+                    .setMessage("¿Quieres quitar esta imagen de la galería?")
+                    .setPositiveButton("Eliminar") { _, _ ->
+                        lifecycleOwner.lifecycleScope.launch {
+                            withContext(Dispatchers.IO) {
+                                AppDatabase.getDatabase(context).imagenPersonajeDao().deleteByUrl(urlToDelete)
+                            }
+                            actualizarGaleria()
+                            Toast.makeText(context, "Imagen eliminada", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    .setNegativeButton("Cancelar", null)
+                    .show()
+            }
+
             viewPager.adapter = pagerAdapter
             indicador.text = "1 / 1"
 
@@ -234,66 +279,129 @@ class ColeccionPersonajesAdapter(
             dialogNombre.text = personaje.nombre
             dialogFavs.text   = "⭐ ${personaje.favoritos} favoritos"
 
-            val jikanRepo = JikanRepository(
-                AppDatabase.getDatabase(context).imagenPersonajeDao()
-            )
-            val safebooruRepo = com.example.colorblend.data.local.repository.SafebooruRepository(
-                AppDatabase.getDatabase(context).imagenPersonajeDao()
-            )
-
-            lifecycleOwner.lifecycleScope.launch {
-                val imagenesGuardadas = withContext(Dispatchers.IO) {
-                    AppDatabase.getDatabase(context)
-                        .imagenPersonajeDao()
-                        .getImagenesPorPersonaje(personaje.id)
-                }
-                if (imagenesGuardadas.isNotEmpty()) {
-                    val urls = listOf(personaje.imagenUrl) + imagenesGuardadas.map { it.imageUrl }
-                    pagerAdapter.update(urls)
-                    indicador.text = "1 / ${urls.size}"
-                    btnCargar.visibility = View.GONE
-                } else {
-                    if (personaje.categoria == "superhero" || personaje.categoria == "videojuego") {
-                        btnCargar.visibility = View.GONE
-                    }
-                }
-            }
+            actualizarGaleria()
 
             btnCargar.setOnClickListener {
-                btnCargar.isEnabled = false
-                btnCargar.text = "Cargando..."
-                lifecycleOwner.lifecycleScope.launch {
-                    val urls = withContext(Dispatchers.IO) {
-                        try {
-                            when (personaje.categoria) {
-                                "superhero"  -> jikanRepo.getImagenes(personaje.id, personaje.nombre)
-                                    .ifEmpty { listOf(personaje.imagenUrl) }
-                                "videojuego" -> getImagenesIGDB(personaje.id, personaje.nombre, context)
-                                else         -> {
-                                    // Intentar Safebooru primero
-                                    val safeUrls = safebooruRepo.getImagenes(personaje.id, personaje.nombre)
-                                    if (safeUrls.isNotEmpty()) safeUrls 
-                                    else jikanRepo.getImagenes(personaje.id, personaje.nombre)
-                                }
+                val opciones = arrayOf("5 imágenes", "10 imágenes", "15 imágenes", "20 imágenes")
+                val cantidades = intArrayOf(5, 10, 15, 20)
+
+                androidx.appcompat.app.AlertDialog.Builder(context)
+                    .setTitle("¿Cuántas imágenes traer?")
+                    .setItems(opciones) { _, which ->
+                        val cantidadChoosen = cantidades[which]
+                        btnCargar.isEnabled = false
+                        btnCargar.text = "Trayendo $cantidadChoosen..."
+                        
+                        lifecycleOwner.lifecycleScope.launch {
+                            val urls = withContext(Dispatchers.IO) {
+                                try {
+                                    when (personaje.categoria) {
+                                        "superhero"  -> jikanRepo.getImagenes(personaje.id, personaje.nombre)
+                                            .ifEmpty { listOf(personaje.imagenUrl) }
+                                        "videojuego" -> getImagenesIGDB(personaje.id, personaje.nombre, context)
+                                        else         -> {
+                                            val safeUrls = safebooruRepo.getImagenes(
+                                                personaje.id, 
+                                                personaje.nombre, 
+                                                personaje.animeTitulo, 
+                                                cantidadChoosen
+                                            )
+                                            if (safeUrls.isNotEmpty()) safeUrls 
+                                            else jikanRepo.getImagenes(personaje.id, personaje.nombre)
+                                        }
+                                    }
+                                } catch (e: Exception) { emptyList() }
                             }
-                        } catch (e: Exception) {
-                            emptyList()
+
+                            btnCargar.isEnabled = true
+                            btnCargar.text = "🖼  Cargar más imágenes"
+
+                            if (urls.isEmpty() || (urls.size == 1 && urls[0] == personaje.imagenUrl)) {
+                                Toast.makeText(context, "No se encontraron más imágenes", Toast.LENGTH_SHORT).show()
+                            } else {
+                                actualizarGaleria()
+                                Toast.makeText(context, "✅ Galería actualizada", Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }
+                    .show()
+            }
 
-                    if (urls.isEmpty() || (urls.size == 1 && urls[0] == personaje.imagenUrl)) {
-                        Toast.makeText(context, "No se encontraron imágenes extra para ${personaje.nombre}", Toast.LENGTH_SHORT).show()
-                        btnCargar.isEnabled = true
-                        btnCargar.text = "🖼 Cargar más imágenes"
-                    } else {
-                        val originalUrl = personaje.imagenUrl
-                        val listaFinal = if (urls.contains(originalUrl)) urls else listOf(originalUrl) + urls
-                        
-                        pagerAdapter.update(listaFinal.distinct())
-                        indicador.text = "1 / ${listaFinal.distinct().size}"
-                        btnCargar.visibility = View.GONE
+            btnGestionar.setOnClickListener {
+                val d = Dialog(context)
+                val linear = android.widget.LinearLayout(context).apply {
+                    orientation = android.widget.LinearLayout.VERTICAL
+                    setPadding(20.dpToPx(context), 20.dpToPx(context), 20.dpToPx(context), 20.dpToPx(context))
+                    background = context.getDrawable(R.drawable.dialog_background)
+                }
+
+                val title = TextView(context).apply {
+                    text = "GESTIONAR GALERÍA"
+                    setTextColor(Color.WHITE)
+                    textSize = 16f
+                    gravity = android.view.Gravity.CENTER
+                    setPadding(0, 0, 0, 16.dpToPx(context))
+                }
+
+                val recycler = RecyclerView(context).apply {
+                    layoutManager = androidx.recyclerview.widget.GridLayoutManager(context, 3)
+                    layoutParams = android.widget.LinearLayout.LayoutParams(
+                        android.widget.LinearLayout.LayoutParams.MATCH_PARENT, 
+                        300.dpToPx(context)
+                    )
+                }
+
+                val btnDeleteSelected = Button(context).apply {
+                    text = "Borrar Seleccionadas"
+                    setTextColor(Color.WHITE)
+                    setBackgroundResource(R.drawable.btn_send_bg)
+                    val lp = android.widget.LinearLayout.LayoutParams(
+                        android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                        android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
+                    lp.setMargins(0, 16.dpToPx(context), 0, 0)
+                    layoutParams = lp
+                }
+
+                linear.addView(title)
+                linear.addView(recycler)
+                linear.addView(btnDeleteSelected)
+
+                d.setContentView(linear)
+                d.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+                lifecycleOwner.lifecycleScope.launch {
+                    val guardadas = withContext(Dispatchers.IO) {
+                        AppDatabase.getDatabase(context).imagenPersonajeDao().getImagenesPorPersonaje(personaje.id)
+                    }
+                    val manageAdapter = GalleryManageAdapter(guardadas.map { it.imageUrl })
+                    recycler.adapter = manageAdapter
+
+                    btnDeleteSelected.setOnClickListener {
+                        val toDelete = manageAdapter.getSelectedUrls()
+                        if (toDelete.isEmpty()) {
+                            Toast.makeText(context, "No hay imágenes seleccionadas", Toast.LENGTH_SHORT).show()
+                            return@setOnClickListener
+                        }
+
+                        androidx.appcompat.app.AlertDialog.Builder(context)
+                            .setTitle("Borrar por lotes")
+                            .setMessage("¿Estás seguro de borrar ${toDelete.size} imágenes?")
+                            .setPositiveButton("Borrar") { _, _ ->
+                                lifecycleOwner.lifecycleScope.launch {
+                                    withContext(Dispatchers.IO) {
+                                        AppDatabase.getDatabase(context).imagenPersonajeDao().deleteBatch(toDelete)
+                                    }
+                                    actualizarGaleria()
+                                    d.dismiss()
+                                    Toast.makeText(context, "Imágenes eliminadas", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                            .setNegativeButton("Cancelar", null)
+                            .show()
                     }
                 }
+                d.show()
             }
 
             btnMisFotos.setOnClickListener {
@@ -336,4 +444,8 @@ class ColeccionPersonajesAdapter(
             dialog.show()
         }
     }
+}
+
+private fun Int.dpToPx(context: android.content.Context): Int {
+    return (this * context.resources.displayMetrics.density).toInt()
 }

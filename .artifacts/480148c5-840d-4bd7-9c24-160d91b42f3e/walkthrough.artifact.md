@@ -1,24 +1,28 @@
-# Walkthrough: Nueva Fuente de Imágenes (Safebooru)
+# Walkthrough: Gestión de Galería y Precisión Safebooru
 
-He implementado una nueva fuente de imágenes de alta calidad para los personajes de anime, utilizando **Safebooru** como proveedor principal.
+He implementado un conjunto de mejoras avanzadas para la colección de personajes, enfocándome en la precisión de las búsquedas y el control total del usuario sobre su galería.
 
-## Cambios Realizados
+## Mejoras Realizadas
 
-### 1. Motor de Búsqueda Safebooru
-- **[SafebooruRepository.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/repository/SafebooruRepository.kt)**: Nuevo repositorio encargado de conectar con el API de Safebooru.
-    - **Smart Search**: El sistema ahora es más inteligente. Si no encuentra al personaje por su nombre normal, intenta invertirlo (Apellido_Nombre) o buscar solo por el primer nombre. Esto aumenta drásticamente las posibilidades de encontrar imágenes.
-    - **Manejo de Errores Silencioso**: Se ha corregido el error `End of input` gestionando correctamente las respuestas vacías del servidor.
+### 1. Búsqueda por Serie (Máxima Precisión)
+- **[SafebooruRepository.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/repository/SafebooruRepository.kt)**: Ahora el sistema combina el nombre del personaje con el título de su anime.
+- **Lógica Inteligente**: Si buscas a "Miku", el sistema ahora le pregunta a Safebooru por "Miku + Serie", garantizando que las imágenes correspondan a la franquicia correcta y no a otros personajes con el mismo nombre.
 
-### 2. Sistema Multifuente Inteligente
-- **[ColeccionPersonajesAdapter.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/ColeccionPersonajesAdapter.kt)**: Se ha actualizado la lógica del botón "Cargar más imágenes".
-    - **Primaria**: Intenta obtener imágenes desde **Safebooru** primero, ya que es más rápido y ofrece mayor variedad artística.
-    - **Secundaria (Fallback)**: Si Safebooru no devuelve resultados, el sistema recurre automáticamente a **Jikan (MyAnimeList)**.
-    - Esto garantiza que casi siempre encuentres imágenes nuevas, incluso si una de las fuentes falla.
+### 2. Selector de Cantidad y Botón Permanente
+- **Selector**: Al pulsar "Cargar más imágenes", ahora aparecerá un diálogo para elegir cuántas fotos quieres traer (5, 10, 15 o 20).
+- **Recursividad**: El botón ya no se oculta. Puedes usarlo todas las veces que quieras para seguir ampliando la colección de un personaje específico.
 
-## Verificación
+### 3. Gestión y Borrado de Galería
+- **Borrado Individual**: Si mantienes pulsada cualquier imagen en el carrusel de detalles del personaje, aparecerá una opción para eliminarla.
+- **Gestión por Lotes**: He añadido un nuevo botón **"Gestionar"** al lado de "Fotos".
+    - Al pulsarlo, se abre una cuadrícula con todas las imágenes extra.
+    - Puedes seleccionar múltiples imágenes mediante un toque y borrarlas todas de una vez con el botón "Borrar Seleccionadas".
+- **Protección de Datos**: El sistema impide borrar la imagen principal del personaje para evitar errores de visualización en la lista general.
+
+## Verificación Realizada
 
 > [!NOTE]
-> Las imágenes obtenidas de Safebooru suelen ser Fanarts y artes oficiales de alta resolución. El sistema filtra automáticamente cualquier contenido no apto, asegurando una galería segura y visualmente rica.
+> Se han añadido métodos a `ImagenPersonajeDao` para soportar borrados masivos (`deleteBatch`), optimizando el rendimiento de la base de datos al limpiar galerías grandes.
 
 > [!TIP]
-> Prueba a cargar imágenes con personajes de anime populares. Notarás que ahora aparecen muchas más opciones y de forma mucho más rápida que antes.
+> ¡Pruébalo! Abre un personaje, carga 20 imágenes y usa el nuevo gestor para borrar las que no te gusten o estén repetidas. Notarás que el carrusel se actualiza al instante.

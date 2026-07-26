@@ -1,42 +1,42 @@
-# Plan de Implementación: Nueva Fuente de Imágenes (Safebooru)
+# Plan de Implementación: Gestión Avanzada de Imágenes y Precisión
 
-Debido a la inestabilidad de Jikan (MyAnimeList) y la falta de una API pública potente en AniList para galerías de personajes, implementaremos **Safebooru** como una fuente secundaria robusta y gratuita.
-
-## ¿Qué es Safebooru?
-Es una de las bases de datos de arte de anime más grandes y seguras (solo contenido apto para todos los públicos). No requiere API Key y es extremadamente rápida.
+Este plan detalla las mejoras para la búsqueda de imágenes (precisión por serie y selector de cantidad) y la nueva funcionalidad de gestión de galería (eliminación individual y por lotes).
 
 ## Proposed Changes
 
-### 1. Nuevo Repositorio de Imágenes
+### 1. Motor de Búsqueda Safebooru (Precisión y Cantidad)
 
-#### [NEW] [SafebooruRepository.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/repository/SafebooruRepository.kt)
-- **Función `getImagenes(nombre: String)`**:
-    1. Formateará el nombre del personaje al formato de etiquetas de Safebooru (ej: "Saeko Busujima" -> `saeko_busujima`).
-    2. Realizará una petición a `https://safebooru.org/index.php?page=dapi&s=post&q=index&json=1&tags=NOMBRE_PERSONAJE`.
-    3. Extraerá las URLs de las imágenes de alta calidad (`file_url`).
-    4. Manejará errores de red y de cuotas de forma silenciosa.
+#### [MODIFY] [SafebooruRepository.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/repository/SafebooruRepository.kt)
+- **Actualizar `getImagenes`**: Añadir parámetros `serie: String?` y `limit: Int`.
+- **Búsqueda Combinada**: Implementar lógica para buscar `tag_personaje` + `tag_serie` como primera opción para evitar personajes de otras franquicias.
 
-### 2. Integración en la Colección
+### 2. Interfaz de Colección y Selector
 
 #### [MODIFY] [ColeccionPersonajesAdapter.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/ColeccionPersonajesAdapter.kt)
-- **Sistema de Multifuente**: Cuando el usuario pulse "Cargar más imágenes":
-    1. Primero intentará con **Safebooru** (por ser más rápida y variada).
-    2. Si Safebooru no devuelve nada, usará **Jikan (MAL)** como respaldo.
-    3. Si ambos fallan, mostrará el mensaje de error.
+- **Selector de Cantidad**: Al pulsar "Cargar más", mostrar un diálogo con opciones (5, 10, 15, 20).
+- **Mantener Botón**: El botón de carga seguirá visible tras descargar imágenes.
 
-### 3. Mejora de Formateo de Nombres
-- Implementar un limpiador de nombres más agresivo para asegurar que las etiquetas de búsqueda sean precisas (ej: eliminar "Young", "Adult", "Version", etc.).
+### 3. Gestión de Galería (Eliminación)
+
+#### [MODIFY] [ImagenPagerAdapter.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/ImagenPagerAdapter.kt)
+- Añadir callback `onLongClick` para detectar pulsaciones largas en las imágenes del carrusel.
+
+#### [MODIFY] [ColeccionPersonajesAdapter.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/ColeccionPersonajesAdapter.kt)
+- **Eliminación Individual**: Al mantener pulsada una imagen en el carrusel, mostrar un diálogo de confirmación para borrarla.
+- **Eliminación por Lotes**:
+    - Añadir un nuevo botón "Gestionar Galería" en el diálogo del personaje.
+    - Este botón abrirá una nueva vista (cuadrícula) con todas las imágenes extra del personaje.
+    - Permitir seleccionar varias imágenes mediante checkboxes y eliminarlas de una sola vez de la base de datos.
+- **Protección**: La imagen principal del personaje no podrá ser eliminada.
 
 ## Verification Plan
 
 ### Verificación Manual
-1. Abrir la colección.
-2. Seleccionar un personaje de anime.
-3. Pulsar "Cargar más imágenes".
-4. Verificar que aparecen imágenes de fanart y oficiales de alta calidad provenientes de Safebooru.
-5. Comprobar la velocidad: Safebooru suele responder en menos de 1 segundo.
+1.  **Precisión**: Buscar imágenes para un personaje con nombre común y verificar que el filtro de serie funciona.
+2.  **Selector**: Pedir exactamente 5 imágenes y verificar el límite.
+3.  **Borrado Individual**: Mantener pulsada una imagen del carrusel y confirmar su eliminación.
+4.  **Borrado por Lotes**: Abrir el gestor, marcar 3 imágenes repetidas y borrarlas. Verificar que desaparecen tanto del gestor como del carrusel.
 
 ## Ventajas
-- **Sin API Key**: No dependes de tokens que caducan.
-- **Variedad**: Safebooru tiene miles de imágenes por personaje, no solo las 3-4 oficiales.
-- **Gratis e Ilimitado**: Ideal para el uso que le damos en la app.
+- **Galería Limpia**: El usuario puede depurar fácilmente imágenes repetidas o erróneas.
+- **Experiencia de Usuario**: Mayor control sobre el contenido y la precisión de la app.

@@ -14,24 +14,36 @@ class SafebooruRepository(
     private val dao: ImagenPersonajeDao
 ) {
 
-    suspend fun getImagenes(personajeId: Int, nombrePersonaje: String): List<String> =
+    suspend fun getImagenes(
+        personajeId: Int, 
+        nombrePersonaje: String, 
+        serie: String? = null,
+        limit: Int = 15
+    ): List<String> =
         withContext(Dispatchers.IO) {
             try {
-                // 1. Intentar búsqueda con nombre completo formateado (ej: saeko_busujima)
-                val urls = fetchByTag(personajeId, formatTag(nombrePersonaje))
+                // 1. Intentar búsqueda combinada: Personaje + Serie (Máxima precisión)
+                if (!serie.isNullOrBlank()) {
+                    val combinedTag = "${formatTag(nombrePersonaje)} ${formatTag(serie)}"
+                    val combinedUrls = fetchByTag(personajeId, combinedTag, limit)
+                    if (combinedUrls.isNotEmpty()) return@withContext combinedUrls
+                }
+
+                // 2. Intentar búsqueda con nombre completo formateado (ej: saeko_busujima)
+                val urls = fetchByTag(personajeId, formatTag(nombrePersonaje), limit)
                 if (urls.isNotEmpty()) return@withContext urls
 
-                // 2. Si falla, intentar invertir nombre (muchos boorus usan Apellido_Nombre)
+                // 3. Si falla, intentar invertir nombre (muchos boorus usan Apellido_Nombre)
                 val invertido = invertirNombre(nombrePersonaje)
                 if (invertido != null) {
-                    val urlsInv = fetchByTag(personajeId, formatTag(invertido))
+                    val urlsInv = fetchByTag(personajeId, formatTag(invertido), limit)
                     if (urlsInv.isNotEmpty()) return@withContext urlsInv
                 }
 
-                // 3. Si falla, intentar solo con el primer nombre (búsqueda más amplia)
+                // 4. Si falla, intentar solo con el primer nombre (búsqueda más amplia)
                 val primerNombre = nombrePersonaje.split(" ").firstOrNull()
                 if (primerNombre != null && primerNombre.length > 2) {
-                    val urlsSimple = fetchByTag(personajeId, formatTag(primerNombre))
+                    val urlsSimple = fetchByTag(personajeId, formatTag(primerNombre), limit)
                     if (urlsSimple.isNotEmpty()) return@withContext urlsSimple
                 }
 
@@ -42,9 +54,9 @@ class SafebooruRepository(
             }
         }
 
-    private suspend fun fetchByTag(personajeId: Int, tag: String): List<String> {
+    private suspend fun fetchByTag(personajeId: Int, tag: String, limit: Int): List<String> {
         val encodedTag = URLEncoder.encode(tag, "UTF-8")
-        val urlString = "https://safebooru.org/index.php?page=dapi&s=post&q=index&json=1&tags=$encodedTag&limit=15"
+        val urlString = "https://safebooru.org/index.php?page=dapi&s=post&q=index&json=1&tags=$encodedTag&limit=$limit"
         
         Log.d("SafebooruRepo", "Buscando tag: $tag")
         val response = executeGetRequest(urlString)

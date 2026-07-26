@@ -17,4 +17,10 @@ interface ImagenPersonajeDao {
 
     @Query("SELECT COUNT(*) FROM imagenes_personaje WHERE personajeId = :personajeId")
     suspend fun contarImagenes(personajeId: Int): Int
+
+    @Query("DELETE FROM imagenes_personaje WHERE imageUrl = :url")
+    suspend fun deleteByUrl(url: String)
+
+    @Query("DELETE FROM imagenes_personaje WHERE imageUrl IN (:urls)")
+    suspend fun deleteBatch(urls: List<String>)
 }

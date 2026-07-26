@@ -10,7 +10,8 @@ import com.example.colorblend.R
 import java.io.File
 
 class ImagenPagerAdapter(
-    private var urls: List<String> = emptyList()
+    private var urls: List<String> = emptyList(),
+    private val onLongClick: ((String) -> Unit)? = null
 ) : RecyclerView.Adapter<ImagenPagerAdapter.ViewHolder>() {
 
     fun update(nuevas: List<String>) {
@@ -42,6 +43,11 @@ class ImagenPagerAdapter(
                 Glide.with(itemView.context)
                     .load(url)
                     .into(imagen)
+            }
+
+            itemView.setOnLongClickListener {
+                onLongClick?.invoke(url)
+                true
             }
         }
     }
