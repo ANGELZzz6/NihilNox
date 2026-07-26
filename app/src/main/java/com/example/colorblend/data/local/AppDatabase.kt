@@ -33,9 +33,10 @@ import com.example.colorblend.data.local.migrations.MIGRATION_26_27
         Identidad::class,
         Tarea::class,
         RegistroTarea::class,
-        FraseZen::class
+        FraseZen::class,
+        PersonajePool::class
     ],
-    version = 38
+    version = 39
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -58,6 +59,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun tareaDao(): TareaDao
     abstract fun registroTareaDao(): RegistroTareaDao
     abstract fun fraseZenDao(): FraseZenDao
+    abstract fun personajePoolDao(): PersonajePoolDao
 
     companion object {
         @Volatile private var INSTANCE: AppDatabase? = null
@@ -69,7 +71,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "colorblend_db"
                 )
-                    .addMigrations(MIGRATION_24_25, MIGRATION_25_26, MIGRATION_26_27, MIGRATION_27_28, MIGRATION_28_29, MIGRATION_29_30, MIGRATION_30_31, MIGRATION_31_32, MIGRATION_32_33, MIGRATION_33_34, MIGRATION_34_35, MIGRATION_35_36, MIGRATION_36_37, MIGRATION_37_38)
+                    .addMigrations(MIGRATION_24_25, MIGRATION_25_26, MIGRATION_26_27, MIGRATION_27_28, MIGRATION_28_29, MIGRATION_29_30, MIGRATION_30_31, MIGRATION_31_32, MIGRATION_32_33, MIGRATION_33_34, MIGRATION_34_35, MIGRATION_35_36, MIGRATION_36_37, MIGRATION_37_38, MIGRATION_38_39)
                     .build()
                     .also { INSTANCE = it }
             }
@@ -256,6 +258,26 @@ val MIGRATION_37_38 = object : Migration(37, 38) {
             CREATE TABLE IF NOT EXISTS `frases_zen` (
                 `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
                 `texto` TEXT NOT NULL
+            )
+        """.trimIndent())
+    }
+}
+
+val MIGRATION_38_39 = object : Migration(38, 39) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("""
+            CREATE TABLE IF NOT EXISTS `personaje_pool` (
+                `id` INTEGER PRIMARY KEY NOT NULL, 
+                `nombre` TEXT NOT NULL, 
+                `imagenUrl` TEXT NOT NULL, 
+                `favoritos` INTEGER NOT NULL, 
+                `rareza` TEXT NOT NULL, 
+                `genero` TEXT NOT NULL, 
+                `categoria` TEXT NOT NULL, 
+                `animeId` INTEGER NOT NULL, 
+                `animeTitulo` TEXT NOT NULL, 
+                `animeCoverUrl` TEXT NOT NULL, 
+                `fechaAgregado` INTEGER NOT NULL
             )
         """.trimIndent())
     }

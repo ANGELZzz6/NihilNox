@@ -1,35 +1,29 @@
-# Walkthrough: Pantalla Zen "RECALL"
+# Walkthrough: Sistema de Gacha Ultra Optimizado
 
-He implementado la nueva pantalla "Zen" para recordar frases y palabras, integrándola en el Dashboard principal.
+He implementado un sistema de **Pool Local** para el Gacha que resuelve los problemas de lentitud y falta de variedad.
 
-## Cambios Realizados
+## Cambios Clave
 
-### 1. Persistencia (Room)
-- **[FraseZen.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/domain/model/FraseZen.kt)**: Nueva entidad para almacenar las frases.
-- **[FraseZenDao.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/FraseZenDao.kt)**: Operaciones CRUD (Insertar, Eliminar, Obtener Aleatoria).
-- **[AppDatabase.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/AppDatabase.kt)**: Actualizada a la versión 38 con una migración automática para la nueva tabla.
+### 1. Sistema de Pool Local (Cache Inteligente)
+- **[PersonajePool.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/domain/model/PersonajePool.kt)**: Nueva tabla en la base de datos que actúa como una "reserva" de personajes listos para ser invocados.
+- **[GachaPoolRepository.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/repository/GachaPoolRepository.kt)**: Este es el motor del nuevo sistema. Gestiona la descarga silenciosa de personajes en segundo plano para mantener siempre una reserva de entre 60 y 150 personajes.
 
-### 2. Interfaz de Usuario e Identidad Visual
-- **[ic_zen_recall.xml](file:///C:/Users/elang/Documents/NihilNox/app/src/main/res/drawable/ic_zen_recall.xml)**: Nuevo icono personalizado que representa una pila de piedras Zen (Cairn), simbolizando equilibrio y memoria.
-- **[Dashboard Activity](file:///C:/Users/elang/Documents/NihilNox/app/src/main/res/layout/activity_dashboard.xml)**: El botón "RECALL" ahora usa el nuevo icono de piedras Zen, dándole una identidad propia y coherente con el resto de la app.
-- **[activity_zen_recordar.xml](file:///C:/Users/elang/Documents/NihilNox/app/src/main/res/layout/activity_zen_recordar.xml)**: Actualizado el botón de acción para usar un icono de suma (`ic_plus`) más intuitivo.
+### 2. Algoritmo de Diversidad
+- El sistema de selección ahora prioriza títulos distintos. Si tiras 10 personajes, el algoritmo intenta activamente elegir personajes de series diferentes antes de permitir duplicados, garantizando una colección mucho más variada.
 
-### 3. Lógica y Animaciones
-- **[ZenRecordarActivity.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/ZenRecordarActivity.kt)**:
-    - **Inicio Silencioso**: Pantalla totalmente negra al abrir.
-    - **Efecto de Gravedad**: Ahora las frases no se quedan estáticas. Después de 3 segundos, la frase "cae" hacia la parte inferior de la pantalla mientras se desvanece, regresando la pantalla al negro absoluto.
-    - **Modo Lluvia Zen (Combo 30x)**: Se ha implementado un modo especial. Si el usuario realiza **30 clics rápidos** (menos de 600ms entre ellos), la pantalla entra en "Modo Lluvia".
-    - **Comportamiento Multitarea**: En el modo lluvia, cada clic genera una nueva frase en una posición aleatoria de la pantalla. Las frases no se reemplazan entre sí, permitiendo tener múltiples pensamientos cayendo al mismo tiempo.
-    - **Gestión Inteligente de Memoria**: Cada frase generada dinámicamente se elimina automáticamente del sistema una vez que termina su animación de caída.
-    - **Retorno a la Calma**: Si el usuario deja de interactuar por 5 segundos, el contador se reinicia y la app vuelve al modo de frase única central.
+### 3. Velocidad e Independencia de Red
+- **Tiradas Instantáneas**: Como los personajes ya están en el Pool Local, el Gacha responde al instante.
+- **Modo Offline**: Si el usuario pierde la conexión, podrá seguir tirando del Gacha mientras queden personajes en la reserva local.
+- **Recarga Silenciosa**: Cada vez que el usuario abre la app o realiza una tirada, el sistema rellena la reserva en segundo plano sin interrumpir la experiencia.
 
-## Verificación
+### 4. Optimizaciones de API
+- **AniList**: Ahora realiza un "muestreo aleatorio" saltando entre múltiples páginas para asegurar que la reserva local sea diversa desde su origen.
+- **Superhéroes e IGDB**: Se han optimizado para realizar cargas en bloque, reduciendo la cantidad de peticiones de red.
 
-> [!IMPORTANT]
-> El modo lluvia respeta la configuración de velocidad de caída elegida por el usuario. Si aumentas la velocidad en los ajustes, la "lluvia" caerá más rápido también.
+## Verificación Realizada
+
+> [!NOTE]
+> La primera vez que inicies la app, el sistema llenará el Pool automáticamente. Si intentas tirar el Gacha inmediatamente y el pool está vacío, se realizará una "carga de emergencia" (comportamiento anterior), pero a partir de ahí, todo será instantáneo.
 
 > [!TIP]
-> ¡Intenta llegar al combo de 30! Verás cómo tu pantalla se llena de pensamientos flotantes que caen al abismo.
-
-> [!TIP]
-> Observa cómo la frase parece "pesar" y caer al vacío después de que terminas de leerla. Esto refuerza el concepto de dejar ir los pensamientos.
+> Puedes notar la mejora haciendo una tirada de 10. Verás personajes de videojuegos, superhéroes y animes mezclados mucho más rápido y con series menos repetitivas.

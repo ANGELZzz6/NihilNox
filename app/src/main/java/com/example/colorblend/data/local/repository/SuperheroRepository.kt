@@ -15,59 +15,71 @@ class SuperheroRepository(private val context: Context) {
         private const val MAX_ID   = 731
     }
 
-    suspend fun fetchPersonajeAleatorio(
+    suspend fun fetchBloque(
+        cantidad: Int,
         idsUsados: MutableSet<Int>,
         generoFiltro: String? = null
-    ): PersonajeObtenido? {
-        repeat(10) {
+    ): List<PersonajeObtenido> {
+        val lista = mutableListOf<PersonajeObtenido>()
+        var fallosSeguidos = 0
+        
+        while (lista.size < cantidad && fallosSeguidos < 20) {
             val id = Random.nextInt(1, MAX_ID)
-            if (idsUsados.contains(id)) return@repeat
-            idsUsados.add(id)
+            if (idsUsados.contains(id + 1_000_000)) continue
 
-            return try {
-                val response = URL("$BASE_URL/id/$id.json").readText()
-                val json     = JSONObject(response)
-
-                val generoApi = json.getJSONObject("appearance")
-                    .getString("gender").lowercase()
-                val genero = when (generoApi) {
-                    "male"   -> "Male"
-                    "female" -> "Female"
-                    else     -> "Unknown"
-                }
-
-                if (generoFiltro != null && genero != generoFiltro) return@repeat
-
-                val nombre     = json.getString("name")
-                val stats      = json.getJSONObject("powerstats")
-                val poderTotal = listOf(
-                    "intelligence", "strength", "speed",
-                    "durability", "power", "combat"
-                ).sumOf { stat -> stats.optInt(stat, 0) }
-
-                val rareza    = calcularRarezaPorPoder(poderTotal)
-                // Imagen md (~320x480) desde jsDelivr — sin 403 garantizado
-                val imagenUrl = json.getJSONObject("images").getString("md")
-                val publisher = json.getJSONObject("biography")
-                    .optString("publisher", "Desconocido")
-
-                PersonajeObtenido(
-                    id            = 1_000_000 + id,
-                    nombre        = nombre,
-                    imagenUrl     = imagenUrl,
-                    favoritos     = poderTotal,
-                    rareza        = rareza,
-                    genero        = genero,
-                    categoria     = "superhero",
-                    animeTitulo   = publisher,
-                    animeCoverUrl = imagenUrl
-                )
-            } catch (e: Exception) {
-                e.printStackTrace()
-                null
+            val personaje = tryFetch(id, generoFiltro)
+            if (personaje != null) {
+                lista.add(personaje)
+                idsUsados.add(personaje.id)
+                fallosSeguidos = 0
+            } else {
+                fallosSeguidos++
             }
         }
-        return null
+        return lista
+    }
+
+    private fun tryFetch(id: Int, generoFiltro: String?): PersonajeObtenido? {
+        return try {
+            val response = URL("$BASE_URL/id/$id.json").readText()
+            val json     = JSONObject(response)
+
+            val generoApi = json.getJSONObject("appearance")
+                .getString("gender").lowercase()
+            val genero = when (generoApi) {
+                "male"   -> "Male"
+                "female" -> "Female"
+                else     -> "Unknown"
+            }
+
+            if (generoFiltro != null && genero != generoFiltro) return null
+
+            val nombre     = json.getString("name")
+            val stats      = json.getJSONObject("powerstats")
+            val poderTotal = listOf(
+                "intelligence", "strength", "speed",
+                "durability", "power", "combat"
+            ).sumOf { stat -> stats.optInt(stat, 0) }
+
+            val rareza    = calcularRarezaPorPoder(poderTotal)
+            val imagenUrl = json.getJSONObject("images").getString("md")
+            val publisher = json.getJSONObject("biography")
+                .optString("publisher", "Desconocido")
+
+            PersonajeObtenido(
+                id            = 1_000_000 + id,
+                nombre        = nombre,
+                imagenUrl     = imagenUrl,
+                favoritos     = poderTotal,
+                rareza        = rareza,
+                genero        = genero,
+                categoria     = "superhero",
+                animeTitulo   = publisher,
+                animeCoverUrl = imagenUrl
+            )
+        } catch (e: Exception) {
+            null
+        }
     }
 
     private fun calcularRarezaPorPoder(poder: Int): Rareza {

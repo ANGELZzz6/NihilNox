@@ -1,41 +1,16 @@
-# Tareas: Implementación de Pantalla Zen de Recordatorios
+# Tareas: Optimización de Gacha y Pool Local
 
-- [x] **1. Persistencia y Modelos**
-    - [x] Crear la entidad `FraseZen` en `domain/model/FraseZen.kt`.
-    - [x] Crear el DAO `FraseZenDao` en `data/local/FraseZenDao.kt`.
-    - [x] Registrar la nueva entidad y el DAO en `AppDatabase.kt`.
-- [x] **2. Recursos UI**
-    - [x] Crear el layout `activity_zen_recordar.xml`.
-    - [x] Asegurar que el fondo sea negro absoluto y el texto blanco.
-- [x] **3. Implementación de la Activity**
-    - [x] Crear `ZenRecordarActivity.kt`.
-    - [x] Implementar la detección de clics para mostrar frases aleatorias.
-    - [x] Implementar la animación de "pop" (overshoot).
-    - [x] Implementar un diálogo sencillo para añadir nuevas frases.
-- [x] **4. Integración en el Dashboard**
-    - [x] Añadir el botón `btnDashRecall` en `activity_dashboard.xml` debajo de "FALL".
-    - [x] Configurar el click listener y la animación de entrada en `DashboardActivity.kt`.
-    - [x] Registrar la actividad en `AndroidManifest.xml`.
-- [x] **5. Refinamiento de Animación y Lógica**
-    - [x] Cambiar inicio para que la pantalla esté vacía (totalmente negra) al abrir.
-    - [x] Implementar desvanecimiento rápido (fade-out) de la frase anterior antes de mostrar la nueva.
-    - [x] Ajustar animación de entrada para que sea más suave.
-- [x] **6. Ajustes de Velocidad de Caída**
-    - [x] Crear layout `dialog_zen_settings.xml` para el control de velocidad y texto.
-    - [x] Implementar `SharedPreferences` para guardar el retraso de caída.
-    - [x] Integrar el ajuste de velocidad dentro del mismo diálogo de agregar frases.
-- [x] **7. Modo "Lluvia Zen" (Easter Egg)**
-    - [x] Implementar contador de clics rápidos en `ZenRecordarActivity`.
-    - [x] Implementar lógica de reinicio del contador tras inactividad.
-    - [x] Crear función `spawnFraseAleatoria` para generar `TextViews` dinámicos.
-    - [x] Asegurar la auto-eliminación de vistas para evitar fugas de memoria.
-- [x] **8. Identidad Visual**
-    - [x] Crear icono `ic_zen_recall.xml` (Piedras Zen).
-    - [x] Crear icono `ic_plus.xml`.
-    - [x] Actualizar `activity_dashboard.xml` con el nuevo icono.
-    - [x] Actualizar `activity_zen_recordar.xml` con el icono de suma.
-- [x] **9. Verificación**
-    - [x] Confirmar que el modo normal sigue funcionando (una frase al centro).
-    - [x] Probar la activación del modo lluvia tras 30 clics rápidos.
-    - [x] Verificar que las frases aparecen en posiciones aleatorias y caen de forma independiente.
-    - [x] Confirmar que el sistema vuelve al modo normal tras 5 segundos de calma.
+- [x] **1. Persistencia (Room)**
+    - [x] Crear entidad `PersonajePool` en `domain/model/PersonajePool.kt`.
+    - [x] Crear DAO `PersonajePoolDao` en `data/local/PersonajePoolDao.kt`.
+    - [x] Actualizar `AppDatabase.kt` con la nueva entidad y DAO (Versión 39).
+- [x] **2. Repositorio de Pool**
+    - [x] Crear `GachaPoolRepository.kt` para gestionar la pre-carga y diversidad.
+    - [x] Adaptar `SuperheroRepository` e `IGDBRepository` para cargas más eficientes.
+- [x] **3. Lógica de Negocio (ViewModel)**
+    - [x] Modificar `AnimeViewModel` para consumir desde el Pool Local.
+    - [x] Implementar la recarga silenciosa del Pool al iniciar la app.
+- [x] **4. Verificación**
+    - [x] Probar tiradas instantáneas (Pool lleno).
+    - [x] Verificar diversidad de animes en tiradas de 10.
+    - [x] Probar modo offline con pool pre-cargado.
