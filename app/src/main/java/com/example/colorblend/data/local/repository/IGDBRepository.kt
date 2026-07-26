@@ -67,9 +67,9 @@ class IGDBRepository(private val context: Context) {
                 val imagenFinal = imagenUrl.replace("thumb", "cover_big")
 
                 val generoInt = character.optInt("gender", -1)
-                val genero = when (generoInt) { 0 -> "Male"; 1 -> "Female"; else -> "Unknown" }
+                val genero = when (generoInt) { 1 -> "Male"; 2 -> "Female"; else -> "Unknown" }
 
-                if (generoFiltro != null && genero != generoFiltro) return@mapNotNull null
+                if (generoFiltro != null && !genero.equals(generoFiltro, ignoreCase = true)) return@mapNotNull null
 
                 idsUsados.add(id)
 

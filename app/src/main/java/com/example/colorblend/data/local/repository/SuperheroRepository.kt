@@ -46,13 +46,13 @@ class SuperheroRepository(private val context: Context) {
 
             val generoApi = json.getJSONObject("appearance")
                 .getString("gender").lowercase()
-            val genero = when (generoApi) {
-                "male"   -> "Male"
-                "female" -> "Female"
-                else     -> "Unknown"
+            val genero = when {
+                generoApi.contains("female") -> "Female"
+                generoApi.contains("male") -> "Male"
+                else -> "Unknown"
             }
 
-            if (generoFiltro != null && genero != generoFiltro) return null
+            if (generoFiltro != null && !genero.equals(generoFiltro, ignoreCase = true)) return null
 
             val nombre     = json.getString("name")
             val stats      = json.getJSONObject("powerstats")

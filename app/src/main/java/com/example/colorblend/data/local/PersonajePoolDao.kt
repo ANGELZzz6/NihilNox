@@ -15,7 +15,7 @@ interface PersonajePoolDao {
     @Query("SELECT * FROM personaje_pool ORDER BY RANDOM() LIMIT :limit")
     suspend fun getRandomCharacters(limit: Int): List<PersonajePool>
 
-    @Query("SELECT * FROM personaje_pool WHERE genero = :genero ORDER BY RANDOM() LIMIT :limit")
+    @Query("SELECT * FROM personaje_pool WHERE genero = :genero COLLATE NOCASE ORDER BY RANDOM() LIMIT :limit")
     suspend fun getRandomCharactersByGender(genero: String, limit: Int): List<PersonajePool>
 
     @Delete

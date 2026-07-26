@@ -1,29 +1,28 @@
-# Walkthrough: Sistema de Gacha Ultra Optimizado
+# Walkthrough: Gacha Blindado y Filtrado de Género Corregido
 
-He implementado un sistema de **Pool Local** para el Gacha que resuelve los problemas de lentitud y falta de variedad.
+He aplicado una serie de correcciones críticas para estabilizar el sistema de Gacha y asegurar que los botones de género funcionen siempre correctamente.
 
-## Cambios Clave
+## Mejoras Realizadas
 
-### 1. Sistema de Pool Local (Cache Inteligente)
-- **[PersonajePool.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/domain/model/PersonajePool.kt)**: Nueva tabla en la base de datos que actúa como una "reserva" de personajes listos para ser invocados.
-- **[GachaPoolRepository.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/repository/GachaPoolRepository.kt)**: Este es el motor del nuevo sistema. Gestiona la descarga silenciosa de personajes en segundo plano para mantener siempre una reserva de entre 60 y 150 personajes.
+### 1. Filtrado de Género Infalible
+- **Normalización**: Ahora, sin importar de qué API venga el personaje (AniList, Superheros o IGDB), el género se guarda internamente como "Male" o "Female".
+- **Búsqueda Flexible**: He actualizado la base de datos local para que la búsqueda sea insensible a mayúsculas/minúsculas. Esto garantiza que el botón "Femenino" siempre encuentre a los personajes del Pool, eliminando los errores de "tirada vacía".
 
-### 2. Algoritmo de Diversidad
-- El sistema de selección ahora prioriza títulos distintos. Si tiras 10 personajes, el algoritmo intenta activamente elegir personajes de series diferentes antes de permitir duplicados, garantizando una colección mucho más variada.
+### 2. Silenciado de Errores de API
+- **Superhéroes**: He modificado el repositorio para que los errores 404 (personajes que ya no existen en su base de datos) no aparezcan en el log ni interrumpan la carga. El sistema simplemente salta ese ID y busca el siguiente.
+- **IGDB**: Se ha corregido el mapeo de géneros según su documentación oficial (1 para Masculino, 2 para Femenino).
 
-### 3. Velocidad e Independencia de Red
-- **Tiradas Instantáneas**: Como los personajes ya están en el Pool Local, el Gacha responde al instante.
-- **Modo Offline**: Si el usuario pierde la conexión, podrá seguir tirando del Gacha mientras queden personajes en la reserva local.
-- **Recarga Silenciosa**: Cada vez que el usuario abre la app o realiza una tirada, el sistema rellena la reserva en segundo plano sin interrumpir la experiencia.
+### 3. Sincronización de Código
+- Se han eliminado las referencias a métodos antiguos que causaban ruido en los logs, asegurando que la app use únicamente la nueva lógica de **Pool Local**.
 
-### 4. Optimizaciones de API
-- **AniList**: Ahora realiza un "muestreo aleatorio" saltando entre múltiples páginas para asegurar que la reserva local sea diversa desde su origen.
-- **Superhéroes e IGDB**: Se han optimizado para realizar cargas en bloque, reduciendo la cantidad de peticiones de red.
+## Instrucciones de Sincronización
 
-## Verificación Realizada
+> [!CAUTION]
+> **ACCION REQUERIDA**: Para que todos estos cambios surtan efecto y se limpie el código antiguo "fantasma", por favor realiza estos dos pasos en Android Studio:
+> 1. Ve al menú superior: **Build > Clean Project**.
+> 2. Una vez termine, ve a: **Build > Rebuild Project**.
 
-> [!NOTE]
-> La primera vez que inicies la app, el sistema llenará el Pool automáticamente. Si intentas tirar el Gacha inmediatamente y el pool está vacío, se realizará una "carga de emergencia" (comportamiento anterior), pero a partir de ahí, todo será instantáneo.
+## Verificación
 
 > [!TIP]
-> Puedes notar la mejora haciendo una tirada de 10. Verás personajes de videojuegos, superhéroes y animes mezclados mucho más rápido y con series menos repetitivas.
+> Tras el Rebuild, prueba a realizar tiradas específicas de "Solo Femenino" o "Solo Masculino". Deberías ver cómo el sistema responde instantáneamente con personajes del género correcto, mezclando animes, juegos y superhéroes sin errores.

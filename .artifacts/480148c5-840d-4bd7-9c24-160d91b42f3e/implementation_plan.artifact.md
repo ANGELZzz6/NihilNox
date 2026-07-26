@@ -1,40 +1,36 @@
-# Plan de Implementación: Gacha Ultra-Robusto y Lluvia de Personajes
+# Plan de Acción: Corrección de Errores y Robustez de Género
 
-Este plan describe la fase final de optimización del sistema de Gacha, asegurando que la carga sea fluida, en segundo plano y resistente a fallos de las APIs externas.
+Tras analizar los logs, he identificado que el sistema aún estaba intentando ejecutar código antiguo y que hay inconsistencias en el filtrado por género y manejo de errores de APIs.
 
-## User Review Required
+## Problemas Identificados
 
-> [!IMPORTANT]
-> Se implementará un **Sistema de Emergencia Local**. Si todas las APIs fallan y el pool está vacío, la app usará un conjunto de 20 personajes "clásicos" guardados internamente para que el usuario nunca vea una pantalla de error.
+1.  **Código Desactualizado**: Los logs muestran llamadas a `fetchPersonajeAleatorio`, método que fue eliminado en la última actualización. Esto indica que el proyecto necesita una limpieza/sincronización.
+2.  **Filtro de Género Sensible**: La búsqueda en la base de datos local para el modo Femenino/Masculino podría estar fallando si los strings no coinciden exactamente (ej. "Female" vs "female").
+3.  **Manejo de Errores de Red**: Aunque se añadieron `try-catch`, algunos errores de "Archivo no encontrado" (404) en la API de superhéroes están ensuciando el log.
+4.  **Autenticación IGDB (401)**: El token de IGDB parece haber expirado o es inválido.
 
-> [!TIP]
-> La recarga del pool se optimizará para ser totalmente asíncrona, evitando cualquier micro-tirón en la UI incluso en dispositivos de gama baja.
+## Cambios Propuestos
 
-## Proposed Changes
+### 1. Mejora en la Base de Datos Local
 
-### 1. Robustez de APIs y Fallbacks
+#### [MODIFY] [PersonajePoolDao.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/PersonajePoolDao.kt)
+- Cambiar la consulta de género a `COLLATE NOCASE` para que no importe si es mayúscula o minúscula.
 
-#### [MODIFY] [GachaPoolRepository.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/repository/GachaPoolRepository.kt)
-- **Balanceo de Cuotas**: Si AniList falla, el sistema intentará compensar pidiendo más personajes a Superhéroes e IGDB automáticamente.
-- **Manejo de Errores Silencioso**: Las excepciones de red durante la recarga no afectarán al usuario; simplemente se reintentará en la próxima oportunidad.
-- **Local Fallback**: Integrar una lista estática de personajes como último recurso si el pool está vacío y no hay red.
-
-### 2. Optimización de Carga en Segundo Plano
-
-#### [MODIFY] [AnimeViewModel.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/metas/viewmodels/AnimeViewModel.kt)
-- Asegurar que la recarga inicial y post-tirada se ejecute en un contexto de corrutina de baja prioridad (`Dispatchers.IO`) y no bloquee el flujo principal.
-
-### 3. Mejora de Variedad (Diversidad Garantizada)
+### 2. Refuerzo de GachaPoolRepository
 
 #### [MODIFY] [GachaPoolRepository.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/repository/GachaPoolRepository.kt)
-- Refinar el algoritmo de selección para que, en caso de fallos parciales de APIs, siga priorizando la mezcla de categorías (Anime, Superhéroe, Videojuego).
+- Normalizar los strings de género a un formato estándar ("Male", "Female") antes de guardarlos en el Pool.
+- Mejorar el logging para que los errores de API sean más descriptivos pero no rompan la ejecución.
 
-## Verification Plan
+### 3. Limpieza de Repositorios
 
-### Manual Verification
-1. **Prueba de Modo Avión**: Vaciar el pool manualmente (o mediante código temporal) y entrar en modo avión. Verificar que el Gacha muestra los personajes del "Local Fallback".
-2. **Prueba de Fallo de API**: Simular un error en la API de AniList (cambiando la URL temporalmente) y verificar que la tirada se completa usando solo Superhéroes y Videojuegos sin que el usuario note el error.
-3. **Fluidez UI**: Verificar que mientras el pool se recarga en segundo plano, las animaciones del Dashboard y el Gacha siguen siendo suaves a 60fps.
+#### [MODIFY] [SuperheroRepository.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/repository/SuperheroRepository.kt)
+- Asegurar que el `try-catch` sea lo más específico posible para evitar que los 404 de IDs inexistentes causen ruidos innecesarios.
 
-### Automated Tests
-- Test de estrés: Ejecutar 50 tiradas seguidas y verificar que el Pool se mantiene estable y la diversidad de series es alta.
+## Plan de Verificación
+
+### Sincronización Forzada
+- Solicitar al usuario que realice un **"Clean Project"** y **"Rebuild Project"** en Android Studio para asegurar que el código antiguo desaparezca.
+
+### Pruebas de Género
+- Tirar Gacha Femenino y Masculino y verificar en los logs que el Pool devuelve personajes correctamente filtrados sin importar el origen (AniList, IGDB o Superheros).

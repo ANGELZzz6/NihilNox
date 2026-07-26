@@ -188,7 +188,7 @@ class GachaPoolRepository(
                         imagenUrl = c.image?.large ?: "",
                         favoritos = favorites,
                         rareza = Rareza.desde(favorites),
-                        genero = c.gender ?: "Unknown",
+                        genero = normalizeGender(c.gender),
                         categoria = "anime",
                         animeId = animeNode?.id ?: 0,
                         animeTitulo = animeNode?.title?.romaji ?: "Desconocido",
@@ -213,4 +213,12 @@ class GachaPoolRepository(
         rareza = rareza, genero = genero, categoria = categoria,
         animeId = animeId, animeTitulo = animeTitulo, animeCoverUrl = animeCoverUrl
     )
+
+    private fun normalizeGender(genero: String?): String {
+        return when (genero?.lowercase()) {
+            "male", "m", "masculino" -> "Male"
+            "female", "f", "femenino" -> "Female"
+            else -> "Unknown"
+        }
+    }
 }

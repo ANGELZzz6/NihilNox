@@ -1,16 +1,13 @@
-# Tareas: Optimización de Gacha y Pool Local
+# Tareas: Corrección de Errores y Robustez de Gacha
 
 - [x] **1. Persistencia (Room)**
-    - [x] Crear entidad `PersonajePool` en `domain/model/PersonajePool.kt`.
-    - [x] Crear DAO `PersonajePoolDao` en `data/local/PersonajePoolDao.kt`.
-    - [x] Actualizar `AppDatabase.kt` con la nueva entidad y DAO (Versión 39).
+    - [x] Modificar `PersonajePoolDao.kt` para búsqueda de género insensible a mayúsculas (`COLLATE NOCASE`).
 - [x] **2. Repositorio de Pool**
-    - [x] Crear `GachaPoolRepository.kt` para gestionar la pre-carga y diversidad.
-    - [x] Adaptar `SuperheroRepository` e `IGDBRepository` para cargas más eficientes.
-- [x] **3. Lógica de Negocio (ViewModel)**
-    - [x] Modificar `AnimeViewModel` para consumir desde el Pool Local.
-    - [x] Implementar la recarga silenciosa del Pool al iniciar la app.
-- [x] **4. Verificación**
-    - [x] Probar tiradas instantáneas (Pool lleno).
-    - [x] Verificar diversidad de animes en tiradas de 10.
-    - [x] Probar modo offline con pool pre-cargado.
+    - [x] Normalizar strings de género en `GachaPoolRepository.kt` ("Male", "Female", "Unknown").
+    - [x] Mejorar el manejo de errores y logging en las descargas.
+- [x] **3. Repositorios Externos**
+    - [x] Silenciar errores 404 en `SuperheroRepository.kt`.
+    - [x] Ajustar mapeo de géneros en `IGDBRepository.kt`.
+- [ ] **4. Verificación y Sincronización**
+    - [ ] Instruir al usuario para realizar Clean & Rebuild.
+    - [ ] Verificar funcionamiento de botones de género.
