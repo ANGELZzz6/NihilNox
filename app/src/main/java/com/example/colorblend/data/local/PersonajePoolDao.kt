@@ -23,4 +23,10 @@ interface PersonajePoolDao {
 
     @Query("DELETE FROM personaje_pool WHERE id = :id")
     suspend fun deleteById(id: Int)
+
+    @Query("SELECT COUNT(*) FROM personaje_pool WHERE genero = 'Male' COLLATE NOCASE")
+    suspend fun getMaleCount(): Int
+
+    @Query("SELECT COUNT(*) FROM personaje_pool WHERE genero = 'Female' COLLATE NOCASE")
+    suspend fun getFemaleCount(): Int
 }

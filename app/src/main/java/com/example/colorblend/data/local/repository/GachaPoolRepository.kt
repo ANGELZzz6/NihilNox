@@ -10,7 +10,6 @@ import com.example.colorblend.graphql.GetRandomCharactersQuery
 import com.example.colorblend.network.ApolloClientProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import java.util.Collections
 import kotlin.random.Random
@@ -35,24 +34,46 @@ class GachaPoolRepository(
 
     suspend fun getPoolSize(): Int = poolDao.getPoolSize()
 
-    suspend fun recargarPoolSiEsNecesario() = withContext(Dispatchers.IO) {
-        try {
-            val currentSize = poolDao.getPoolSize()
-            if (currentSize < MIN_POOL_SIZE) {
-                Log.d("GachaPool", "Pool bajo ($currentSize). Recargando...")
-                val aCargar = MAX_POOL_SIZE - currentSize
-                val personajes = fetchNuevosPersonajes(aCargar)
+    suspend fun recargarPoolSiEsNecesario() {
+        withContext(Dispatchers.IO) {
+            try {
+                val currentSize = poolDao.getPoolSize()
+                val maleCount = poolDao.getMaleCount()
+                val femaleCount = poolDao.getFemaleCount()
                 
-                if (personajes.isEmpty()) {
-                    Log.w("GachaPool", "No se pudieron obtener nuevos personajes. Usando fallback local.")
-                    insertarFallbackLocal()
-                } else {
-                    poolDao.insertBatch(personajes.map { it.toPoolEntity() })
-                    Log.d("GachaPool", "Pool recargado con ${personajes.size} personajes.")
+                Log.d("GachaPool", "Estado Pool - Total: $currentSize, M: $maleCount, F: $femaleCount")
+
+                // Umbral por género: si uno baja de 30, priorizamos ese género
+                val genderThreshold = 30
+                val idealGenderCount = MAX_POOL_SIZE / 2
+
+                if (maleCount < genderThreshold) {
+                    Log.d("GachaPool", "Stock de hombres bajo. Recargando masculinos...")
+                    val aCargar = idealGenderCount - maleCount
+                    val nuevos = fetchNuevosPersonajes(aCargar, "Male")
+                    poolDao.insertBatch(nuevos.map { it.toPoolEntity() })
                 }
+                
+                if (femaleCount < genderThreshold) {
+                    Log.d("GachaPool", "Stock de mujeres bajo. Recargando femeninos...")
+                    val aCargar = idealGenderCount - femaleCount
+                    val nuevos = fetchNuevosPersonajes(aCargar, "Female")
+                    poolDao.insertBatch(nuevos.map { it.toPoolEntity() })
+                }
+
+                // Si después de equilibrar el total sigue bajo, hacemos carga genérica
+                val finalSize = poolDao.getPoolSize()
+                if (finalSize < MIN_POOL_SIZE) {
+                    val aCargar = MAX_POOL_SIZE - finalSize
+                    val personajes = fetchNuevosPersonajes(aCargar)
+                    if (personajes.isEmpty()) insertarFallbackLocal()
+                    else poolDao.insertBatch(personajes.map { it.toPoolEntity() })
+                }
+                
+                return@withContext Unit
+            } catch (e: Exception) {
+                Log.e("GachaPool", "Error silencioso en recarga balanceada: ${e.message}")
             }
-        } catch (e: Exception) {
-            Log.e("GachaPool", "Error silencioso en recarga: ${e.message}")
         }
     }
 
@@ -80,7 +101,8 @@ class GachaPoolRepository(
         if (rawPool.size < cantidad) {
             // Carga de emergencia si no hay suficientes
             val extra = fetchNuevosPersonajes(cantidad - rawPool.size, genero)
-            return@withContext (rawPool.map { it.toObtenido() } + extra).take(cantidad)
+            val finalResult = (rawPool.map { it.toObtenido() } + extra).take(cantidad)
+            return@withContext finalResult
         }
 
         // Algoritmo de diversidad: elegir títulos distintos
@@ -145,11 +167,10 @@ class GachaPoolRepository(
         if (totalObtenidos.size < cantidad && totalObtenidos.isNotEmpty()) {
             val faltante = cantidad - totalObtenidos.size
             Log.d("GachaPool", "Compensando faltante de $faltante personajes...")
-            // Lógica de compensación simple: pedir más a lo que esté disponible
-            // En una versión más compleja, aquí llamaríamos de nuevo a las APIs que no fallaron
         }
 
-        return@withContext totalObtenidos.shuffled()
+        val finalMezclados = totalObtenidos.shuffled()
+        return@withContext finalMezclados
     }
 
     private suspend fun fetchAnimeBloque(
@@ -169,7 +190,9 @@ class GachaPoolRepository(
                     .query(GetRandomCharactersQuery(page = page, perPage = 25))
                     .execute()
                 
-                val chars = response.data?.Page?.characters?.filterNotNull() ?: continue
+                val characters = response.data?.Page?.characters ?: continue
+                
+                val chars = characters.filterNotNull()
                 val filtrados = if (generoFiltro != null) {
                     chars.filter { it.gender?.equals(generoFiltro, ignoreCase = true) == true }
                 } else chars

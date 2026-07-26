@@ -1,36 +1,38 @@
-# Plan de Acción: Corrección de Errores y Robustez de Género
+# Plan de Implementación: Balance Inteligente de Géneros en el Pool
 
-Tras analizar los logs, he identificado que el sistema aún estaba intentando ejecutar código antiguo y que hay inconsistencias en el filtrado por género y manejo de errores de APIs.
+Este plan detalla cómo optimizar la recarga del Gacha para que siempre haya un stock saludable de personajes masculinos y femeninos, evitando que las tiradas específicas (solo mujeres o solo hombres) se vuelvan lentas por falta de reserva local.
 
-## Problemas Identificados
-
-1.  **Código Desactualizado**: Los logs muestran llamadas a `fetchPersonajeAleatorio`, método que fue eliminado en la última actualización. Esto indica que el proyecto necesita una limpieza/sincronización.
-2.  **Filtro de Género Sensible**: La búsqueda en la base de datos local para el modo Femenino/Masculino podría estar fallando si los strings no coinciden exactamente (ej. "Female" vs "female").
-3.  **Manejo de Errores de Red**: Aunque se añadieron `try-catch`, algunos errores de "Archivo no encontrado" (404) en la API de superhéroes están ensuciando el log.
-4.  **Autenticación IGDB (401)**: El token de IGDB parece haber expirado o es inválido.
+## Problema Actual
+Si un usuario solo tira personajes femeninos, agota el stock de ese género en el Pool Local. La recarga actual es genérica, por lo que el Pool podría llenarse mayoritariamente de hombres, forzando cargas lentas de red cuando se pidan mujeres de nuevo.
 
 ## Cambios Propuestos
 
-### 1. Mejora en la Base de Datos Local
+### 1. Mejoras en la Persistencia
 
 #### [MODIFY] [PersonajePoolDao.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/PersonajePoolDao.kt)
-- Cambiar la consulta de género a `COLLATE NOCASE` para que no importe si es mayúscula o minúscula.
+- Añadir métodos para contar específicamente cuántos personajes hay de cada género:
+    - `getMaleCount(): Int`
+    - `getFemaleCount(): Int`
 
-### 2. Refuerzo de GachaPoolRepository
+### 2. Lógica de Recarga Equilibrada
 
 #### [MODIFY] [GachaPoolRepository.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/repository/GachaPoolRepository.kt)
-- Normalizar los strings de género a un formato estándar ("Male", "Female") antes de guardarlos en el Pool.
-- Mejorar el logging para que los errores de API sean más descriptivos pero no rompan la ejecución.
+- Modificar `recargarPoolSiEsNecesario()` para:
+    1. Obtener los conteos de hombres y mujeres.
+    2. Identificar si algún género está por debajo de un umbral crítico (ej. menos de 30 personajes).
+    3. Si un género está bajo, disparar una recarga **específica** para ese género en segundo plano.
+    4. Mantener el balance ideal (ej. 50% hombres / 50% mujeres dentro del límite de 150).
 
-### 3. Limpieza de Repositorios
+### 3. Optimización de Segundo Plano
+- Asegurar que el sistema no "sobrecargue" las APIs haciendo demasiadas peticiones seguidas, sino que rellene lo justo para mantener la reserva operativa.
 
-#### [MODIFY] [SuperheroRepository.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/repository/SuperheroRepository.kt)
-- Asegurar que el `try-catch` sea lo más específico posible para evitar que los 404 de IDs inexistentes causen ruidos innecesarios.
+## Verification Plan
 
-## Plan de Verificación
+### Verificación Manual
+1. **Prueba de Agotamiento**: Vaciar manualmente los personajes femeninos del pool local.
+2. **Revisión de Logs**: Observar cómo el sistema detecta el bajo stock de mujeres y dispara una recarga prioritaria de ese género.
+3. **Prueba de Tirada**: Realizar una tirada de "Solo Femenino" y verificar que es instantánea a pesar del vaciado previo.
+4. **Persistencia**: Confirmar que tras la recarga, el conteo en la base de datos vuelve a ser equilibrado (aprox. mitad y mitad).
 
-### Sincronización Forzada
-- Solicitar al usuario que realice un **"Clean Project"** y **"Rebuild Project"** en Android Studio para asegurar que el código antiguo desaparezca.
-
-### Pruebas de Género
-- Tirar Gacha Femenino y Masculino y verificar en los logs que el Pool devuelve personajes correctamente filtrados sin importar el origen (AniList, IGDB o Superheros).
+## Open Questions
+- ¿Consideras que una proporción de 50/50 es la ideal o prefieres priorizar más algún género en la reserva por defecto?

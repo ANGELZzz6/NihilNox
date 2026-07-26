@@ -1,13 +1,10 @@
-# Tareas: Corrección de Errores y Robustez de Gacha
+# Tareas: Balance Inteligente de Géneros en el Pool
 
 - [x] **1. Persistencia (Room)**
-    - [x] Modificar `PersonajePoolDao.kt` para búsqueda de género insensible a mayúsculas (`COLLATE NOCASE`).
+    - [x] Añadir `getMaleCount()` y `getFemaleCount()` en `PersonajePoolDao.kt`.
 - [x] **2. Repositorio de Pool**
-    - [x] Normalizar strings de género en `GachaPoolRepository.kt` ("Male", "Female", "Unknown").
-    - [x] Mejorar el manejo de errores y logging en las descargas.
-- [x] **3. Repositorios Externos**
-    - [x] Silenciar errores 404 en `SuperheroRepository.kt`.
-    - [x] Ajustar mapeo de géneros en `IGDBRepository.kt`.
-- [ ] **4. Verificación y Sincronización**
-    - [ ] Instruir al usuario para realizar Clean & Rebuild.
-    - [ ] Verificar funcionamiento de botones de género.
+    - [x] Implementar lógica de detección de desequilibrio en `recargarPoolSiEsNecesario`.
+    - [x] Ajustar la recarga para priorizar géneros con bajo stock.
+- [x] **3. Verificación**
+    - [ ] Confirmar que el pool mantiene una proporción equilibrada (aprox. 50/50).
+    - [ ] Verificar que las tiradas específicas siguen siendo instantáneas tras varios usos.

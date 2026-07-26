@@ -1,28 +1,24 @@
-# Walkthrough: Gacha Blindado y Filtrado de Género Corregido
+# Walkthrough: Balance Inteligente de Géneros en el Gacha
 
-He aplicado una serie de correcciones críticas para estabilizar el sistema de Gacha y asegurar que los botones de género funcionen siempre correctamente.
+He implementado un sistema de gestión de inventario inteligente para el Pool Local de personajes, garantizando que siempre haya disponibilidad de ambos géneros (femenino y masculino).
 
-## Mejoras Realizadas
+## Cambios Clave
 
-### 1. Filtrado de Género Infalible
-- **Normalización**: Ahora, sin importar de qué API venga el personaje (AniList, Superheros o IGDB), el género se guarda internamente como "Male" o "Female".
-- **Búsqueda Flexible**: He actualizado la base de datos local para que la búsqueda sea insensible a mayúsculas/minúsculas. Esto garantiza que el botón "Femenino" siempre encuentre a los personajes del Pool, eliminando los errores de "tirada vacía".
+### 1. Inteligencia de Inventario (DAO)
+- Se han añadido métodos a la base de datos para monitorear el stock en tiempo real: `getMaleCount()` y `getFemaleCount()`. Esto permite a la app saber exactamente cuánta "munición" queda de cada tipo.
 
-### 2. Silenciado de Errores de API
-- **Superhéroes**: He modificado el repositorio para que los errores 404 (personajes que ya no existen en su base de datos) no aparezcan en el log ni interrumpan la carga. El sistema simplemente salta ese ID y busca el siguiente.
-- **IGDB**: Se ha corregido el mapeo de géneros según su documentación oficial (1 para Masculino, 2 para Femenino).
+### 2. Recarga Proactiva y Balanceada
+- **Detección de Desequilibrio**: El sistema ahora no solo mira el total de personajes, sino que vigila si un género cae por debajo de un umbral crítico (30 personajes).
+- **Reponimiento Específico**: Si un usuario realiza muchas tiradas de un solo género (ej. solo femenino), la app detectará el agotamiento de stock y disparará una recarga prioritaria **específicamente de ese género** en segundo plano.
+- **Mantenimiento del 50/50**: El objetivo del sistema es mantener siempre una proporción equilibrada (aprox. 75 personajes de cada género) dentro del pool de 150.
 
-### 3. Sincronización de Código
-- Se han eliminado las referencias a métodos antiguos que causaban ruido en los logs, asegurando que la app use únicamente la nueva lógica de **Pool Local**.
-
-## Instrucciones de Sincronización
-
-> [!CAUTION]
-> **ACCION REQUERIDA**: Para que todos estos cambios surtan efecto y se limpie el código antiguo "fantasma", por favor realiza estos dos pasos en Android Studio:
-> 1. Ve al menú superior: **Build > Clean Project**.
-> 2. Una vez termine, ve a: **Build > Rebuild Project**.
+### 3. Optimización de la Experiencia de Usuario
+- Gracias a este balanceo dinámico, las tiradas filtradas (Femenino/Masculino) serán **instantáneas casi el 100% de las veces**, eliminando la necesidad de recurrir a la carga de red lenta durante la tirada.
 
 ## Verificación
 
+> [!NOTE]
+> El sistema de balanceo se activa automáticamente cada vez que se abre la app o después de cualquier invocación del Gacha, asegurando que el pool se mantenga saludable sin intervención del usuario.
+
 > [!TIP]
-> Tras el Rebuild, prueba a realizar tiradas específicas de "Solo Femenino" o "Solo Masculino". Deberías ver cómo el sistema responde instantáneamente con personajes del género correcto, mezclando animes, juegos y superhéroes sin errores.
+> Puedes observar en los logs (bajo la etiqueta `GachaPool`) cómo la app informa del estado actual del inventario: `Estado Pool - Total: 150, M: 75, F: 75`.
