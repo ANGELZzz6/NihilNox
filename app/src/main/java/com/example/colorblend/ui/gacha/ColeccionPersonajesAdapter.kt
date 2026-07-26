@@ -261,21 +261,28 @@ class ColeccionPersonajesAdapter(
                 btnCargar.text = "Cargando..."
                 lifecycleOwner.lifecycleScope.launch {
                     val urls = withContext(Dispatchers.IO) {
-                        when (personaje.categoria) {
-                            "superhero"  -> jikanRepo.getImagenes(personaje.id, personaje.nombre)
-                                .ifEmpty { listOf(personaje.imagenUrl) }
-                            "videojuego" -> getImagenesIGDB(personaje.id, personaje.nombre, context)
-                            else         -> jikanRepo.getImagenes(personaje.id, personaje.nombre)
+                        try {
+                            when (personaje.categoria) {
+                                "superhero"  -> jikanRepo.getImagenes(personaje.id, personaje.nombre)
+                                    .ifEmpty { listOf(personaje.imagenUrl) }
+                                "videojuego" -> getImagenesIGDB(personaje.id, personaje.nombre, context)
+                                else         -> jikanRepo.getImagenes(personaje.id, personaje.nombre)
+                            }
+                        } catch (e: Exception) {
+                            emptyList()
                         }
                     }
-                    if (urls.isEmpty() || urls == listOf(personaje.imagenUrl)) {
-                        Toast.makeText(context, "No se encontraron imágenes extra", Toast.LENGTH_SHORT).show()
+
+                    if (urls.isEmpty() || (urls.size == 1 && urls[0] == personaje.imagenUrl)) {
+                        Toast.makeText(context, "No se encontraron imágenes extra para ${personaje.nombre}", Toast.LENGTH_SHORT).show()
                         btnCargar.isEnabled = true
                         btnCargar.text = "🖼 Cargar más imágenes"
                     } else {
-                        val urlsConOriginal = listOf(personaje.imagenUrl) + urls
-                        pagerAdapter.update(urlsConOriginal)
-                        indicador.text = "1 / ${urlsConOriginal.size}"
+                        val originalUrl = personaje.imagenUrl
+                        val listaFinal = if (urls.contains(originalUrl)) urls else listOf(originalUrl) + urls
+                        
+                        pagerAdapter.update(listaFinal.distinct())
+                        indicador.text = "1 / ${listaFinal.distinct().size}"
                         btnCargar.visibility = View.GONE
                     }
                 }

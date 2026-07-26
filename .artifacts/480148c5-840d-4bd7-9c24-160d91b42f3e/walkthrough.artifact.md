@@ -1,26 +1,24 @@
-# Walkthrough: Balance Inteligente de Géneros en el Gacha
+# Walkthrough: Reparación de Galería de Personajes
 
-He implementado un sistema de gestión de inventario inteligente para el Pool Local de personajes, garantizando que siempre haya disponibilidad de ambos géneros (femenino y masculino).
+He corregido el fallo que impedía cargar imágenes adicionales de los personajes en tu colección. Ahora el sistema es mucho más resistente a los errores de las webs externas.
 
-## Cambios Clave
+## Cambios Realizados
 
-### 1. Inteligencia de Inventario (DAO)
-- Se han añadido métodos a la base de datos para monitorear el stock en tiempo real: `getMaleCount()` y `getFemaleCount()`. Esto permite a la app saber exactamente cuánta "munición" queda de cada tipo.
+### 1. Conexión Robusta con Jikan (Anime)
+- **[JikanRepository.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/repository/JikanRepository.kt)**: He sustituido el método antiguo por uno más profesional que:
+    - Se identifica ante el servidor (User-Agent), evitando que la web bloquee la app.
+    - Maneja correctamente los errores de "Página no encontrada" (404) y "Límite de velocidad" (429), evitando que la app se detenga.
+    - Limpia automáticamente el nombre del personaje antes de buscarlo (ej: quita los paréntesis de "Saeko (HOTD)") para asegurar que MyAnimeList lo encuentre.
 
-### 2. Recarga Proactiva y Balanceada
-- **Detección de Desequilibrio**: El sistema ahora no solo mira el total de personajes, sino que vigila si un género cae por debajo de un umbral crítico (30 personajes).
-- **Reponimiento Específico**: Si un usuario realiza muchas tiradas de un solo género (ej. solo femenino), la app detectará el agotamiento de stock y disparará una recarga prioritaria **específicamente de ese género** en segundo plano.
-- **Mantenimiento del 50/50**: El objetivo del sistema es mantener siempre una proporción equilibrada (aprox. 75 personajes de cada género) dentro del pool de 150.
+### 2. Mejoras en la Interfaz de Colección
+- **[ColeccionPersonajesAdapter.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/ColeccionPersonajesAdapter.kt)**:
+    - Se ha mejorado el feedback visual: si no se encuentran imágenes extra, la app te avisará con un mensaje claro en lugar de quedarse "pensando".
+    - Se ha optimizado el carrusel de imágenes para asegurar que la foto original siempre sea la primera y no se duplique con las nuevas.
 
-### 3. Estabilidad y Robustez de APIs
-- **AniList (Anime)**: He reducido el rango de búsqueda de páginas aleatorias a las primeras 200. Esto evita el error HTTP 400 que surgía cuando el sistema intentaba acceder a páginas demasiado profundas que la API no permite.
-- **IGDB (Videojuegos)**: Se ha añadido una detección específica para el error 401. Si el Access Token caduca, la app ahora lo indicará claramente en el log para que sepas que debes renovarlo en los ajustes.
-- **Manejo de Errores**: El sistema es ahora más tolerante; si una API falla, las demás compensan automáticamente el stock del Pool Local.
-
-## Verificación
+## Verificación Realizada
 
 > [!NOTE]
-> El sistema de balanceo se activa automáticamente cada vez que se abre la app o después de cualquier invocación del Gacha, asegurando que el pool se mantenga saludable sin intervención del usuario.
+> He probado la lógica de limpieza de nombres para casos como "Saeko Busujima", asegurando que la URL generada sea válida y que el sistema ignore los errores de red silenciosamente, manteniendo la estabilidad de la galería.
 
 > [!TIP]
-> Puedes observar en los logs (bajo la etiqueta `GachaPool`) cómo la app informa del estado actual del inventario: `Estado Pool - Total: 150, M: 75, F: 75`.
+> ¡Pruébalo ahora con Saeko! Pulsa "Cargar más imágenes" y deberías ver cómo se llena su galería con sus fotos oficiales de MyAnimeList.

@@ -1,38 +1,39 @@
-# Plan de Implementación: Balance Inteligente de Géneros en el Pool
+# Plan de Acción: Reparación de Carga de Imágenes de Personajes
 
-Este plan detalla cómo optimizar la recarga del Gacha para que siempre haya un stock saludable de personajes masculinos y femeninos, evitando que las tiradas específicas (solo mujeres o solo hombres) se vuelvan lentas por falta de reserva local.
+Se ha detectado un fallo en la funcionalidad "Cargar más imágenes" dentro de la colección de personajes, causado por una gestión deficiente de los errores de red (HTTP 404/429) en la API de Jikan (MyAnimeList).
 
-## Problema Actual
-Si un usuario solo tira personajes femeninos, agota el stock de ese género en el Pool Local. La recarga actual es genérica, por lo que el Pool podría llenarse mayoritariamente de hombres, forzando cargas lentas de red cuando se pidan mujeres de nuevo.
+## Problema Identificado
+
+La aplicación utiliza `URL(searchUrl).readText()`, lo que provoca una `FileNotFoundException` cuando la API de Jikan responde con cualquier código de error (como un 404 si no encuentra el personaje o un 429 por límite de velocidad). Además, la falta de un `User-Agent` puede estar causando bloqueos por parte del servidor.
 
 ## Cambios Propuestos
 
-### 1. Mejoras en la Persistencia
+### 1. Robustez en el Repositorio de Jikan
 
-#### [MODIFY] [PersonajePoolDao.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/PersonajePoolDao.kt)
-- Añadir métodos para contar específicamente cuántos personajes hay de cada género:
-    - `getMaleCount(): Int`
-    - `getFemaleCount(): Int`
+#### [MODIFY] [JikanRepository.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/repository/JikanRepository.kt)
+- Reemplazar `URL.readText()` por una implementación manual de `HttpURLConnection`.
+- Añadir un encabezado `User-Agent` para identificar la aplicación.
+- Implementar verificación del código de respuesta (`responseCode`).
+- Si se recibe un error, leer el `errorStream` para logging y evitar la excepción `FileNotFoundException`.
+- Añadir un pequeño reintento automático en caso de error 429 (Rate Limit).
 
-### 2. Lógica de Recarga Equilibrada
+### 2. Mejora en la Lógica de Búsqueda
 
-#### [MODIFY] [GachaPoolRepository.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/repository/GachaPoolRepository.kt)
-- Modificar `recargarPoolSiEsNecesario()` para:
-    1. Obtener los conteos de hombres y mujeres.
-    2. Identificar si algún género está por debajo de un umbral crítico (ej. menos de 30 personajes).
-    3. Si un género está bajo, disparar una recarga **específica** para ese género en segundo plano.
-    4. Mantener el balance ideal (ej. 50% hombres / 50% mujeres dentro del límite de 150).
+#### [MODIFY] [ColeccionPersonajesAdapter.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/ColeccionPersonajesAdapter.kt)
+- Limpiar el nombre del personaje antes de enviarlo a la búsqueda (quitar paréntesis o sufijos raros).
+- Mejorar el feedback al usuario (Toasts más descriptivos si la API falla por red o por no encontrar resultados).
 
-### 3. Optimización de Segundo Plano
-- Asegurar que el sistema no "sobrecargue" las APIs haciendo demasiadas peticiones seguidas, sino que rellene lo justo para mantener la reserva operativa.
+### 3. Soporte para Superhéroes (Opcional pero recomendado)
 
-## Verification Plan
+- Actualmente, los superhéroes intentan buscarse en Jikan (que es solo de Anime). Si falla, se podría intentar una búsqueda alternativa o simplemente ocultar el botón para esa categoría si no hay fuente de imágenes extra.
+
+## Plan de Verificación
 
 ### Verificación Manual
-1. **Prueba de Agotamiento**: Vaciar manualmente los personajes femeninos del pool local.
-2. **Revisión de Logs**: Observar cómo el sistema detecta el bajo stock de mujeres y dispara una recarga prioritaria de ese género.
-3. **Prueba de Tirada**: Realizar una tirada de "Solo Femenino" y verificar que es instantánea a pesar del vaciado previo.
-4. **Persistencia**: Confirmar que tras la recarga, el conteo en la base de datos vuelve a ser equilibrado (aprox. mitad y mitad).
+1. Abrir la colección y seleccionar un personaje de Anime (ej. Saeko Busujima).
+2. Pulsar "Cargar más imágenes".
+3. Verificar que las imágenes aparecen en el carrusel (ViewPager).
+4. Probar con un personaje inexistente o con red inestable para confirmar que la app no crashea y muestra un mensaje adecuado.
 
-## Open Questions
-- ¿Consideras que una proporción de 50/50 es la ideal o prefieres priorizar más algún género en la reserva por defecto?
+### Logs
+- Monitorear `GachaPool` o `JikanRepo` en Logcat para ver los códigos de respuesta reales de la API.

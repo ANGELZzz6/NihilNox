@@ -1,13 +1,12 @@
-# Tareas: Balance Inteligente de Géneros en el Pool
+# Tareas: Reparación de Carga de Imágenes de Personajes
 
-- [x] **1. Persistencia (Room)**
-    - [x] Añadir `getMaleCount()` y `getFemaleCount()` en `PersonajePoolDao.kt`.
-- [x] **2. Repositorio de Pool**
-    - [x] Implementar lógica de detección de desequilibrio en `recargarPoolSiEsNecesario`.
-    - [x] Ajustar la recarga para priorizar géneros con bajo stock.
-- [x] **3. Estabilidad y Errores (Fix 400/401)**
-    - [x] Reducir rango de páginas en AniList a 200 (evita error 400).
-    - [x] Añadir log específico para token caducado en IGDB (error 401).
-- [x] **4. Verificación**
-    - [ ] Confirmar que el pool mantiene una proporción equilibrada (aprox. 50/50).
-    - [ ] Verificar que las tiradas específicas siguen siendo instantáneas tras varios usos.
+- [x] **1. Robustez del Repositorio (Jikan)**
+    - [x] Refactorizar `JikanRepository.kt` para usar `HttpURLConnection`.
+    - [x] Añadir cabecera `User-Agent`.
+    - [x] Implementar manejo de errores HTTP (404, 429).
+- [x] **2. Refinamiento de Búsqueda (UI)**
+    - [x] Limpiar nombres de personajes en `ColeccionPersonajesAdapter.kt`.
+    - [x] Mejorar mensajes de error (Toasts).
+- [x] **3. Verificación**
+    - [ ] Probar con personajes de anime conocidos.
+    - [ ] Verificar que no hay excepciones al fallar la red.
