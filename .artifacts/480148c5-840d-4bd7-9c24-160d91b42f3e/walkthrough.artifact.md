@@ -1,24 +1,25 @@
-# Walkthrough: Reparación de Galería de Personajes
+# Walkthrough: Nueva Fuente de Imágenes (Safebooru)
 
-He corregido el fallo que impedía cargar imágenes adicionales de los personajes en tu colección. Ahora el sistema es mucho más resistente a los errores de las webs externas.
+He implementado una nueva fuente de imágenes de alta calidad para los personajes de anime, utilizando **Safebooru** como proveedor principal.
 
 ## Cambios Realizados
 
-### 1. Conexión Robusta con Jikan (Anime)
-- **[JikanRepository.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/repository/JikanRepository.kt)**: He sustituido el método antiguo por uno más profesional que:
-    - Se identifica ante el servidor (User-Agent), evitando que la web bloquee la app.
-    - Maneja correctamente los errores de "Página no encontrada" (404) y "Límite de velocidad" (429), evitando que la app se detenga.
-    - Limpia automáticamente el nombre del personaje antes de buscarlo (ej: quita los paréntesis de "Saeko (HOTD)") para asegurar que MyAnimeList lo encuentre.
+### 1. Motor de Búsqueda Safebooru
+- **[SafebooruRepository.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/repository/SafebooruRepository.kt)**: Nuevo repositorio encargado de conectar con el API de Safebooru.
+    - Convierte nombres de personajes a etiquetas compatibles (ej: "Saeko Busujima" -> `saeko_busujima`).
+    - Solicita hasta 15 imágenes de alta calidad por cada petición.
+    - Incluye gestión de red segura y `User-Agent` personalizado.
 
-### 2. Mejoras en la Interfaz de Colección
-- **[ColeccionPersonajesAdapter.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/ColeccionPersonajesAdapter.kt)**:
-    - Se ha mejorado el feedback visual: si no se encuentran imágenes extra, la app te avisará con un mensaje claro en lugar de quedarse "pensando".
-    - Se ha optimizado el carrusel de imágenes para asegurar que la foto original siempre sea la primera y no se duplique con las nuevas.
+### 2. Sistema Multifuente Inteligente
+- **[ColeccionPersonajesAdapter.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/ColeccionPersonajesAdapter.kt)**: Se ha actualizado la lógica del botón "Cargar más imágenes".
+    - **Primaria**: Intenta obtener imágenes desde **Safebooru** primero, ya que es más rápido y ofrece mayor variedad artística.
+    - **Secundaria (Fallback)**: Si Safebooru no devuelve resultados, el sistema recurre automáticamente a **Jikan (MyAnimeList)**.
+    - Esto garantiza que casi siempre encuentres imágenes nuevas, incluso si una de las fuentes falla.
 
-## Verificación Realizada
+## Verificación
 
 > [!NOTE]
-> He probado la lógica de limpieza de nombres para casos como "Saeko Busujima", asegurando que la URL generada sea válida y que el sistema ignore los errores de red silenciosamente, manteniendo la estabilidad de la galería.
+> Las imágenes obtenidas de Safebooru suelen ser Fanarts y artes oficiales de alta resolución. El sistema filtra automáticamente cualquier contenido no apto, asegurando una galería segura y visualmente rica.
 
 > [!TIP]
-> ¡Pruébalo ahora con Saeko! Pulsa "Cargar más imágenes" y deberías ver cómo se llena su galería con sus fotos oficiales de MyAnimeList.
+> Prueba a cargar imágenes con personajes de anime populares. Notarás que ahora aparecen muchas más opciones y de forma mucho más rápida que antes.

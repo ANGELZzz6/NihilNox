@@ -1,12 +1,11 @@
-# Tareas: Reparación de Carga de Imágenes de Personajes
+# Tareas: Nueva Fuente de Imágenes (Safebooru)
 
-- [x] **1. Robustez del Repositorio (Jikan)**
-    - [x] Refactorizar `JikanRepository.kt` para usar `HttpURLConnection`.
-    - [x] Añadir cabecera `User-Agent`.
-    - [x] Implementar manejo de errores HTTP (404, 429).
-- [x] **2. Refinamiento de Búsqueda (UI)**
-    - [x] Limpiar nombres de personajes en `ColeccionPersonajesAdapter.kt`.
-    - [x] Mejorar mensajes de error (Toasts).
+- [x] **1. Nuevo Repositorio (Safebooru)**
+    - [x] Crear `SafebooruRepository.kt`.
+    - [x] Implementar formateo de etiquetas (snake_case).
+    - [x] Implementar petición DAPI JSON.
+- [x] **2. Integración en la Colección**
+    - [x] Modificar `ColeccionPersonajesAdapter.kt` para usar Safebooru como fuente primaria.
+    - [x] Mantener Jikan como fallback secundario.
 - [x] **3. Verificación**
-    - [ ] Probar con personajes de anime conocidos.
-    - [ ] Verificar que no hay excepciones al fallar la red.
+    - [x] Sincronizar y verificar carga de imágenes.

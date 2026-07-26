@@ -237,6 +237,9 @@ class ColeccionPersonajesAdapter(
             val jikanRepo = JikanRepository(
                 AppDatabase.getDatabase(context).imagenPersonajeDao()
             )
+            val safebooruRepo = com.example.colorblend.data.local.repository.SafebooruRepository(
+                AppDatabase.getDatabase(context).imagenPersonajeDao()
+            )
 
             lifecycleOwner.lifecycleScope.launch {
                 val imagenesGuardadas = withContext(Dispatchers.IO) {
@@ -266,7 +269,12 @@ class ColeccionPersonajesAdapter(
                                 "superhero"  -> jikanRepo.getImagenes(personaje.id, personaje.nombre)
                                     .ifEmpty { listOf(personaje.imagenUrl) }
                                 "videojuego" -> getImagenesIGDB(personaje.id, personaje.nombre, context)
-                                else         -> jikanRepo.getImagenes(personaje.id, personaje.nombre)
+                                else         -> {
+                                    // Intentar Safebooru primero
+                                    val safeUrls = safebooruRepo.getImagenes(personaje.id, personaje.nombre)
+                                    if (safeUrls.isNotEmpty()) safeUrls 
+                                    else jikanRepo.getImagenes(personaje.id, personaje.nombre)
+                                }
                             }
                         } catch (e: Exception) {
                             emptyList()

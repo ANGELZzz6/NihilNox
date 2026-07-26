@@ -1,39 +1,42 @@
-# Plan de Acción: Reparación de Carga de Imágenes de Personajes
+# Plan de Implementación: Nueva Fuente de Imágenes (Safebooru)
 
-Se ha detectado un fallo en la funcionalidad "Cargar más imágenes" dentro de la colección de personajes, causado por una gestión deficiente de los errores de red (HTTP 404/429) en la API de Jikan (MyAnimeList).
+Debido a la inestabilidad de Jikan (MyAnimeList) y la falta de una API pública potente en AniList para galerías de personajes, implementaremos **Safebooru** como una fuente secundaria robusta y gratuita.
 
-## Problema Identificado
+## ¿Qué es Safebooru?
+Es una de las bases de datos de arte de anime más grandes y seguras (solo contenido apto para todos los públicos). No requiere API Key y es extremadamente rápida.
 
-La aplicación utiliza `URL(searchUrl).readText()`, lo que provoca una `FileNotFoundException` cuando la API de Jikan responde con cualquier código de error (como un 404 si no encuentra el personaje o un 429 por límite de velocidad). Además, la falta de un `User-Agent` puede estar causando bloqueos por parte del servidor.
+## Proposed Changes
 
-## Cambios Propuestos
+### 1. Nuevo Repositorio de Imágenes
 
-### 1. Robustez en el Repositorio de Jikan
+#### [NEW] [SafebooruRepository.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/repository/SafebooruRepository.kt)
+- **Función `getImagenes(nombre: String)`**:
+    1. Formateará el nombre del personaje al formato de etiquetas de Safebooru (ej: "Saeko Busujima" -> `saeko_busujima`).
+    2. Realizará una petición a `https://safebooru.org/index.php?page=dapi&s=post&q=index&json=1&tags=NOMBRE_PERSONAJE`.
+    3. Extraerá las URLs de las imágenes de alta calidad (`file_url`).
+    4. Manejará errores de red y de cuotas de forma silenciosa.
 
-#### [MODIFY] [JikanRepository.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/repository/JikanRepository.kt)
-- Reemplazar `URL.readText()` por una implementación manual de `HttpURLConnection`.
-- Añadir un encabezado `User-Agent` para identificar la aplicación.
-- Implementar verificación del código de respuesta (`responseCode`).
-- Si se recibe un error, leer el `errorStream` para logging y evitar la excepción `FileNotFoundException`.
-- Añadir un pequeño reintento automático en caso de error 429 (Rate Limit).
-
-### 2. Mejora en la Lógica de Búsqueda
+### 2. Integración en la Colección
 
 #### [MODIFY] [ColeccionPersonajesAdapter.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/ColeccionPersonajesAdapter.kt)
-- Limpiar el nombre del personaje antes de enviarlo a la búsqueda (quitar paréntesis o sufijos raros).
-- Mejorar el feedback al usuario (Toasts más descriptivos si la API falla por red o por no encontrar resultados).
+- **Sistema de Multifuente**: Cuando el usuario pulse "Cargar más imágenes":
+    1. Primero intentará con **Safebooru** (por ser más rápida y variada).
+    2. Si Safebooru no devuelve nada, usará **Jikan (MAL)** como respaldo.
+    3. Si ambos fallan, mostrará el mensaje de error.
 
-### 3. Soporte para Superhéroes (Opcional pero recomendado)
+### 3. Mejora de Formateo de Nombres
+- Implementar un limpiador de nombres más agresivo para asegurar que las etiquetas de búsqueda sean precisas (ej: eliminar "Young", "Adult", "Version", etc.).
 
-- Actualmente, los superhéroes intentan buscarse en Jikan (que es solo de Anime). Si falla, se podría intentar una búsqueda alternativa o simplemente ocultar el botón para esa categoría si no hay fuente de imágenes extra.
-
-## Plan de Verificación
+## Verification Plan
 
 ### Verificación Manual
-1. Abrir la colección y seleccionar un personaje de Anime (ej. Saeko Busujima).
-2. Pulsar "Cargar más imágenes".
-3. Verificar que las imágenes aparecen en el carrusel (ViewPager).
-4. Probar con un personaje inexistente o con red inestable para confirmar que la app no crashea y muestra un mensaje adecuado.
+1. Abrir la colección.
+2. Seleccionar un personaje de anime.
+3. Pulsar "Cargar más imágenes".
+4. Verificar que aparecen imágenes de fanart y oficiales de alta calidad provenientes de Safebooru.
+5. Comprobar la velocidad: Safebooru suele responder en menos de 1 segundo.
 
-### Logs
-- Monitorear `GachaPool` o `JikanRepo` en Logcat para ver los códigos de respuesta reales de la API.
+## Ventajas
+- **Sin API Key**: No dependes de tokens que caducan.
+- **Variedad**: Safebooru tiene miles de imágenes por personaje, no solo las 3-4 oficiales.
+- **Gratis e Ilimitado**: Ideal para el uso que le damos en la app.
