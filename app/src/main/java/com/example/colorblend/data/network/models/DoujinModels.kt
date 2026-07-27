@@ -132,3 +132,26 @@ data class NHentaiTag(
     val type: String?, // "artist", "tag", "character", "parody"
     val name: String?
 )
+
+/**
+ * Yande.re API Models
+ */
+data class YanderePost(
+    val id: Int,
+    @SerializedName("file_url") val fileUrl: String,
+    @SerializedName("preview_url") val previewUrl: String,
+    @SerializedName("sample_url") val sampleUrl: String?,
+    val tags: String?,
+    val width: Int,
+    val height: Int,
+    val rating: String?
+)
+
+/**
+ * Nekobot API Models
+ */
+data class NekobotResponse(
+    val message: String,
+    val success: Boolean
+)
+

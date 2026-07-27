@@ -9,8 +9,8 @@ import kotlin.random.Random
 
 object DoujinUtils {
 
-    // User-Agent de navegador móvil real para evitar bloqueos
-    private const val USER_AGENT = "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
+    // User-Agent de navegador móvil real actualizado para evitar bloqueos
+    private const val USER_AGENT = "Mozilla/5.0 (Linux; Android 13; SM-S901B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36"
     private const val REFERER_BASE = "https://nhentai.net/"
 
     // Lista de subdominios más estables
@@ -32,7 +32,11 @@ object DoujinUtils {
                 val request = chain.request()
                 val requestBuilder = request.newBuilder()
                     .header("User-Agent", USER_AGENT)
-                    .header("Accept", "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8")
+                
+                // No sobreescribir Accept si ya viene de Retrofit (ej. application/json)
+                if (request.header("Accept") == null) {
+                    requestBuilder.header("Accept", "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8")
+                }
                 
                 // Si la URL es de nHentai e inyectar el Referer
                 if (request.url.host.contains("nhentai.net")) {
@@ -69,6 +73,10 @@ object DoujinUtils {
             }
         } else if (url.contains("mangadex")) {
             "https://mangadex.org/"
+        } else if (url.contains("yande.re")) {
+            "https://yande.re/"
+        } else if (url.contains("nekobot.xyz")) {
+            "https://nekobot.xyz/"
         } else {
             REFERER_BASE
         }

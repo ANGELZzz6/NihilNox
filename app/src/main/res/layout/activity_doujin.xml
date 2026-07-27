@@ -51,27 +51,46 @@
                 android:tint="#FFD700"/>
         </LinearLayout>
 
-        <RadioGroup
-            android:id="@+id/rgSource"
+        <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:scrollbars="none"
             android:layout_marginTop="8dp">
-            <RadioButton
-                android:id="@+id/rbMangaDex"
+            <RadioGroup
+                android:id="@+id/rgSource"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="MangaDex"
-                android:textColor="#FFFFFF"
-                android:checked="true"/>
-            <RadioButton
-                android:id="@+id/rbNHentai"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="nHentai"
-                android:textColor="#FFFFFF"
-                android:layout_marginStart="16dp"/>
-        </RadioGroup>
+                android:orientation="horizontal">
+                <RadioButton
+                    android:id="@+id/rbMangaDex"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="MangaDex"
+                    android:textColor="#FFFFFF"
+                    android:checked="true"/>
+                <RadioButton
+                    android:id="@+id/rbNHentai"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="nHentai"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginStart="16dp"/>
+                <RadioButton
+                    android:id="@+id/rbYandere"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Yande.re"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginStart="16dp"/>
+                <RadioButton
+                    android:id="@+id/rbGifsReal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Gifs Real"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginStart="16dp"/>
+            </RadioGroup>
+        </HorizontalScrollView>
     </LinearLayout>
 
     <FrameLayout

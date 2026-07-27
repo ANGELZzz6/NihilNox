@@ -10,6 +10,8 @@ import com.example.colorblend.data.network.models.*
 import com.example.colorblend.domain.model.DoujinEntity
 import com.example.colorblend.network.MangaDexApi
 import com.example.colorblend.network.NHentaiApi
+import com.example.colorblend.network.NekobotApi
+import com.example.colorblend.network.YandereApi
 import com.example.colorblend.utils.DoujinUtils
 import com.example.colorblend.workers.DoujinDownloadWorker
 import androidx.work.*
@@ -38,7 +40,19 @@ class DoujinViewModel(application: Application) : AndroidViewModel(application) 
             .client(DoujinUtils.commonOkHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(NHentaiApi::class.java)
+            .create(NHentaiApi::class.java),
+        yandereApi = Retrofit.Builder()
+            .baseUrl("https://yande.re/")
+            .client(DoujinUtils.commonOkHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(YandereApi::class.java),
+        nekobotApi = Retrofit.Builder()
+            .baseUrl("https://nekobot.xyz/")
+            .client(DoujinUtils.commonOkHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(NekobotApi::class.java)
     )
 
     private val _searchResults = MutableStateFlow<List<DoujinItem>>(emptyList())
@@ -66,6 +80,10 @@ class DoujinViewModel(application: Application) : AndroidViewModel(application) 
             try {
                 if (source == "MangaDex") {
                     _searchResults.value = repo.searchMangaDex(query, offset = 0)
+                } else if (source == "Yande.re") {
+                    _searchResults.value = repo.searchYandere(query, page = 1)
+                } else if (source == "Gifs Real") {
+                    _searchResults.value = repo.getRandomRealGifs(20)
                 } else {
                     val apiKey = ApiKeysManager.getNhentaiKey(getApplication())
                     if (apiKey.isNotBlank()) {
@@ -92,6 +110,11 @@ class DoujinViewModel(application: Application) : AndroidViewModel(application) 
                 val nextItems = if (lastSource == "MangaDex") {
                     currentOffset += 20
                     repo.searchMangaDex(lastQuery, offset = currentOffset)
+                } else if (lastSource == "Yande.re") {
+                    currentPage += 1
+                    repo.searchYandere(lastQuery, page = currentPage)
+                } else if (lastSource == "Gifs Real") {
+                    repo.getRandomRealGifs(10)
                 } else {
                     currentPage += 1
                     val apiKey = ApiKeysManager.getNhentaiKey(getApplication())
@@ -115,6 +138,8 @@ class DoujinViewModel(application: Application) : AndroidViewModel(application) 
         return try {
             if (source == "MangaDex") {
                 repo.getMangaDexPages(id)
+            } else if (source == "Yande.re" || source == "Gifs Real") {
+                repo.getYanderePages(mediaId ?: "")
             } else {
                 val apiKey = ApiKeysManager.getNhentaiKey(getApplication())
                 repo.getNHentaiPages(id, apiKey, mediaId)

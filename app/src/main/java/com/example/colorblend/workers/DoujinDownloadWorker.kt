@@ -17,6 +17,8 @@ import com.example.colorblend.data.local.repository.DoujinRepository
 import com.example.colorblend.utils.DoujinUtils
 import com.example.colorblend.network.MangaDexApi
 import com.example.colorblend.network.NHentaiApi
+import com.example.colorblend.network.NekobotApi
+import com.example.colorblend.network.YandereApi
 import okhttp3.Request
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -52,7 +54,19 @@ class DoujinDownloadWorker(context: Context, params: WorkerParameters) : Corouti
                 .client(DoujinUtils.commonOkHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
-                .create(NHentaiApi::class.java)
+                .create(NHentaiApi::class.java),
+            yandereApi = Retrofit.Builder()
+                .baseUrl("https://yande.re/")
+                .client(DoujinUtils.commonOkHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(YandereApi::class.java),
+            nekobotApi = Retrofit.Builder()
+                .baseUrl("https://nekobot.xyz/")
+                .client(DoujinUtils.commonOkHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(NekobotApi::class.java)
         )
 
         try {
@@ -62,6 +76,8 @@ class DoujinDownloadWorker(context: Context, params: WorkerParameters) : Corouti
             val pages = try {
                 if (source == "MangaDex") {
                     repo.getMangaDexPages(doujinId)
+                } else if (source == "Yande.re" || source == "Gifs Real") {
+                    repo.getYanderePages(mediaId ?: "")
                 } else {
                     val apiKey = com.example.colorblend.data.local.ApiKeysManager.getNhentaiKey(applicationContext)
                     repo.getNHentaiPages(doujinId, apiKey, mediaId)
@@ -135,6 +151,10 @@ class DoujinDownloadWorker(context: Context, params: WorkerParameters) : Corouti
             requestBuilder.header("Referer", "https://nhentai.net/g/$doujinId/")
         } else if (source == "MangaDex") {
             requestBuilder.header("Referer", "https://mangadex.org/")
+        } else if (source == "Yande.re") {
+            requestBuilder.header("Referer", "https://yande.re/")
+        } else if (source == "Gifs Real") {
+            requestBuilder.header("Referer", "https://nekobot.xyz/")
         }
 
         DoujinUtils.commonOkHttpClient.newCall(requestBuilder.build()).execute().use { response ->

@@ -52,3 +52,24 @@ interface NHentaiApi {
         @Path("galleryId") galleryId: Int
     ): NHentaiGallery
 }
+
+interface YandereApi {
+    /**
+     * Yande.re API: post.json devuelve una lista de posts.
+     * page es el número de página (empezando en 1).
+     */
+    @GET("post.json")
+    suspend fun searchPosts(
+        @Query("tags") tags: String,
+        @Query("page") page: Int = 1,
+        @Query("limit") limit: Int = 20
+    ): List<YanderePost>
+}
+
+interface NekobotApi {
+    @GET("api/image")
+    suspend fun getImage(
+        @Query("type") type: String = "pgif"
+    ): NekobotResponse
+}
+

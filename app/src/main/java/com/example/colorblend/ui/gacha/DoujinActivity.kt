@@ -74,7 +74,13 @@ class DoujinActivity : AppCompatActivity() {
 
         btnSearch.setOnClickListener {
             val query = etSearch.text.toString()
-            val source = if (rgSource.checkedRadioButtonId == R.id.rbMangaDex) "MangaDex" else "nHentai"
+            val source = when (rgSource.checkedRadioButtonId) {
+                R.id.rbMangaDex -> "MangaDex"
+                R.id.rbNHentai -> "nHentai"
+                R.id.rbYandere -> "Yande.re"
+                R.id.rbGifsReal -> "Gifs Real"
+                else -> "MangaDex"
+            }
             
             if (source == "nHentai" && com.example.colorblend.data.local.ApiKeysManager.getNhentaiKey(this).isBlank()) {
                 Toast.makeText(this, "⚠️ Configura tu API Key de nHentai en el perfil", Toast.LENGTH_LONG).show()

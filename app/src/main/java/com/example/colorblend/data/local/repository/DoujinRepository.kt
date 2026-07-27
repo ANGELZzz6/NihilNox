@@ -6,15 +6,25 @@ import com.example.colorblend.data.network.models.DoujinItem
 import com.example.colorblend.domain.model.DoujinEntity
 import com.example.colorblend.network.MangaDexApi
 import com.example.colorblend.network.NHentaiApi
+import com.example.colorblend.network.NekobotApi
+import com.example.colorblend.network.YandereApi
 import com.example.colorblend.utils.DoujinUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
+import okhttp3.Request
 import retrofit2.HttpException
 import java.io.File
 
 class DoujinRepository(
     private val dao: DoujinDao,
     private val mangaDexApi: MangaDexApi,
-    private val nHentaiApi: NHentaiApi
+    private val nHentaiApi: NHentaiApi,
+    private val yandereApi: YandereApi,
+    private val nekobotApi: NekobotApi
 ) {
 
     suspend fun searchMangaDex(query: String, offset: Int = 0): List<DoujinItem> {
@@ -70,6 +80,20 @@ class DoujinRepository(
                 mediaId = mediaId,
                 totalPages = gallery.numPages,
                 pageExtensions = gallery.images?.pages?.map { it.t ?: "j" } ?: emptyList()
+            )
+        }
+    }
+
+    suspend fun searchYandere(query: String, page: Int = 1): List<DoujinItem> {
+        val posts = yandereApi.searchPosts(tags = query, page = page)
+        return posts.map { post ->
+            DoujinItem(
+                id = post.id.toString(),
+                title = "Yande.re Post #${post.id}",
+                coverUrl = post.previewUrl,
+                source = "Yande.re",
+                mediaId = post.fileUrl,
+                totalPages = 1
             )
         }
     }
@@ -178,6 +202,54 @@ class DoujinRepository(
         } catch (e: Exception) {
             Log.e("DOUJIN_REPO", "nHentai Exception", e)
             throw e
+        }
+    }
+
+    suspend fun getYanderePages(fileUrl: String): List<String> {
+        return listOf(fileUrl)
+    }
+
+    suspend fun getRandomRealGifs(count: Int = 15): List<DoujinItem> = withContext(Dispatchers.IO) {
+        // Hacemos peticiones para obtener una lista de GIFs
+        val jobs = (1..count).map {
+            async {
+                try {
+                    val resp = nekobotApi.getImage(type = "pgif")
+                    if (resp.success && isUrlAccessible(resp.message)) {
+                        DoujinItem(
+                            id = resp.message.hashCode().toString(),
+                            title = "Real GIF #${System.currentTimeMillis() % 1000}",
+                            coverUrl = resp.message,
+                            source = "Gifs Real",
+                            mediaId = resp.message,
+                            totalPages = 1
+                        )
+                    } else null
+                } catch (e: Exception) {
+                    null
+                }
+            }
+        }
+        jobs.awaitAll().filterNotNull()
+    }
+
+    /**
+     * Verifica si una URL es accesible (evitar Error 521 en Nekobot)
+     */
+    private fun isUrlAccessible(url: String): Boolean {
+        return try {
+            val request = Request.Builder()
+                .url(url)
+                .head() // Solo cabeceras para ser rápido
+                .header("User-Agent", "Mozilla/5.0 (Linux; Android 13; SM-S901B) AppleWebKit/537.36")
+                .header("Referer", "https://nekobot.xyz/")
+                .build()
+            
+            DoujinUtils.commonOkHttpClient.newCall(request).execute().use { response ->
+                response.isSuccessful
+            }
+        } catch (e: Exception) {
+            false
         }
     }
 
