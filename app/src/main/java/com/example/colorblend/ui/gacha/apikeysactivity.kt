@@ -162,6 +162,25 @@ class ApiKeysActivity : AppCompatActivity() {
         
         Pon aqui la misma key que pusiste en el servidor.
     """.trimIndent()
+            ),
+            CampoConfig(
+                key           = ApiKeysManager.KEY_NHENTAI,
+                etId          = R.id.etNhentai,
+                btnPegarId    = R.id.btnPegarNhentai,
+                btnBorrarId   = R.id.btnBorrarNhentai,
+                btnInfoId     = R.id.btnInfoNhentai,
+                urlDocs       = "https://nhentai.net/settings",
+                instrucciones = """
+                    1. Inicia sesión en nhentai.net
+                    2. Ve a Account Settings
+                    3. Busca la sección API
+                    4. Genera tu API Key y cópiala
+                    
+                    🎯 Usada para: Acceso al catálogo de nHentai sin bloqueos
+                    
+                    ¿Dudas? Escribe a:
+                    elangelmiguelmr@gmail.com
+                """.trimIndent()
             )
         )
     }

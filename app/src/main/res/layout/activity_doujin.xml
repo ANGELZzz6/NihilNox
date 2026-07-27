@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/back_global">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#0D0D1A"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🔞 Sección Doujin"
+            android:textColor="#FFD700"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp">
+
+            <EditText
+                android:id="@+id/etSearch"
+                android:layout_width="0dp"
+                android:layout_height="42dp"
+                android:layout_weight="1"
+                android:hint="Buscar por título..."
+                android:textColorHint="#555577"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/search_bar_bg"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:maxLines="1"
+                android:imeOptions="actionSearch"
+                android:inputType="text"/>
+
+            <ImageButton
+                android:id="@+id/btnSearch"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/btn_nav_gradient"
+                android:src="@android:drawable/ic_menu_search"
+                android:tint="#FFD700"/>
+        </LinearLayout>
+
+        <RadioGroup
+            android:id="@+id/rgSource"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+            <RadioButton
+                android:id="@+id/rbMangaDex"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MangaDex"
+                android:textColor="#FFFFFF"
+                android:checked="true"/>
+            <RadioButton
+                android:id="@+id/rbNHentai"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="nHentai"
+                android:textColor="#FFFFFF"
+                android:layout_marginStart="16dp"/>
+        </RadioGroup>
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvDoujins"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="4dp"
+            android:clipToPadding="false"/>
+
+        <ProgressBar
+            android:id="@+id/loadingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/tvEmpty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="No hay resultados"
+            android:textColor="#555577"
+            android:visibility="gone"/>
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#0D0D1A"
+        android:padding="8dp">
+
+        <Button
+            android:id="@+id/btnLoadMore"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="➕ Cargar más"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/btn_nav_gradient"
+            android:layout_marginEnd="8dp"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/btnVerFavoritos"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="⭐ Guardados"
+            android:textColor="#FFD700"
+            android:background="@drawable/btn_nav_gradient"/>
+    </LinearLayout>
+</LinearLayout>

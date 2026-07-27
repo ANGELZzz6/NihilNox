@@ -1,28 +1,31 @@
-# Walkthrough: Gestión de Galería y Precisión Safebooru
+# Walkthrough - Fix nHentai Metadata and Downloads
 
-He implementado un conjunto de mejoras avanzadas para la colección de personajes, enfocándome en la precisión de las búsquedas y el control total del usuario sobre su galería.
+I have fixed the issues where nHentai search results had missing titles and covers, and where downloads were failing with 404 errors.
 
-## Mejoras Realizadas
+## Changes Made
 
-### 1. Búsqueda por Serie (Máxima Precisión)
-- **[SafebooruRepository.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/repository/SafebooruRepository.kt)**: Ahora el sistema combina el nombre del personaje con el título de su anime.
-- **Lógica Inteligente**: Si buscas a "Miku", el sistema ahora le pregunta a Safebooru por "Miku + Serie", garantizando que las imágenes correspondan a la franquicia correcta y no a otros personajes con el mismo nombre.
+### Data Layer
+- **[DoujinModels.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/network/models/DoujinModels.kt)**:
+    - Updated `NHentaiGallery` to include API V2 specific fields: `english_title`, `japanese_title`, `thumbnail`, `pages`, and `cover`.
+- **[DoujinRepository.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/repository/DoujinRepository.kt)**:
+    - Updated `searchNHentai` to fallback to V2 titles and handle the new `thumbnail` string format. This fixes the empty names and covers in the list.
+    - Updated `getNHentaiPages` to support the V2 JSON structure where pages are a flat array at the root.
 
-### 2. Selector de Cantidad y Botón Permanente
-- **Selector**: Al pulsar "Cargar más imágenes", ahora aparecerá un diálogo para elegir cuántas fotos quieres traer (5, 10, 15 o 20).
-- **Recursividad**: El botón ya no se oculta. Puedes usarlo todas las veces que quieras para seguir ampliando la colección de un personaje específico.
+### Worker Layer
+- **[DoujinDownloadWorker.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/workers/DoujinDownloadWorker.kt)**:
+    - **Extension Rotation**: Implemented a fallback loop that tries different image extensions (`webp`, `jpg`, `png`, `gif`) if a download fails with a 404 error. This is crucial as nHentai uses different formats for different galleries.
+    - **Strict Referer**: Forced the header `Referer: https://nhentai.net/g/{id}/` for all image download requests to prevent access denied errors.
+    - **Foreground Service Fix**: Ensured the service type matches the manifest to avoid Android 14 crashes.
 
-### 3. Gestión y Borrado de Galería
-- **Borrado Individual**: Si mantienes pulsada cualquier imagen en el carrusel de detalles del personaje, aparecerá una opción para eliminarla.
-- **Gestión por Lotes**: He añadido un nuevo botón **"Gestionar"** al lado de "Fotos".
-    - Al pulsarlo, se abre una cuadrícula con todas las imágenes extra.
-    - Puedes seleccionar múltiples imágenes mediante un toque y borrarlas todas de una vez con el botón "Borrar Seleccionadas".
-- **Protección de Datos**: El sistema impide borrar la imagen principal del personaje para evitar errores de visualización en la lista general.
+## Verification Results
 
-## Verificación Realizada
+### Build
+- `gradle app:assembleDebug`: **SUCCESSFUL**.
 
-> [!NOTE]
-> Se han añadido métodos a `ImagenPersonajeDao` para soportar borrados masivos (`deleteBatch`), optimizando el rendimiento de la base de datos al limpiar galerías grandes.
+### Manual Verification (Expected behavior)
+1.  **Search**: Titles and covers should now appear correctly for all nHentai results.
+2.  **Download**: When downloading, the app will automatically try different extensions if the first one fails, ensuring higher success rates.
+3.  **Stability**: No more crashes when starting a download on modern Android versions.
 
 > [!TIP]
-> ¡Pruébalo! Abre un personaje, carga 20 imágenes y usa el nuevo gestor para borrar las que no te gusten o estén repetidas. Notarás que el carrusel se actualiza al instante.
+> If a search result still has "Sin título", it might be a very rare entry with no titles in the API response, but V2 support should cover 99% of cases now.

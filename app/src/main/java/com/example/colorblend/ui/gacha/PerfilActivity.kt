@@ -111,6 +111,15 @@ class PerfilActivity : AppCompatActivity() {
             }
         }
 
+        findViewById<Button>(R.id.btnDoujin).setOnClickListener {
+            animarBoton(it) {
+                SonidoHelper.reproducir(this)
+                abrirAccesoProtegido("Contenido Privado") {
+                    startActivity(Intent(this@PerfilActivity, DoujinActivity::class.java))
+                }
+            }
+        }
+
         findViewById<Button>(R.id.btnApiKeys).setOnClickListener {
             animarBoton(it) {
                 SonidoHelper.reproducir(this)
@@ -211,26 +220,32 @@ class PerfilActivity : AppCompatActivity() {
 
     // ── Block de Notas ────────────────────────────────────────────────────────
 
-    private fun abrirBlockNotas() {
+    // ── Acceso Protegido (Biométrico / Contraseña) ──────────────────────────
+
+    private fun abrirAccesoProtegido(titulo: String, onExito: () -> Unit) {
         val puedeUsarHuella = BiometricManager.from(this)
             .canAuthenticate(BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_SUCCESS
-        if (puedeUsarHuella) mostrarHuella() else mostrarPopupContrasena()
+        if (puedeUsarHuella) {
+            mostrarHuella(titulo, onExito)
+        } else {
+            mostrarPopupContrasena(titulo, onExito)
+        }
     }
 
-    private fun mostrarHuella() {
+    private fun mostrarHuella(titulo: String, onExito: () -> Unit) {
         val prompt = BiometricPrompt(this, ContextCompat.getMainExecutor(this),
             object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                    startActivity(Intent(this@PerfilActivity, BlockNotasActivity::class.java))
+                    onExito()
                 }
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                     when (errorCode) {
                         BiometricPrompt.ERROR_NEGATIVE_BUTTON,
-                        BiometricPrompt.ERROR_USER_CANCELED -> mostrarPopupContrasena()
+                        BiometricPrompt.ERROR_USER_CANCELED -> mostrarPopupContrasena(titulo, onExito)
                         BiometricPrompt.ERROR_LOCKOUT,
                         BiometricPrompt.ERROR_LOCKOUT_PERMANENT -> {
                             Toast.makeText(this@PerfilActivity, "Huella bloqueada. Usa la contraseña.", Toast.LENGTH_SHORT).show()
-                            mostrarPopupContrasena()
+                            mostrarPopupContrasena(titulo, onExito)
                         }
                         else -> {}
                     }
@@ -239,13 +254,13 @@ class PerfilActivity : AppCompatActivity() {
             })
 
         prompt.authenticate(BiometricPrompt.PromptInfo.Builder()
-            .setTitle("🔒 Block de Notas")
+            .setTitle("🔒 $titulo")
             .setSubtitle("Usa tu huella para acceder")
             .setNegativeButtonText("Usar contraseña")
             .build())
     }
 
-    private fun mostrarPopupContrasena() {
+    private fun mostrarPopupContrasena(titulo: String, onExito: () -> Unit) {
         val input = EditText(this).apply {
             hint      = "Introduce la contraseña"
             inputType = android.text.InputType.TYPE_CLASS_TEXT or
@@ -256,19 +271,25 @@ class PerfilActivity : AppCompatActivity() {
             setPadding(32, 24, 32, 24)
         }
         AlertDialog.Builder(this)
-            .setTitle("🔒 Block de Notas")
+            .setTitle("🔒 $titulo")
             .setMessage("Introduce la contraseña para acceder")
             .setView(input)
             .setPositiveButton("Entrar") { _, _ ->
                 val guardada = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
                     .getString(KEY_PASSWORD, DEFAULT_PASSWORD)
                 if (input.text.toString() == guardada) {
-                    startActivity(Intent(this, BlockNotasActivity::class.java))
+                    onExito()
                 } else {
                     Toast.makeText(this, "❌ Contraseña incorrecta", Toast.LENGTH_SHORT).show()
                 }
             }
             .setNegativeButton("Cancelar", null)
             .show()
+    }
+
+    private fun abrirBlockNotas() {
+        abrirAccesoProtegido("Block de Notas") {
+            startActivity(Intent(this, BlockNotasActivity::class.java))
+        }
     }
 }

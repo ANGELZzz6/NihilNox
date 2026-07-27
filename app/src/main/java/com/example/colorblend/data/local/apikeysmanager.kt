@@ -16,6 +16,7 @@ object ApiKeysManager {
     const val KEY_GIANTBOMB      = "giantbomb_api_key"
     const val KEY_SERVIDOR_URL   = "servidor_url"
     const val KEY_SERVIDOR_KEY   = "servidor_key"
+    const val KEY_NHENTAI       = "nhentai_api_key"
 
     private val KEYS_REQUERIDAS = listOf(KEY_GEMINI, KEY_GROQ)
 
@@ -63,6 +64,7 @@ object ApiKeysManager {
     fun getGiantBombKey(context: Context) = getPrefs(context).getString(KEY_GIANTBOMB, "") ?: ""
     fun getServidorUrl(context: Context)  = getPrefs(context).getString(KEY_SERVIDOR_URL, "") ?: ""
     fun getServidorKey(context: Context)  = getPrefs(context).getString(KEY_SERVIDOR_KEY, "") ?: ""
+    fun getNhentaiKey(context: Context)   = getPrefs(context).getString(KEY_NHENTAI, "") ?: ""
 
     fun set(context: Context, key: String, value: String) {
         getPrefs(context).edit().putString(key, value.trim()).apply()

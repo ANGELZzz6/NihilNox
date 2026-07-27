@@ -1,42 +1,41 @@
-# Plan de Implementación: Gestión Avanzada de Imágenes y Precisión
+# Implementation Plan - Fix nHentai Metadata and Downloads
 
-Este plan detalla las mejoras para la búsqueda de imágenes (precisión por serie y selector de cantidad) y la nueva funcionalidad de gestión de galería (eliminación individual y por lotes).
+The issue is that nHentai is returning a different JSON structure than what our models expect, especially for the "API V2" endpoints being used. Additionally, the downloader fails on 404 errors because it doesn't handle different image extensions like the reader does.
 
 ## Proposed Changes
 
-### 1. Motor de Búsqueda Safebooru (Precisión y Cantidad)
+### [Data Layer]
 
-#### [MODIFY] [SafebooruRepository.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/repository/SafebooruRepository.kt)
-- **Actualizar `getImagenes`**: Añadir parámetros `serie: String?` y `limit: Int`.
-- **Búsqueda Combinada**: Implementar lógica para buscar `tag_personaje` + `tag_serie` como primera opción para evitar personajes de otras franquicias.
+#### [MODIFY] [DoujinModels.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/network/models/DoujinModels.kt)
+- Update `NHentaiGallery` to include fields for nHentai API V2:
+    - `english_title`: String? (for Search V2).
+    - `japanese_title`: String? (for Search V2).
+    - `thumbnail_path`: String? (mapped from `thumbnail` in Search V2).
+    - `pages_v2`: List<NHentaiPageV2>? (mapped from `pages` in Details V2).
+    - `cover_v2`: NHentaiImageV2? (mapped from `cover` in Details V2).
+- Update `NHentaiTitle` to keep compatibility with V1.
 
-### 2. Interfaz de Colección y Selector
+#### [MODIFY] [DoujinRepository.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/repository/DoujinRepository.kt)
+- Update `searchNHentai`:
+    - Use `english_title` or `japanese_title` if the `title` object is null.
+    - Handle `thumbnail` string to build a valid cover URL.
+- Update `getNHentaiPages`:
+    - Handle the `pages` array directly from the V2 response.
+    - Correctly extract the image extension from the `path` field provided by V2.
 
-#### [MODIFY] [ColeccionPersonajesAdapter.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/ColeccionPersonajesAdapter.kt)
-- **Selector de Cantidad**: Al pulsar "Cargar más", mostrar un diálogo con opciones (5, 10, 15, 20).
-- **Mantener Botón**: El botón de carga seguirá visible tras descargar imágenes.
+### [Worker Layer]
 
-### 3. Gestión de Galería (Eliminación)
-
-#### [MODIFY] [ImagenPagerAdapter.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/ImagenPagerAdapter.kt)
-- Añadir callback `onLongClick` para detectar pulsaciones largas en las imágenes del carrusel.
-
-#### [MODIFY] [ColeccionPersonajesAdapter.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/ColeccionPersonajesAdapter.kt)
-- **Eliminación Individual**: Al mantener pulsada una imagen en el carrusel, mostrar un diálogo de confirmación para borrarla.
-- **Eliminación por Lotes**:
-    - Añadir un nuevo botón "Gestionar Galería" en el diálogo del personaje.
-    - Este botón abrirá una nueva vista (cuadrícula) con todas las imágenes extra del personaje.
-    - Permitir seleccionar varias imágenes mediante checkboxes y eliminarlas de una sola vez de la base de datos.
-- **Protección**: La imagen principal del personaje no podrá ser eliminada.
+#### [MODIFY] [DoujinDownloadWorker.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/workers/DoujinDownloadWorker.kt)
+- **Extension Rotation**: If a download fails with 404, try other extensions (webp, jpg, png) similar to how the reader works.
+- **Specific Referer**: Set `Referer: https://nhentai.net/g/{id}/` for all image requests.
+- **Foreground Service Fix**: Ensure the `foregroundServiceType` is correctly applied to avoid the Android 14 crash.
 
 ## Verification Plan
 
-### Verificación Manual
-1.  **Precisión**: Buscar imágenes para un personaje con nombre común y verificar que el filtro de serie funciona.
-2.  **Selector**: Pedir exactamente 5 imágenes y verificar el límite.
-3.  **Borrado Individual**: Mantener pulsada una imagen del carrusel y confirmar su eliminación.
-4.  **Borrado por Lotes**: Abrir el gestor, marcar 3 imágenes repetidas y borrarlas. Verificar que desaparecen tanto del gestor como del carrusel.
+### Automated Tests
+- Build the app with `gradle app:assembleDebug`.
 
-## Ventajas
-- **Galería Limpia**: El usuario puede depurar fácilmente imágenes repetidas o erróneas.
-- **Experiencia de Usuario**: Mayor control sobre el contenido y la precisión de la app.
+### Manual Verification
+- Search on nHentai and verify titles and covers now appear in the list.
+- Download a nHentai doujin and verify the progress bar moves and completion notification appears.
+- Test reading a nHentai doujin offline.

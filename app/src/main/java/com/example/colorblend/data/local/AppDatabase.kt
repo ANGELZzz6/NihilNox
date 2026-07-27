@@ -34,9 +34,10 @@ import com.example.colorblend.data.local.migrations.MIGRATION_26_27
         Tarea::class,
         RegistroTarea::class,
         FraseZen::class,
-        PersonajePool::class
+        PersonajePool::class,
+        DoujinEntity::class
     ],
-    version = 39
+    version = 41
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -60,6 +61,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun registroTareaDao(): RegistroTareaDao
     abstract fun fraseZenDao(): FraseZenDao
     abstract fun personajePoolDao(): PersonajePoolDao
+    abstract fun doujinDao(): DoujinDao
 
     companion object {
         @Volatile private var INSTANCE: AppDatabase? = null
@@ -71,11 +73,36 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "colorblend_db"
                 )
-                    .addMigrations(MIGRATION_24_25, MIGRATION_25_26, MIGRATION_26_27, MIGRATION_27_28, MIGRATION_28_29, MIGRATION_29_30, MIGRATION_30_31, MIGRATION_31_32, MIGRATION_32_33, MIGRATION_33_34, MIGRATION_34_35, MIGRATION_35_36, MIGRATION_36_37, MIGRATION_37_38, MIGRATION_38_39)
+                    .addMigrations(MIGRATION_24_25, MIGRATION_25_26, MIGRATION_26_27, MIGRATION_27_28, MIGRATION_28_29, MIGRATION_29_30, MIGRATION_30_31, MIGRATION_31_32, MIGRATION_32_33, MIGRATION_33_34, MIGRATION_34_35, MIGRATION_35_36, MIGRATION_36_37, MIGRATION_37_38, MIGRATION_38_39, MIGRATION_39_40, MIGRATION_40_41)
                     .build()
                     .also { INSTANCE = it }
             }
         }
+    }
+}
+
+val MIGRATION_39_40 = object : Migration(39, 40) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("""
+            CREATE TABLE IF NOT EXISTS `doujins_guardados` (
+                `id` TEXT PRIMARY KEY NOT NULL, 
+                `title` TEXT NOT NULL, 
+                `coverUrl` TEXT NOT NULL, 
+                `source` TEXT NOT NULL, 
+                `fechaGuardado` INTEGER NOT NULL, 
+                `artist` TEXT NOT NULL DEFAULT '', 
+                `totalPages` INTEGER NOT NULL DEFAULT 0
+            )
+        """.trimIndent())
+    }
+}
+
+val MIGRATION_40_41 = object : Migration(40, 41) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE `doujins_guardados` ADD COLUMN `isDownloaded` INTEGER NOT NULL DEFAULT 0")
+        database.execSQL("ALTER TABLE `doujins_guardados` ADD COLUMN `localPath` TEXT")
+        database.execSQL("ALTER TABLE `doujins_guardados` ADD COLUMN `downloadProgress` INTEGER NOT NULL DEFAULT 0")
+        database.execSQL("ALTER TABLE `doujins_guardados` ADD COLUMN `downloadStatus` TEXT NOT NULL DEFAULT 'IDLE'")
     }
 }
 

@@ -68,7 +68,10 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.3.0") // Agregar RecyclerView
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation ("androidx.security:security-crypto:1.1.0-alpha06")
     kapt("androidx.room:room-compiler:2.6.1")
     testImplementation(libs.junit)
@@ -81,9 +84,11 @@ dependencies {
     implementation ("com.google.mlkit:text-recognition:16.0.0")
     // Agregar la dependencia de Glide para cargar imágenes
     implementation("com.github.bumptech.glide:glide:4.12.0")
+    implementation("com.github.bumptech.glide:okhttp3-integration:4.12.0")
     kapt("com.github.bumptech.glide:compiler:4.12.0") // Para utilizar Glide con Kotlin
     implementation ("androidx.documentfile:documentfile:1.0.1")
     implementation ("androidx.media:media:1.7.0")
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
 // Apollo GraphQL
     implementation("com.apollographql.apollo3:apollo-runtime:3.8.2")
 }

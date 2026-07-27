@@ -289,6 +289,17 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"/>
 
+            <Button android:id="@+id/btnDoujin"
+                android:layout_width="match_parent" android:layout_height="54dp"
+                android:text="🕵️  Acceso Privado"
+                android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold"
+                android:background="@drawable/btn_nav_gradient"
+                android:stateListAnimator="@null"
+                android:layout_marginBottom="8dp"
+                android:drawableStart="@drawable/ic_secure_note"
+                android:paddingStart="16dp"
+                android:drawablePadding="12dp"/>
+
             <Button android:id="@+id/btnApiKeys"
                 android:layout_width="match_parent" android:layout_height="48dp"
                 android:text="⚙ API Keys" android:textColor="#AAAACC"

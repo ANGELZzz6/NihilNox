@@ -34,6 +34,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
 
         <provider
@@ -52,6 +53,11 @@
         <service
             android:name=".ui.gacha.DescargaService"
             android:foregroundServiceType="dataSync"/>
+
+        <service
+            android:name="androidx.work.impl.foreground.SystemForegroundService"
+            android:foregroundServiceType="dataSync"
+            tools:node="merge" />
 
         <service
             android:name=".ui.gacha.MusicaService"
@@ -163,6 +169,10 @@
         <activity android:name=".ui.gacha.EditarBurbujaActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".ui.gacha.IdentidadActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.gacha.DoujinActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.gacha.DoujinReaderActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".ui.gacha.NewTopicActivity"/>
         <activity android:name=".ui.gacha.SessionActivity"/>
