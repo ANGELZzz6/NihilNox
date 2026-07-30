@@ -27,4 +27,18 @@
         <item>ml</item>
         <item>porción</item>
     </string-array>
+
+    <string-array name="frecuencia_autocontrol">
+        <item>Diario</item>
+        <item>Varias veces al día</item>
+        <item>2-3 veces por semana</item>
+        <item>Ocasional</item>
+    </string-array>
+
+    <string-array name="objetivos_autocontrol">
+        <item>Dejarlo por completo</item>
+        <item>Reducir la frecuencia</item>
+        <item>Controlar impulsos en momentos críticos</item>
+        <item>Mejorar enfoque y energía</item>
+    </string-array>
 </resources>

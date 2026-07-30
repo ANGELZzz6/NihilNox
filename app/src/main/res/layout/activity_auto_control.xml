@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/back_global"
+    android:padding="20dp">
+
+    <!-- Header -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="🛡️ Centro de Auto-Control"
+        android:textColor="#FFD700"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Contador de Tiempo Limpio -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/bg_card_bento"
+        android:padding="20dp"
+        android:gravity="center"
+        android:layout_marginBottom="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TIEMPO EN ENFOQUE"
+            android:textColor="#AAAACC"
+            android:textSize="12sp"
+            android:textStyle="bold"/>
+
+        <TextView android:id="@+id/tvContador"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00d 00h 00m"
+            android:textColor="#FFFFFF"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp"/>
+
+        <TextView android:id="@+id/tvMensajeRacha"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="¡Mantén el impulso!"
+            android:textColor="#6666AA"
+            android:textSize="13sp"
+            android:layout_marginTop="8dp"/>
+    </LinearLayout>
+
+    <!-- Plan Actual -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TU PLAN IA"
+        android:textColor="#AAAACC"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView android:id="@+id/tvPlanIA"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="4"
+        android:ellipsize="end"
+        android:background="@drawable/bg_card_bento"
+        android:padding="12dp"
+        android:text="Cargando plan..."
+        android:textColor="#DDDDFF"
+        android:textSize="13sp"
+        android:lineSpacingMultiplier="1.2"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Preguntas a la IA -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PREGUNTAR A LA IA (Dudas, planes, gym...)"
+        android:textColor="#AAAACC"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp">
+
+        <EditText android:id="@+id/etPreguntaIA"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:hint="Ej: Mañana tengo gym..."
+            android:textColor="#FFFFFF"
+            android:textColorHint="#444466"
+            android:textSize="14sp"
+            android:background="@drawable/input_background"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:inputType="text"
+            android:maxLines="2"
+            android:autofillHints="none"/>
+
+        <ImageButton android:id="@+id/btnEnviarPregunta"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_sparkles"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            app:tint="#FFD700"
+            android:background="@drawable/btn_nav_gradient"
+            android:stateListAnimator="@null"
+            android:contentDescription="Enviar pregunta"/>
+    </LinearLayout>
+
+    <!-- Acción -->
+    <Button android:id="@+id/btnConsultarIA"
+        android:layout_width="match_parent"
+        android:layout_height="58dp"
+        android:text="CONSULTAR SESIÓN ✦"
+        android:textColor="#1A1200" android:textSize="16sp" android:textStyle="bold"
+        android:background="@drawable/btn_gacha_gold_gradient"
+        android:stateListAnimator="@null"
+        android:layout_marginBottom="12dp"/>
+
+    <Button android:id="@+id/btnRegistrarFalla"
+        android:layout_width="match_parent" android:layout_height="48dp"
+        android:text="Reiniciar Contador"
+        android:textColor="#FFFFFF" android:textSize="14sp"
+        android:background="@drawable/btn_nav_gradient"
+        android:layout_marginBottom="8dp"/>
+
+</LinearLayout>

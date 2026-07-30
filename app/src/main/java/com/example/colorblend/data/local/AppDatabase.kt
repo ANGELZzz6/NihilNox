@@ -35,12 +35,16 @@ import com.example.colorblend.data.local.migrations.MIGRATION_26_27
         RegistroTarea::class,
         FraseZen::class,
         PersonajePool::class,
-        DoujinEntity::class
+        DoujinEntity::class,
+        AutoControlProfile::class,
+        AutoControlSession::class,
+        Genero::class
     ],
-    version = 41
+    version = 45
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
+    abstract fun autoControlDao(): AutoControlDao
     abstract fun carpetaImagenesDao(): CarpetaImagenesDao
     abstract fun imagenGeneradaDao(): ImagenGeneradaDao
     abstract fun personajeChatDao(): PersonajeChatDao
@@ -62,6 +66,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun fraseZenDao(): FraseZenDao
     abstract fun personajePoolDao(): PersonajePoolDao
     abstract fun doujinDao(): DoujinDao
+    abstract fun generoDao(): GeneroDao
 
     companion object {
         @Volatile private var INSTANCE: AppDatabase? = null
@@ -73,11 +78,64 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "colorblend_db"
                 )
-                    .addMigrations(MIGRATION_24_25, MIGRATION_25_26, MIGRATION_26_27, MIGRATION_27_28, MIGRATION_28_29, MIGRATION_29_30, MIGRATION_30_31, MIGRATION_31_32, MIGRATION_32_33, MIGRATION_33_34, MIGRATION_34_35, MIGRATION_35_36, MIGRATION_36_37, MIGRATION_37_38, MIGRATION_38_39, MIGRATION_39_40, MIGRATION_40_41)
+                    .addMigrations(
+                        MIGRATION_24_25, MIGRATION_25_26, MIGRATION_26_27, MIGRATION_27_28, 
+                        MIGRATION_28_29, MIGRATION_29_30, MIGRATION_30_31, MIGRATION_31_32, 
+                        MIGRATION_32_33, MIGRATION_33_34, MIGRATION_34_35, MIGRATION_35_36, 
+                        MIGRATION_36_37, MIGRATION_37_38, MIGRATION_38_39, MIGRATION_39_40, 
+                        MIGRATION_40_41, MIGRATION_41_42, MIGRATION_42_43, MIGRATION_43_44,
+                        MIGRATION_44_45
+                    )
                     .build()
                     .also { INSTANCE = it }
             }
         }
+    }
+}
+
+val MIGRATION_44_45 = object : Migration(44, 45) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE `canciones` RENAME COLUMN `genero` TO `generos` ")
+    }
+}
+
+val MIGRATION_43_44 = object : Migration(43, 44) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("CREATE TABLE IF NOT EXISTS `generos` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `nombre` TEXT NOT NULL)")
+        database.execSQL("ALTER TABLE `canciones` ADD COLUMN `genero` TEXT")
+    }
+}
+
+val MIGRATION_42_43 = object : Migration(42, 43) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE autocontrol_profile ADD COLUMN ultimaVez INTEGER")
+    }
+}
+
+val MIGRATION_41_42 = object : Migration(41, 42) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("""
+            CREATE TABLE IF NOT EXISTS `autocontrol_profile` (
+                `id` INTEGER NOT NULL, 
+                `frecuenciaActual` TEXT NOT NULL, 
+                `objetivoPrincipal` TEXT NOT NULL, 
+                `triggers` TEXT NOT NULL, 
+                `planIA` TEXT NOT NULL, 
+                `fechaCreacion` INTEGER NOT NULL, 
+                PRIMARY KEY(`id`)
+            )
+        """.trimIndent())
+        database.execSQL("""
+            CREATE TABLE IF NOT EXISTS `autocontrol_sessions` (
+                `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                `fecha` INTEGER NOT NULL, 
+                `horaConsulta` TEXT NOT NULL, 
+                `duracionSolicitada` INTEGER NOT NULL, 
+                `respuestaIA` TEXT NOT NULL, 
+                `aprobado` INTEGER NOT NULL, 
+                `motivoIA` TEXT NOT NULL
+            )
+        """.trimIndent())
     }
 }
 

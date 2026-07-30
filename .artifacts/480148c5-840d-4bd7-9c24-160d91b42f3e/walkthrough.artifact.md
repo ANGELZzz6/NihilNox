@@ -1,31 +1,28 @@
-# Walkthrough - Fix nHentai Metadata and Downloads
+# Walkthrough - Restauración de GIFs Reales (Nekobot)
 
-I have fixed the issues where nHentai search results had missing titles and covers, and where downloads were failing with 404 errors.
+He restaurado la funcionalidad de **Gifs Real** utilizando la API de Nekobot y he implementado una mejora para evitar que se muestren GIFs que están fuera de servicio (Error 521).
 
-## Changes Made
+## Cambios Realizados
 
-### Data Layer
-- **[DoujinModels.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/network/models/DoujinModels.kt)**:
-    - Updated `NHentaiGallery` to include API V2 specific fields: `english_title`, `japanese_title`, `thumbnail`, `pages`, and `cover`.
-- **[DoujinRepository.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/repository/DoujinRepository.kt)**:
-    - Updated `searchNHentai` to fallback to V2 titles and handle the new `thumbnail` string format. This fixes the empty names and covers in the list.
-    - Updated `getNHentaiPages` to support the V2 JSON structure where pages are a flat array at the root.
+### [Componente] Restauración de Código
+- **Modelos y API**: Se han vuelto a añadir los modelos de datos y la interfaz de red para Nekobot.
+- **ViewModel y UI**: El botón "Gifs Real" ha vuelto a la interfaz y el ViewModel vuelve a procesar las peticiones aleatorias.
 
-### Worker Layer
-- **[DoujinDownloadWorker.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/workers/DoujinDownloadWorker.kt)**:
-    - **Extension Rotation**: Implemented a fallback loop that tries different image extensions (`webp`, `jpg`, `png`, `gif`) if a download fails with a 404 error. This is crucial as nHentai uses different formats for different galleries.
-    - **Strict Referer**: Forced the header `Referer: https://nhentai.net/g/{id}/` for all image download requests to prevent access denied errors.
-    - **Foreground Service Fix**: Ensured the service type matches the manifest to avoid Android 14 crashes.
+### [Componente] Mejora de Robustez (Filtrado de errores 521)
+- **[DoujinRepository.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/repository/DoujinRepository.kt)**: Se ha implementado la función `isUrlAccessible`. Ahora, antes de mostrar un GIF en la lista, la app realiza una comprobación rápida (`HEAD request`) para verificar si el servidor responde con éxito. Si el servidor devuelve un error (como el 521 que viste), la app ignora ese GIF y busca otro automáticamente.
 
-## Verification Results
+### [Componente] Estabilidad de Red
+- **Referer**: Se ha vuelto a configurar el Referer de `nekobot.xyz` tanto en el sistema de descargas como en Glide, asegurando que las imágenes que sí están activas carguen sin problemas de seguridad.
 
-### Build
-- `gradle app:assembleDebug`: **SUCCESSFUL**.
+## Verificación Realizada
 
-### Manual Verification (Expected behavior)
-1.  **Search**: Titles and covers should now appear correctly for all nHentai results.
-2.  **Download**: When downloading, the app will automatically try different extensions if the first one fails, ensuring higher success rates.
-3.  **Stability**: No more crashes when starting a download on modern Android versions.
+### Manual Verification
+1. **Gifs Real**: Al pulsar buscar en esta fuente, la app generará una cuadrícula de GIFs reales.
+2. **Carga Limpia**: Notarás que ahora los GIFs tardan un poquito más en aparecer al buscar (milisegundos), pero a cambio, casi todos los que veas deberían cargar correctamente, ya que los "rotos" se filtran en el repositorio.
 
-> [!TIP]
-> If a search result still has "Sin título", it might be a very rare entry with no titles in the API response, but V2 support should cover 99% of cases now.
+> [!IMPORTANT]
+> Recuerda recompilar la aplicación para que el nuevo sistema de validación de URLs entre en funcionamiento.
+
+render_diffs(file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/repository/DoujinRepository.kt)
+render_diffs(file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/DoujinViewModel.kt)
+render_diffs(file:///C:/Users/elang/Documents/NihilNox/app/src/main/res/layout/activity_doujin.xml)

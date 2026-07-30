@@ -305,6 +305,11 @@ class ReproductorActivity : AppCompatActivity() {
             startActivity(Intent(this, EqualizadorActivity::class.java))
         }
 
+        findViewById<TextView>(R.id.btnClasificarMusica).setOnClickListener {
+            SonidoHelper.reproducir(this)
+            startActivity(Intent(this, ClasificarMusicaActivity::class.java))
+        }
+
         val filter = IntentFilter(MusicaService.ACTION_MUSICA_ACTUALIZADA)
         ContextCompat.registerReceiver(this, musicaReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
     }
@@ -495,6 +500,8 @@ class ReproductorActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        // Restaurar la lista completa si venimos de clasificar música
+        musicaService?.restaurarListaCompleta()
         // Forzar recarga de canciones del disco y del servicio para detectar nuevas descargas
         cargarCancionesDescargadas()
     }

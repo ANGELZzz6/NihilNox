@@ -16,5 +16,6 @@ data class Cancion(
     @ColumnInfo(name = "artista", defaultValue = "") val artista: String = "",
     @ColumnInfo(name = "playlist_id") val playlistId: String,    // ID o nombre de playlist
     @ColumnInfo(name = "uri_spotify", defaultValue = "") val uriSpotify: String = "", // URL de Spotify (clave para duplicados)
+    @ColumnInfo(name = "generos") val generos: List<String>? = null,                  // Clasificación por géneros múltiples
     @ColumnInfo(name = "fecha_agregada", defaultValue = "1781733156835") val fechaAgregada: Long = System.currentTimeMillis()
 )

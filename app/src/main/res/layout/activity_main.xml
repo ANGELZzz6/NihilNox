@@ -69,7 +69,7 @@
                             android:layout_marginEnd="5dp"
                             android:text="🎯 Metas"
                             android:textColor="#FFFFFF"
-                            android:textSize="14sp"
+                            android:textSize="12sp"
                             android:textStyle="bold"
                             android:background="@drawable/btn_nav_gradient"
                             android:stateListAnimator="@null"/>
@@ -83,7 +83,7 @@
                             android:layout_marginEnd="5dp"
                             android:text="🗂 Colección"
                             android:textColor="#FFFFFF"
-                            android:textSize="14sp"
+                            android:textSize="12sp"
                             android:textStyle="bold"
                             android:background="@drawable/btn_nav_gradient"
                             android:stateListAnimator="@null"/>
@@ -96,7 +96,7 @@
                             android:layout_marginStart="5dp"
                             android:text="👤 Perfil"
                             android:textColor="#FFFFFF"
-                            android:textSize="14sp"
+                            android:textSize="12sp"
                             android:textStyle="bold"
                             android:background="@drawable/btn_nav_gradient"
                             android:stateListAnimator="@null"/>

@@ -111,6 +111,13 @@ class PerfilActivity : AppCompatActivity() {
             }
         }
 
+        findViewById<Button>(R.id.btnAutoControl).setOnClickListener {
+            animarBoton(it) {
+                SonidoHelper.reproducir(this)
+                startActivity(Intent(this, AutoControlActivity::class.java))
+            }
+        }
+
         findViewById<Button>(R.id.btnDoujin).setOnClickListener {
             animarBoton(it) {
                 SonidoHelper.reproducir(this)

@@ -17,4 +17,10 @@ class Converters {
 
     @TypeConverter
     fun toRareza(value: String): Rareza = Rareza.valueOf(value)
+
+    @TypeConverter
+    fun fromStringList(value: List<String>?): String? = value?.joinToString(",")
+
+    @TypeConverter
+    fun toStringList(value: String?): List<String>? = value?.split(",")?.filter { it.isNotBlank() }
 }

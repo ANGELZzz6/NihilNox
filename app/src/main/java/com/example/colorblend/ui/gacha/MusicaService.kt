@@ -241,6 +241,24 @@ class MusicaService : Service() {
         }
     }
 
+    fun restaurarListaCompleta() {
+        if (cancionesCompletas.isEmpty()) return
+        if (canciones.size == cancionesCompletas.size) return 
+
+        val uriActual = try { if (canciones.isNotEmpty()) canciones[indiceActual] else null } catch (e: Exception) { null }
+        canciones = cancionesCompletas.toList()
+
+        if (uriActual != null) {
+            val nuevoIndice = canciones.indexOf(uriActual)
+            if (nuevoIndice != -1) {
+                indiceActual = nuevoIndice
+            }
+        }
+
+        if (shuffleActivo) generarIndicesShuffle()
+        onCancionCambiada?.invoke(nombreCancion(), isPlaying())
+    }
+
     private fun liberarReproductor() {
         try {
             mediaPlayer?.stop()

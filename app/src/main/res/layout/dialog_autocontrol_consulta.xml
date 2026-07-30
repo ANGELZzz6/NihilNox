@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/dialog_background"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Consulta de Sesión"
+        android:textColor="#FFD700"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="¿Cuánto tiempo estimas dedicar a esta actividad?"
+        android:textColor="#AAAACC"
+        android:textSize="14sp"
+        android:layout_marginBottom="8dp"/>
+
+    <EditText android:id="@+id/etDuracion"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:hint="Minutos (ej: 15)"
+        android:textColorHint="#333355"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/input_background"
+        android:paddingStart="16dp"
+        android:inputType="number"
+        android:layout_marginBottom="24dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <Button android:id="@+id/btnCancelar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CANCELAR"
+            android:textColor="#6666AA"
+            style="?android:attr/borderlessButtonStyle"/>
+
+        <Button android:id="@+id/btnConsultar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CONSULTAR IA"
+            android:textColor="#FFD700"
+            style="?android:attr/borderlessButtonStyle"/>
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootClasificar"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000">
+
+    <ImageView
+        android:id="@+id/ivFondoAlbum"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:alpha="0.2"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Top Bar -->
+        <LinearLayout
+            android:id="@+id/layoutBotonesTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="32dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnNuevoGenero"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+ Añadir"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#222222"
+                android:textAllCaps="false"
+                android:layout_marginEnd="8dp"/>
+
+            <Button
+                android:id="@+id/btnModoReasignar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🔄 Reasignar"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#222222"
+                android:textAllCaps="false"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutInfoCancion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_above="@+id/centroArea"
+            android:layout_marginBottom="50dp"
+            android:paddingHorizontal="40dp">
+
+            <TextView
+                android:id="@+id/tvTituloClasificar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Canción"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/tvArtistaClasificar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Artista"
+                android:textColor="#888888"
+                android:textSize="14sp"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
+        <View
+            android:id="@+id/centroArea"
+            android:layout_width="1dp"
+            android:layout_height="1dp"
+            android:layout_centerInParent="true"/>
+
+        <LinearLayout
+            android:id="@+id/columnaIzquierda"
+            android:layout_width="140dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:orientation="vertical"
+            android:gravity="center_vertical|start"
+            android:padding="0dp">
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/columnaDerecha"
+            android:layout_width="140dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:orientation="vertical"
+            android:gravity="center_vertical|end"
+            android:padding="0dp">
+        </LinearLayout>
+
+        <!-- Contenedor del Punto y Feedback -->
+        <LinearLayout
+            android:id="@+id/contenedorPunto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <View
+                android:id="@+id/puntoArrastrable"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:background="@drawable/blurred_point"/>
+
+            <TextView
+                android:id="@+id/tvFeedbackClasificar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:textColor="#FFD700"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:visibility="invisible"
+                android:text="Asignado"
+                android:shadowColor="#000000"
+                android:shadowRadius="4"
+                android:shadowDx="2"
+                android:shadowDy="2"/>
+        </LinearLayout>
+
+        <!-- Géneros Acumulados -->
+        <TextView
+            android:id="@+id/tvGenerosAcumulados"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/btnAceptarClasificacion"
+            android:layout_marginBottom="24dp"
+            android:gravity="center"
+            android:textColor="#FFD700"
+            android:textSize="14sp"
+            android:textStyle="italic"
+            android:text=""/>
+
+        <!-- Botón Aceptar (Zona de drop) -->
+        <TextView
+            android:id="@+id/btnAceptarClasificacion"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="40dp"
+            android:layout_marginHorizontal="60dp"
+            android:background="@drawable/category_card_background"
+            android:backgroundTint="#222222"
+            android:gravity="center"
+            android:text="✓ ACEPTAR"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold"/>
+
+    </RelativeLayout>
+
+</FrameLayout>

@@ -68,6 +68,19 @@
             android:layout_marginEnd="8dp"/>
 
         <TextView
+            android:id="@+id/btnClasificarMusica"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🏷"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:background="@drawable/btn_nav_gradient"
+            android:paddingStart="14dp" android:paddingEnd="14dp"
+            android:paddingTop="8dp" android:paddingBottom="8dp"
+            android:layout_marginEnd="8dp"/>
+
+        <TextView
             android:id="@+id/btnAgregarMusica"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

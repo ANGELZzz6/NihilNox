@@ -131,9 +131,16 @@
         <activity android:name=".ui.gacha.metas.ValidarMetaActivity"/>
         <activity android:name=".ui.gacha.GachaResultadoActivity"/>
         <activity android:name=".ui.gacha.VideoCategorySelectionActivity"/>
+        <activity android:name=".ui.gacha.AutoControlActivity"/>
+        <activity android:name=".ui.gacha.AutoControlOnboardingActivity"/>
 
 
         <activity android:name=".ui.gacha.BlockNotasActivity"/>
+        <activity
+            android:name=".ui.gacha.ClasificarMusicaActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:screenOrientation="portrait"/>
         <activity android:name=".ui.gacha.ReproductorActivity"/>
         <activity android:name=".ui.gacha.EqualizadorActivity"/>
         <activity

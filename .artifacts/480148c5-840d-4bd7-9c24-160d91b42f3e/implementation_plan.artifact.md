@@ -1,41 +1,50 @@
-# Implementation Plan - Fix nHentai Metadata and Downloads
+# Restaurar GIFs Reales (Nekobot) con Mejor Manejo de Errores
 
-The issue is that nHentai is returning a different JSON structure than what our models expect, especially for the "API V2" endpoints being used. Additionally, the downloader fails on 404 errors because it doesn't handle different image extensions like the reader does.
+El objetivo es restaurar la funcionalidad de **Gifs Real** utilizando la API de Nekobot, pero implementando un sistema de filtrado más robusto para ignorar aquellos GIFs cuyos servidores estén caídos (error 521), evitando que aparezcan cuadros vacíos en la app.
+
+## User Review Required
+
+> [!NOTE]
+> Nekobot utiliza servidores externos (`cdn.nekobot.xyz`) que a veces fallan. Restauraremos la fuente pero mejoraremos la lógica para que la app solo muestre los que realmente cargan.
 
 ## Proposed Changes
 
-### [Data Layer]
+### [Component] Data & Models
 
 #### [MODIFY] [DoujinModels.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/network/models/DoujinModels.kt)
-- Update `NHentaiGallery` to include fields for nHentai API V2:
-    - `english_title`: String? (for Search V2).
-    - `japanese_title`: String? (for Search V2).
-    - `thumbnail_path`: String? (mapped from `thumbnail` in Search V2).
-    - `pages_v2`: List<NHentaiPageV2>? (mapped from `pages` in Details V2).
-    - `cover_v2`: NHentaiImageV2? (mapped from `cover` in Details V2).
-- Update `NHentaiTitle` to keep compatibility with V1.
+- Re-introducir `NekobotResponse` para parsear la respuesta de la API.
+
+### [Component] API Service
+
+#### [MODIFY] [DoujinApiService.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/network/DoujinApiService.kt)
+- Re-introducir la interfaz `NekobotApi`.
+
+### [Component] Repository & ViewModel
 
 #### [MODIFY] [DoujinRepository.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/data/local/repository/DoujinRepository.kt)
-- Update `searchNHentai`:
-    - Use `english_title` or `japanese_title` if the `title` object is null.
-    - Handle `thumbnail` string to build a valid cover URL.
-- Update `getNHentaiPages`:
-    - Handle the `pages` array directly from the V2 response.
-    - Correctly extract the image extension from the `path` field provided by V2.
+- Restaurar `getRandomRealGifs`.
+- Mejorar la lógica: Se realizarán peticiones y se verificará brevemente si la URL es accesible antes de añadirla a la lista de resultados.
 
-### [Worker Layer]
+#### [MODIFY] [DoujinViewModel.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/DoujinViewModel.kt)
+- Restaurar la inicialización de `NekobotApi` y los métodos de búsqueda para "Gifs Real".
+
+### [Component] UI
+
+#### [MODIFY] [activity_doujin.xml](file:///C:/Users/elang/Documents/NihilNox/app/src/main/res/layout/activity_doujin.xml)
+- Re-agregar el `RadioButton` para "Gifs Real".
+
+#### [MODIFY] [DoujinActivity.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/DoujinActivity.kt)
+- Restaurar el manejo de la fuente en el selector.
+
+### [Component] Downloads & Utils
 
 #### [MODIFY] [DoujinDownloadWorker.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/workers/DoujinDownloadWorker.kt)
-- **Extension Rotation**: If a download fails with 404, try other extensions (webp, jpg, png) similar to how the reader works.
-- **Specific Referer**: Set `Referer: https://nhentai.net/g/{id}/` for all image requests.
-- **Foreground Service Fix**: Ensure the `foregroundServiceType` is correctly applied to avoid the Android 14 crash.
+- Restaurar el soporte de descarga para Nekobot.
+
+#### [MODIFY] [DoujinUtils.kt](file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/utils/DoujinUtils.kt)
+- Re-agregar el Referer para `nekobot.xyz`.
 
 ## Verification Plan
-
-### Automated Tests
-- Build the app with `gradle app:assembleDebug`.
-
-### Manual Verification
-- Search on nHentai and verify titles and covers now appear in the list.
-- Download a nHentai doujin and verify the progress bar moves and completion notification appears.
-- Test reading a nHentai doujin offline.
+1.  Seleccionar "Gifs Real".
+2.  Verificar que se carguen GIFs.
+3.  Observar si los que dan error 521 son filtrados o si la app intenta cargar otros en su lugar.
