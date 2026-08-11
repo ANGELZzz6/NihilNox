@@ -127,18 +127,23 @@ class CalendarioActivity : AppCompatActivity() {
             val todasLasTareas = tareaViewModel.getTareasDelDia(fechaSeleccionada.timeInMillis)
             val tareasFiltradas = todasLasTareas.filter { esTareaParaElDia(it, fechaSeleccionada) }
             
-            // 2. Obtener hábitos para este día
-            val idsCompletados = tareaViewModel.getIdsHabitosCompletadosEnFecha(fechaSeleccionada.timeInMillis)
+            // 2. Obtener IDs completados para este día
+            val idsTareasCompletadas = tareaViewModel.getIdsTareasCompletadasEnFecha(fechaSeleccionada.timeInMillis)
+            val idsHabitosCompletados = tareaViewModel.getIdsHabitosCompletadosEnFecha(fechaSeleccionada.timeInMillis)
+            
             val habitosDelDia = listaTodosHabitos.filter { esHabitoParaElDia(it, fechaSeleccionada) }
             
-            // 3. Unificar en lista de CalendarItem
+            // 3. Unificar en lista de CalendarItem con el estado correcto para el día seleccionado
             val items = mutableListOf<CalendarItem>()
-            items.addAll(tareasFiltradas.map { CalendarItem.TareaItem(it) })
-            items.addAll(habitosDelDia.map { CalendarItem.HabitoItem(it, idsCompletados.contains(it.id)) })
+            items.addAll(tareasFiltradas.map { tarea ->
+                CalendarItem.TareaItem(tarea.copy(completada = idsTareasCompletadas.contains(tarea.id)))
+            })
+            items.addAll(habitosDelDia.map { CalendarItem.HabitoItem(it, idsHabitosCompletados.contains(it.id)) })
 
             rvTareasDia.adapter = TareaResumenAdapter(items, 
                 onTareaCheckChanged = { tarea, isChecked ->
-                    tareaViewModel.marcarCompletada(tarea, isChecked)
+                    // Para el calendario principal, también pasamos la fecha seleccionada para el registro
+                    tareaViewModel.marcarCompletadaEnFecha(tarea, isChecked, fechaSeleccionada.timeInMillis)
                 },
                 onHabitoCheckChanged = { habito ->
                     tareaViewModel.marcarHabitoCompletado(habito, fechaSeleccionada.timeInMillis)

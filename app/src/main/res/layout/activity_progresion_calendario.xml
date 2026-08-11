@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/dash_background">
+
+    <!-- Header -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
+
+        <ImageButton
+            android:id="@+id/btnBackCalProgresion"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_lifestream_white"
+            android:rotation="90"
+            app:tint="@color/dash_primary"/>
+
+        <TextView
+            android:id="@+id/tvMesAnioProgresion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="AGOSTO 2026"
+            android:textColor="@color/dash_primary"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.1"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true">
+            <ImageButton
+                android:id="@+id/btnMesAnteriorCal"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_lifestream_white"
+                android:rotation="90"
+                app:tint="@color/white"/>
+            <ImageButton
+                android:id="@+id/btnMesSiguienteCal"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_lifestream_white"
+                android:rotation="-90"
+                app:tint="@color/white"/>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <!-- Calendario Grid -->
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="7"
+        android:layout_margin="16dp">
+        <TextView android:text="L" style="@style/DiaSemanaStyle" android:textColor="@color/dash_outline"/>
+        <TextView android:text="M" style="@style/DiaSemanaStyle" android:textColor="@color/dash_outline"/>
+        <TextView android:text="X" style="@style/DiaSemanaStyle" android:textColor="@color/dash_outline"/>
+        <TextView android:text="J" style="@style/DiaSemanaStyle" android:textColor="@color/dash_outline"/>
+        <TextView android:text="V" style="@style/DiaSemanaStyle" android:textColor="@color/dash_outline"/>
+        <TextView android:text="S" style="@style/DiaSemanaStyle" android:textColor="@color/dash_secondary_gold"/>
+        <TextView android:text="D" style="@style/DiaSemanaStyle" android:textColor="@color/dash_secondary_gold"/>
+    </GridLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvCalendarioProgresion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/dash_outline"
+        android:layout_margin="20dp"
+        android:alpha="0.2"/>
+
+    <TextView
+        android:id="@+id/tvFechaSeleccionadaCal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:text="Sesiones del 10 de Agosto"
+        android:textColor="@color/dash_primary"
+        android:textSize="14sp"
+        android:textStyle="bold"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSesionesDelDia"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="16dp"
+        android:clipToPadding="false"/>
+
+</LinearLayout>

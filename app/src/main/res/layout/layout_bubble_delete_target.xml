@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/deleteTargetContainer"
+    android:layout_width="100dp"
+    android:layout_height="100dp"
+    android:layout_gravity="center">
+
+    <View
+        android:id="@+id/deleteTargetCircle"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        android:background="@drawable/bubble_delete_bg" />
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        android:contentDescription="Eliminar"
+        android:tint="#FFFFFF" />
+
+</FrameLayout>

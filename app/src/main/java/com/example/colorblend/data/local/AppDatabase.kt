@@ -38,9 +38,14 @@ import com.example.colorblend.data.local.migrations.MIGRATION_26_27
         DoujinEntity::class,
         AutoControlProfile::class,
         AutoControlSession::class,
-        Genero::class
+        Genero::class,
+        GenshinCharacter::class,
+        EjercicioEntity::class,
+        SesionEntity::class,
+        SerieEntity::class,
+        RegistroDiarioProgresionEntity::class
     ],
-    version = 45
+    version = 49
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -67,6 +72,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun personajePoolDao(): PersonajePoolDao
     abstract fun doujinDao(): DoujinDao
     abstract fun generoDao(): GeneroDao
+    abstract fun genshinDao(): GenshinDao
+    abstract fun progresionDao(): ProgresionDao
 
     companion object {
         @Volatile private var INSTANCE: AppDatabase? = null
@@ -84,7 +91,7 @@ abstract class AppDatabase : RoomDatabase() {
                         MIGRATION_32_33, MIGRATION_33_34, MIGRATION_34_35, MIGRATION_35_36, 
                         MIGRATION_36_37, MIGRATION_37_38, MIGRATION_38_39, MIGRATION_39_40, 
                         MIGRATION_40_41, MIGRATION_41_42, MIGRATION_42_43, MIGRATION_43_44,
-                        MIGRATION_44_45
+                        MIGRATION_44_45, MIGRATION_45_46, MIGRATION_46_47, MIGRATION_47_48, MIGRATION_48_49
                     )
                     .build()
                     .also { INSTANCE = it }
@@ -93,9 +100,92 @@ abstract class AppDatabase : RoomDatabase() {
     }
 }
 
+val MIGRATION_48_49 = object : Migration(48, 49) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE `ejercicios` ADD COLUMN `descansoSegundos` INTEGER")
+        database.execSQL("ALTER TABLE `ejercicios` ADD COLUMN `tempo` TEXT")
+        database.execSQL("ALTER TABLE `ejercicios` ADD COLUMN `requiereCalentamientoEspecifico` INTEGER NOT NULL DEFAULT 0")
+        database.execSQL("ALTER TABLE `ejercicios` ADD COLUMN `protocoloCalentamiento` TEXT")
+        database.execSQL("ALTER TABLE `ejercicios` ADD COLUMN `notasTendon` TEXT")
+        database.execSQL("ALTER TABLE `ejercicios` ADD COLUMN `seriesPredeterminadas` INTEGER NOT NULL DEFAULT 3")
+    }
+}
+
+val MIGRATION_47_48 = object : Migration(47, 48) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE `ejercicios` ADD COLUMN `esIsometrico` INTEGER NOT NULL DEFAULT 0")
+    }
+}
+
+val MIGRATION_46_47 = object : Migration(46, 47) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("""
+            CREATE TABLE IF NOT EXISTS `ejercicios` (
+                `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                `nombre` TEXT NOT NULL, 
+                `esEjercicioPrincipal` INTEGER NOT NULL, 
+                `rangoRepsMin` INTEGER NOT NULL, 
+                `rangoRepsMax` INTEGER NOT NULL, 
+                `pesoActualKg` REAL NOT NULL, 
+                `orden` INTEGER NOT NULL, 
+                `activo` INTEGER NOT NULL
+            )
+        """)
+        database.execSQL("""
+            CREATE TABLE IF NOT EXISTS `sesiones` (
+                `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                `ejercicioId` INTEGER NOT NULL, 
+                `fecha` INTEGER NOT NULL, 
+                `esDescarga` INTEGER NOT NULL
+            )
+        """)
+        database.execSQL("""
+            CREATE TABLE IF NOT EXISTS `series` (
+                `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                `sesionId` INTEGER NOT NULL, 
+                `numeroSerie` INTEGER NOT NULL, 
+                `pesoKg` REAL NOT NULL, 
+                `reps` INTEGER NOT NULL, 
+                `rir` INTEGER
+            )
+        """)
+        database.execSQL("""
+            CREATE TABLE IF NOT EXISTS `registro_diario_progresion` (
+                `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                `sesionId` INTEGER NOT NULL, 
+                `molestiaArticular` INTEGER NOT NULL, 
+                `notas` TEXT NOT NULL
+            )
+        """)
+    }
+}
+
 val MIGRATION_44_45 = object : Migration(44, 45) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL("ALTER TABLE `canciones` RENAME COLUMN `genero` TO `generos` ")
+    }
+}
+
+val MIGRATION_45_46 = object : Migration(45, 46) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("""
+            CREATE TABLE IF NOT EXISTS `genshin_characters` (
+                `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                `nombre` TEXT NOT NULL, 
+                `rareza` INTEGER NOT NULL, 
+                `elemento` TEXT NOT NULL, 
+                `armaTipo` TEXT NOT NULL, 
+                `nivel` INTEGER NOT NULL, 
+                `nivelAscension` INTEGER NOT NULL, 
+                `nivelAmistad` INTEGER NOT NULL, 
+                `constelacion` INTEGER NOT NULL, 
+                `talentoAtaque` INTEGER NOT NULL, 
+                `talentoElemental` INTEGER NOT NULL, 
+                `talentoDefinitiva` INTEGER NOT NULL, 
+                `notas` TEXT NOT NULL, 
+                `fechaAgregado` INTEGER NOT NULL
+            )
+        """.trimIndent())
     }
 }
 

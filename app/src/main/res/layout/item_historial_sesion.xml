@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp"
+    android:gravity="center_vertical"
+    android:background="@drawable/card_divider_gradient">
+
+    <TextView
+        android:id="@+id/tvFechaHistorial"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:text="10 AGO"
+        android:textColor="@color/white"
+        android:textSize="13sp"/>
+
+    <TextView
+        android:id="@+id/tvNombreEjercicioHistorial"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:text="Press Banca"
+        android:textColor="@color/dash_primary"
+        android:textSize="13sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/tvSerie1Historial"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:text="60kg x 10"
+        android:textColor="@color/white"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/tvSerie2Historial"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:text="60kg x 9"
+        android:textColor="@color/white"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/tvSerie3Historial"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:text="60kg x 7"
+        android:textColor="@color/white"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/tvSerie4Historial"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:text="60kg x 6"
+        android:textColor="@color/white"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/tvSerie5Historial"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:text="-"
+        android:textColor="@color/white"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/tvSerie6Historial"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:text="-"
+        android:textColor="@color/white"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/tvRirHistorial"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:text="1"
+        android:textColor="@color/dash_tertiary"
+        android:textSize="13sp"
+        android:gravity="center"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/tvMolestiaHistorial"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:text="1"
+        android:textColor="@color/dash_error"
+        android:textSize="13sp"
+        android:gravity="center"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/tvNotasHistorial"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="Buena técnica"
+        android:textColor="@color/dash_outline"
+        android:textSize="13sp"/>
+
+</LinearLayout>

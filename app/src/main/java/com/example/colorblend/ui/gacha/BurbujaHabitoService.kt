@@ -37,6 +37,10 @@ class BurbujaHabitoService : Service() {
     private var pulseAnimator: ValueAnimator? = null
     private var moveAnimator: ValueAnimator? = null
     
+    private var deleteTargetView: View? = null
+    private var isDragging = false
+    private var isOverTarget = false
+
     private var anchorX: Int = 100
     private var anchorY: Int = 500
 
@@ -147,27 +151,45 @@ class BurbujaHabitoService : Service() {
                     initialTouchX = event.rawX
                     initialTouchY = event.rawY
                     moveAnimator?.pause()
+                    isDragging = false
                     true
                 }
                 MotionEvent.ACTION_MOVE -> {
-                    anchorX = initialX + (event.rawX - initialTouchX).toInt()
-                    anchorY = initialY + (event.rawY - initialTouchY).toInt()
-                    params.x = anchorX
-                    params.y = anchorY
-                    try {
-                        windowManager.updateViewLayout(bubbleView, params)
-                    } catch (e: Exception) {}
+                    val diffX = (event.rawX - initialTouchX).toInt()
+                    val diffY = (event.rawY - initialTouchY).toInt()
+
+                    if (!isDragging && (Math.abs(diffX) > 10 || Math.abs(diffY) > 10)) {
+                        isDragging = true
+                        mostrarTargetEliminacion()
+                    }
+
+                    if (isDragging) {
+                        anchorX = initialX + diffX
+                        anchorY = initialY + diffY
+                        params.x = anchorX
+                        params.y = anchorY
+
+                        val isColliding = checkCollision(params.x, params.y)
+                        updateTargetState(isColliding)
+
+                        try {
+                            windowManager.updateViewLayout(bubbleView, params)
+                        } catch (e: Exception) {}
+                    }
                     true
                 }
                 MotionEvent.ACTION_UP -> {
-                    val diffX = Math.abs(event.rawX - initialTouchX)
-                    val diffY = Math.abs(event.rawY - initialTouchY)
-                    if (diffX < 10 && diffY < 10) {
+                    if (!isDragging) {
                         v.performClick()
                     } else {
-                        // Reanudar flotación en la nueva posición
-                        moveAnimator?.resume()
+                        if (checkCollision(params.x, params.y)) {
+                            marcarComoRechazado()
+                        } else {
+                            ocultarTargetEliminacion()
+                            moveAnimator?.resume()
+                        }
                     }
+                    isDragging = false
                     true
                 }
                 else -> false
@@ -248,6 +270,13 @@ class BurbujaHabitoService : Service() {
         bubbleView?.findViewById<TextView>(R.id.tvBubbleNombre)?.visibility = View.GONE
         bubbleView?.findViewById<ImageView>(R.id.ivBubbleImagen)?.visibility = View.GONE
     }
+
+    private fun marcarComoRechazado() {
+        ocultarTargetEliminacion {
+            HabitoAlarmManager.omitirHoy(this, habitoId)
+            stopSelf()
+        }
+    }
     
     private fun confirmarYCerrar() {
         if (habitoId == -99) {
@@ -310,6 +339,92 @@ class BurbujaHabitoService : Service() {
             bubbleView?.scaleY = scale
         }
         pulseAnimator?.start()
+    }
+
+    private fun mostrarTargetEliminacion() {
+        if (deleteTargetView != null) return
+
+        val size = (100 * resources.displayMetrics.density).toInt()
+        val params = WindowManager.LayoutParams(
+            size, size,
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+            else
+                @Suppress("DEPRECATION") WindowManager.LayoutParams.TYPE_PHONE,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            PixelFormat.TRANSLUCENT
+        ).apply {
+            gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+            y = (50 * resources.displayMetrics.density).toInt()
+        }
+
+        val inflater = LayoutInflater.from(this)
+        deleteTargetView = inflater.inflate(R.layout.layout_bubble_delete_target, null)
+        deleteTargetView?.alpha = 0f
+        deleteTargetView?.scaleX = 0.5f
+        deleteTargetView?.scaleY = 0.5f
+
+        windowManager.addView(deleteTargetView, params)
+
+        deleteTargetView?.animate()
+            ?.alpha(1f)
+            ?.scaleX(1f)
+            ?.scaleY(1f)
+            ?.setDuration(300)
+            ?.start()
+    }
+
+    private fun ocultarTargetEliminacion(onComplete: () -> Unit = {}) {
+        val target = deleteTargetView ?: run {
+            onComplete()
+            return
+        }
+        target.animate()
+            ?.alpha(0f)
+            ?.scaleX(0.5f)
+            ?.scaleY(0.5f)
+            ?.setDuration(300)
+            ?.withEndAction {
+                try {
+                    windowManager.removeView(target)
+                } catch (e: Exception) {}
+                if (deleteTargetView == target) deleteTargetView = null
+                onComplete()
+            }
+            ?.start()
+    }
+
+    private fun checkCollision(bubbleX: Int, bubbleY: Int): Boolean {
+        val displayMetrics = resources.displayMetrics
+        val screenWidth = displayMetrics.widthPixels
+        val screenHeight = displayMetrics.heightPixels
+
+        val targetCenterX = screenWidth / 2
+        val targetCenterY = screenHeight - ((50 * displayMetrics.density).toInt() + (50 * displayMetrics.density).toInt())
+
+        val bubbleCenterX = bubbleX + (40 * displayMetrics.density).toInt()
+        val bubbleCenterY = bubbleY + (40 * displayMetrics.density).toInt()
+
+        val distance = Math.hypot((bubbleCenterX - targetCenterX).toDouble(), (bubbleCenterY - targetCenterY).toDouble())
+        val threshold = 70 * displayMetrics.density
+        return distance < threshold
+    }
+
+    private fun updateTargetState(isColliding: Boolean) {
+        if (isColliding == isOverTarget) return
+        isOverTarget = isColliding
+
+        val scale = if (isColliding) 1.5f else 1.0f
+        deleteTargetView?.findViewById<View>(R.id.deleteTargetCircle)?.animate()
+            ?.scaleX(scale)
+            ?.scaleY(scale)
+            ?.setDuration(200)
+            ?.start()
+
+        bubbleView?.animate()
+            ?.alpha(if (isColliding) 0.5f else 1.0f)
+            ?.setDuration(200)
+            ?.start()
     }
 
     private fun reiniciarTemporizadorCierre() {

@@ -1,0 +1,8 @@
+- [x] Definir Modelo de Datos (`GenshinCharacter.kt`)
+- [x] Crear DAO (`GenshinDao.kt`)
+- [x] Actualizar Base de Datos y Migración (`AppDatabase.kt`)
+- [x] Actualizar UI de Perfil (`activity_perfil.xml` y `PerfilActivity.kt`)
+- [x] Crear Layouts para Genshin (`activity_genshin_list.xml`, `item_genshin_character.xml`, `activity_genshin_edit.xml`)
+- [x] Implementar `GenshinListActivity.kt` y `GenshinViewModel.kt`
+- [x] Implementar `GenshinEditActivity.kt`
+- [x] Verificar funcionamiento y estética

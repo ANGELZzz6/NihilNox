@@ -289,6 +289,14 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"/>
 
+            <Button android:id="@+id/btnGenshin"
+                android:layout_width="match_parent" android:layout_height="54dp"
+                android:text="✨  Genshin Impact"
+                android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold"
+                android:background="@drawable/btn_gacha_gold_gradient"
+                android:stateListAnimator="@null"
+                android:layout_marginBottom="8dp"/>
+
             <Button android:id="@+id/btnAutoControl"
                 android:layout_width="match_parent" android:layout_height="54dp"
                 android:text="🛡️  Focus AI"

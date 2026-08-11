@@ -346,6 +346,42 @@
                 android:orientation="vertical"
                 android:layout_marginBottom="16dp">
 
+                <!-- Progresión -->
+                <RelativeLayout
+                    android:id="@+id/btnDashProgresion"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="@drawable/bg_card_bento"
+                    android:layout_marginBottom="8dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
+                    <ImageView
+                        android:id="@+id/icProgresion"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_fire"
+                        app:tint="@color/dash_secondary_gold"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/icProgresion"
+                        android:layout_marginStart="16dp"
+                        android:text="Progresión"
+                        android:textColor="@color/white"
+                        android:textSize="15sp"
+                        android:textStyle="bold"/>
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_lifestream_white"
+                        android:rotation="-90"
+                        app:tint="@color/dash_outline"/>
+                </RelativeLayout>
+
                 <!-- Perfil -->
                 <RelativeLayout
                     android:id="@+id/btnDashPerfil"

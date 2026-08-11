@@ -82,6 +82,12 @@ class DashboardActivity : AppCompatActivity() {
             }
         }
 
+        findViewById<View>(R.id.btnDashProgresion).setOnClickListener {
+            animarBoton(it) {
+                startActivity(Intent(this, ProgresionActivity::class.java))
+            }
+        }
+
         findViewById<View>(R.id.btnDashPerfil).setOnClickListener {
             animarBoton(it) {
                 startActivity(Intent(this, PerfilActivity::class.java))
@@ -381,8 +387,9 @@ class DashboardActivity : AppCompatActivity() {
         val grid2 = findViewById<View>(R.id.btnHabitos).parent as View
         val social = findViewById<View>(R.id.btnDashLifeStream).parent as View
         val recall = findViewById<View>(R.id.btnDashRecall)
+        val progresion = findViewById<View>(R.id.btnDashProgresion)
         
-        val elementos = listOf(topBar, gacha, bento, lista, recall, grid2, social)
+        val elementos = listOf(topBar, gacha, bento, progresion, lista, recall, grid2, social)
 
         elementos.forEachIndexed { i, v ->
             v.scaleX = 0.7f

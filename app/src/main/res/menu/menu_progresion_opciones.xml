@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_exportar_json"
+        android:title="Exportar Día (JSON IA)" />
+    <item
+        android:id="@+id/menu_exportar_pdf"
+        android:title="Exportar Día (PDF)" />
+    <item
+        android:id="@+id/menu_importar_ejercicios"
+        android:title="Importar Ejercicios (JSON)" />
+    <item
+        android:id="@+id/menu_ver_formato"
+        android:title="Ver Formato JSON para IA" />
+    <item
+        android:id="@+id/menu_eliminar_todo"
+        android:title="ELIMINAR TODO (Temporal)" />
+</menu>

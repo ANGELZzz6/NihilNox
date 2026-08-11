@@ -144,4 +144,16 @@ object HabitoAlarmManager {
         val pendingIntent = PendingIntent.getBroadcast(context, habitoId + 10000, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         (context.getSystemService(Context.ALARM_SERVICE) as AlarmManager).cancel(pendingIntent)
     }
+
+    fun omitirHoy(context: Context, habitoId: Int) {
+        if (habitoId == -99) return
+        CoroutineScope(Dispatchers.IO).launch {
+            val db = AppDatabase.getDatabase(context.applicationContext)
+            val habito = db.habitoDao().getById(habitoId) ?: return@launch
+            withContext(Dispatchers.Main) {
+                val mañana = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, 1) }
+                realizarProgramacion(context, habito, mañana)
+            }
+        }
+    }
 }

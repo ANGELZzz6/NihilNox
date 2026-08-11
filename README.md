@@ -75,6 +75,12 @@
 ### 🔑 7. Gestor de API Keys (`ApiKeysActivity`)
 * Un panel seguro y centralizado para que configures dinámicamente tus credenciales personales para las APIs de IGDB, Jikan, Venice AI, y más.
 
+### 🖥️ 8. Servidor de Descargas para PC (`pc-server/`)
+* **Servidor Local con GUI:** Ejecuta tu propio servidor de descargas directamente en tu PC con una interfaz intuitiva.
+* **Túnel ngrok integrado:** Expone tu servidor local de forma segura para que la app Android pueda acceder desde cualquier red.
+* **Soporte Extendido:** Procesamiento optimizado para descargas de Instagram, YouTube y Spotify (vía spotdl).
+* **Minimización a Tray:** Mantiene el servidor corriendo en segundo plano sin estorbar en la barra de tareas.
+
 ---
 
 ## 🛠️ Arquitectura y Tecnologías Utilizadas
@@ -122,6 +128,12 @@ Este proyecto se ha desarrollado siguiendo los principios de **Clean Architectur
    * Conecta tu dispositivo Android con la Depuración USB habilitada.
    * Presiona el botón verde de **Run (Ejecutar)** en Android Studio.
 
+5. **(Opcional) Configurar Servidor de PC:**
+   * Ve a la carpeta `pc-server/`.
+   * Instala las dependencias: `pip install fastapi uvicorn pyngrok yt-dlp customtkinter Pillow pystray spotdl nest-asyncio`.
+   * Ejecuta el servidor: `python NihilNox.py`.
+   * Sigue la guía de ayuda dentro de la aplicación de PC para vincularla con tu móvil.
+
 ---
 
 ## 📁 Estructura del Proyecto
@@ -138,6 +150,8 @@ app/src/main/java/com/example/colorblend/
 │   └── model/               # Modelos de dominio y entidades (Meta, Personaje, RegistroAlimento)
 │
 ├── network/                 # Proveedores de clientes de red (ApolloClientProvider)
+│
+├── pc-server/               # Servidor de descargas para escritorio (Python)
 │
 └── ui/
     └── gacha/               # Actividades, ViewModels y componentes de la UI

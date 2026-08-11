@@ -133,6 +133,10 @@
         <activity android:name=".ui.gacha.VideoCategorySelectionActivity"/>
         <activity android:name=".ui.gacha.AutoControlActivity"/>
         <activity android:name=".ui.gacha.AutoControlOnboardingActivity"/>
+        <activity android:name=".ui.gacha.ProgresionActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.gacha.ProgresionCalendarioActivity"
+            android:screenOrientation="portrait"/>
 
 
         <activity android:name=".ui.gacha.BlockNotasActivity"/>
@@ -167,6 +171,10 @@
         <activity android:name=".ui.gacha.HistorialNutricionActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".ui.gacha.metas.CrearMetaActivity"/>
+        <activity android:name=".ui.gacha.GenshinListActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.gacha.GenshinEditActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".ui.gacha.GamesActivity"/>
         <activity android:name=".ui.gacha.LearnActivity"/>
         <activity android:name=".ui.gacha.HabitosActivity"

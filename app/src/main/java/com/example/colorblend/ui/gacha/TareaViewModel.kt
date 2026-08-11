@@ -30,6 +30,10 @@ class TareaViewModel(application: Application) : AndroidViewModel(application) {
         return registroDao.getIdsHabitosCompletadosEnFecha(normalizeToStartOfDay(fecha))
     }
 
+    suspend fun getIdsTareasCompletadasEnFecha(fecha: Long): List<Int> {
+        return registroTareaDao.getIdsCompletadosEnFecha(normalizeToStartOfDay(fecha))
+    }
+
     suspend fun insertarTarea(tarea: Tarea): Long {
         val id = dao.insertTarea(tarea)
         WidgetCalendario.forzarActualizacion(getApplication())
@@ -48,18 +52,26 @@ class TareaViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun marcarCompletada(tarea: Tarea, completada: Boolean) {
+        marcarCompletadaEnFecha(tarea, completada, System.currentTimeMillis())
+    }
+
+    fun marcarCompletadaEnFecha(tarea: Tarea, completada: Boolean, fecha: Long) {
         viewModelScope.launch {
-            dao.updateTarea(tarea.copy(completada = completada))
-            
-            // Guardar registro histórico
+            val targetFecha = normalizeToStartOfDay(fecha)
             val hoy = normalizeToStartOfDay(System.currentTimeMillis())
-            if (completada) {
-                registroTareaDao.insertar(RegistroTarea(tareaId = tarea.id, fechaDia = hoy))
-            } else {
-                registroTareaDao.eliminarRegistro(tarea.id, hoy)
+
+            // Solo actualizamos el estado global si es hoy
+            if (targetFecha == hoy) {
+                dao.updateTarea(tarea.copy(completada = completada))
             }
-            
-            // Notificar al widget
+
+            // Historial por fecha
+            if (completada) {
+                registroTareaDao.insertar(RegistroTarea(tareaId = tarea.id, fechaDia = targetFecha))
+            } else {
+                registroTareaDao.eliminarRegistro(tarea.id, targetFecha)
+            }
+
             WidgetCalendario.forzarActualizacion(getApplication())
             WidgetLifeStream.forzarActualizacion(getApplication())
         }

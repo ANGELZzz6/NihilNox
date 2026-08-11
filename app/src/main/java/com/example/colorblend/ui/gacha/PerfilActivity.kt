@@ -118,6 +118,13 @@ class PerfilActivity : AppCompatActivity() {
             }
         }
 
+        findViewById<Button>(R.id.btnGenshin).setOnClickListener {
+            animarBoton(it) {
+                SonidoHelper.reproducir(this)
+                startActivity(Intent(this, GenshinListActivity::class.java))
+            }
+        }
+
         findViewById<Button>(R.id.btnDoujin).setOnClickListener {
             animarBoton(it) {
                 SonidoHelper.reproducir(this)

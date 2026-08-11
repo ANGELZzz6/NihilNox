@@ -37,8 +37,14 @@ class CalendarioRemoteViewsFactory(private val context: Context) : RemoteViewsSe
                 val allFromDb = db.tareaDao().getTareasDelDia(hoy)
                 val filteredToday = allFromDb.filter { esTareaParaElDia(it, cal) }
 
+                // Cruce con registros_tarea para determinar el estado REAL de hoy
+                val tasksWithTodayStatus = filteredToday.map { tarea ->
+                    val completadaHoy = db.registroTareaDao().esCompletadaEnFecha(tarea.id, hoy) > 0
+                    tarea.copy(completada = completadaHoy)
+                }
+
                 // Priorizar pendientes, luego completadas. Ordenadas por hora.
-                tasks = filteredToday.sortedWith(compareBy<Tarea> { it.completada }.thenBy { it.hora * 60 + it.minuto })
+                tasks = tasksWithTodayStatus.sortedWith(compareBy<Tarea> { it.completada }.thenBy { it.hora * 60 + it.minuto })
                     .toMutableList()
             } catch (e: Exception) {
                 e.printStackTrace()

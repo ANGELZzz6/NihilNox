@@ -16,6 +16,9 @@ interface RegistroTareaDao {
     @Query("SELECT COUNT(*) FROM registros_tarea WHERE tareaId = :tareaId AND fechaDia = :fecha")
     suspend fun esCompletadaEnFecha(tareaId: Int, fecha: Long): Int
 
+    @Query("SELECT tareaId FROM registros_tarea WHERE fechaDia = :fecha")
+    suspend fun getIdsCompletadosEnFecha(fecha: Long): List<Int>
+
     @Query("DELETE FROM registros_tarea WHERE tareaId = :tareaId AND fechaDia = :fecha")
     suspend fun eliminarRegistro(tareaId: Int, fecha: Long)
 }
