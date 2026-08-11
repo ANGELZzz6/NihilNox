@@ -5,5 +5,6 @@
     android:layout_height="wrap_content"
     android:padding="12dp"
     android:textColor="@color/white"
+    android:background="@color/dash_surface_high"
     android:textSize="16sp"
     android:gravity="center_vertical" />

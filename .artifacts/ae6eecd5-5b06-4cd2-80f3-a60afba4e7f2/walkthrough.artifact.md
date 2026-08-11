@@ -1,29 +1,27 @@
-# Walkthrough - Calendario y Accesibilidad de Registro
+# Walkthrough Final - Módulo de Progresión Completo
 
-Se ha mejorado la experiencia de usuario facilitando el control de cargas y añadiendo una vista histórica visual mediante un calendario.
+Se han aplicado los últimos ajustes de pulido visual, búsqueda inteligente y navegación fluida. El código ha sido verificado y sincronizado con el repositorio.
 
-## Cambios Realizados
+## Cambios Finales Realizados
 
-### Nueva Vista: Calendario de Entrenamiento
-- **Pantalla Dedicada:** Se creó `ProgresionCalendarioActivity` accesible mediante un nuevo ícono de calendario en la barra superior.
-- **Historial Visual:** Los días en los que has registrado algún ejercicio aparecen marcados con un punto dorado (`dash_secondary_gold`).
-- **Detalle Diario:** Al tocar cualquier día, se despliega abajo una lista de todos los ejercicios realizados en esa fecha, incluyendo el resumen de series, peso levantado, repeticiones, hora y nivel de molestia registrado.
+### Búsqueda Inteligente de Ejercicios
+- **AutoComplete Search:** Se reemplazó el selector estático por un buscador (`MaterialAutoCompleteTextView`). Ahora puedes escribir el nombre de un ejercicio para filtrarlo instantáneamente.
+- **UX de Teclado:** Se implementó una lógica que oculta el teclado automáticamente al seleccionar un ejercicio del buscador, dejando la pantalla libre para el registro.
 
-### Mejoras en Accesibilidad de Carga
-- **Botón +20kg Optimizado:** El botón se ha movido de la barra de slider a una posición privilegiada junto al número de peso (ej. **+20kg [60.0 kg]**).
-- **Mejor zona de contacto:** Se aumentó el tamaño y el padding del botón para que sea fácil de pulsar durante el entrenamiento sin margen de error.
+### Ajustes de UI y Navegación
+- **Layout de Barra Superior:** Se reubicó el título "PROGRESIÓN" a la izquierda para evitar solapamientos con los botones de acción en pantallas estrechas.
+- **Feedback en Calendario:** Se añadió una lógica de refresco dinámico en `ProgresionCalendarioActivity`. Al tocar un día, este se ilumina con el fondo circular (`avatar_background`) de forma inmediata para confirmar la selección.
 
-### Persistencia Inteligente
-- **Memoria de Peso:** Ahora, al guardar una sesión, la aplicación actualiza automáticamente el "Peso Actual" del ejercicio en la base de datos.
-- **Sliders Autoadaptables:** Gracias a la actualización anterior, la próxima vez que entrenes, el slider ya estará configurado en el rango de peso que usaste por última vez, eliminando la necesidad de pulsar "+20kg" repetidamente sesión tras sesión.
+### Sincronización y Calidad
+- **Build de Verificación:** Se ejecutó con éxito un `assembleDebug` para asegurar que no hay errores de compilación ni de recursos.
+- **Git Flow:** Se realizó el commit masivo de todos los cambios del módulo de Progresión y se hizo el push exitoso a la rama `main` de tu repositorio en GitHub.
 
-## Verificación
+## Resumen del Módulo
+1.  **Registro Flexible:** Sliders dinámicos, ejercicios isométricos y series variables (+ / -).
+2.  **Análisis IA:** Exportación JSON para LLMs y PDF para reportes visuales.
+3.  **Gestión Pro:** Metadatos de Tempo, Descanso y Calentamiento.
+4.  **Historial Visual:** Calendario interactivo con marcado de días de entrenamiento.
 
-> [!TIP]
-> **Probar Calendario:** Registra un ejercicio hoy y ve al calendario. Verás el punto dorado indicando actividad. Toca el día para ver el resumen de tu sesión.
->
-> **Pulsación de Peso:** Abre un registro y verifica que el botón "+20kg" es cómodo de pulsar con el pulgar. El rango del slider se expandirá instantáneamente.
-
-render_diffs(file:///C:/Users/elang/Documents/NihilNox/app/src/main/res/layout/layout_progresion_serie.xml)
-render_diffs(file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/ProgresionActivity.kt)
 render_diffs(file:///C:/Users/elang/Documents/NihilNox/app/src/main/res/layout/activity_progresion.xml)
+render_diffs(file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/ProgresionActivity.kt)
+render_diffs(file:///C:/Users/elang/Documents/NihilNox/app/src/main/java/com/example/colorblend/ui/gacha/ProgresionCalendarioActivity.kt)
