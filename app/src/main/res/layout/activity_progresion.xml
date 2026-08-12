@@ -191,6 +191,22 @@
                         android:textColor="@color/dash_error"
                         android:textSize="10sp"
                         android:textStyle="italic"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnIniciarDescanso"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="INICIAR DESCANSO"
+                        android:textColor="@color/dash_primary"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        app:strokeColor="@color/dash_primary"
+                        app:icon="@drawable/ic_fire"
+                        app:iconTint="@color/dash_primary"
+                        app:iconGravity="textStart"
+                        app:cornerRadius="8dp"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 

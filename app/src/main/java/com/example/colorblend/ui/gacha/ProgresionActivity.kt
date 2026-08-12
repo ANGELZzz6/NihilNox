@@ -52,6 +52,10 @@ class ProgresionActivity : AppCompatActivity() {
     private lateinit var tvDetalleTempo: TextView
     private lateinit var tvDetalleCalentamiento: TextView
     private lateinit var tvDetalleNotasTendon: TextView
+    private lateinit var btnIniciarDescanso: MaterialButton
+
+    private var currentExerciseId: Long = -1
+    private var draftLoadedForCurrentExercise = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,6 +87,7 @@ class ProgresionActivity : AppCompatActivity() {
         tvDetalleTempo = findViewById(R.id.tvDetalleTempo)
         tvDetalleCalentamiento = findViewById(R.id.tvDetalleCalentamiento)
         tvDetalleNotasTendon = findViewById(R.id.tvDetalleNotasTendon)
+        btnIniciarDescanso = findViewById(R.id.btnIniciarDescanso)
 
         findViewById<View>(R.id.btnBackProgresion).setOnClickListener { finish() }
         findViewById<View>(R.id.btnAgregarEjercicio).setOnClickListener { mostrarDialogoNuevoEjercicio() }
@@ -95,6 +100,10 @@ class ProgresionActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnQuitarSerie).setOnClickListener { quitarSerie() }
 
         tvDetalleDescanso.setOnClickListener { 
+            viewModel.ejercicioSeleccionado.value?.descansoSegundos?.let { iniciarTimer(it) }
+        }
+
+        btnIniciarDescanso.setOnClickListener {
             viewModel.ejercicioSeleccionado.value?.descansoSegundos?.let { iniciarTimer(it) }
         }
 
@@ -127,6 +136,8 @@ class ProgresionActivity : AppCompatActivity() {
                 val selectedName = autoCompleteEjercicios.text.toString()
                 val selectedEj = ejercicios.find { it.nombre == selectedName }
                 selectedEj?.let { 
+                    currentExerciseId = it.id
+                    draftLoadedForCurrentExercise = false // Reset flag
                     viewModel.seleccionarEjercicio(it)
                     ocultarTeclado()
                 }
@@ -134,7 +145,9 @@ class ProgresionActivity : AppCompatActivity() {
         }
 
         viewModel.ultimaSesionData.observe(this) { data ->
-            crearCardsDeSeries(data?.second)
+            if (!draftLoadedForCurrentExercise) {
+                crearCardsDeSeries(data?.second)
+            }
         }
 
         viewModel.historial.observe(this) { historial ->
@@ -157,7 +170,10 @@ class ProgresionActivity : AppCompatActivity() {
     }
 
     private fun restaurarBorrador(borrador: SesionBorradorEntity) {
+        if (borrador.ejercicioId != currentExerciseId) return // Safety check
+        
         try {
+            draftLoadedForCurrentExercise = true
             val jsonArray = org.json.JSONArray(borrador.jsonSeries)
             val seriesDraft = mutableListOf<SerieEntity>()
             for (i in 0 until jsonArray.length()) {
