@@ -43,9 +43,10 @@ import com.example.colorblend.data.local.migrations.MIGRATION_26_27
         EjercicioEntity::class,
         SesionEntity::class,
         SerieEntity::class,
-        RegistroDiarioProgresionEntity::class
+        RegistroDiarioProgresionEntity::class,
+        SesionBorradorEntity::class
     ],
-    version = 49
+    version = 50
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -91,12 +92,26 @@ abstract class AppDatabase : RoomDatabase() {
                         MIGRATION_32_33, MIGRATION_33_34, MIGRATION_34_35, MIGRATION_35_36, 
                         MIGRATION_36_37, MIGRATION_37_38, MIGRATION_38_39, MIGRATION_39_40, 
                         MIGRATION_40_41, MIGRATION_41_42, MIGRATION_42_43, MIGRATION_43_44,
-                        MIGRATION_44_45, MIGRATION_45_46, MIGRATION_46_47, MIGRATION_47_48, MIGRATION_48_49
+                        MIGRATION_44_45, MIGRATION_45_46, MIGRATION_46_47, MIGRATION_47_48, MIGRATION_48_49, MIGRATION_49_50
                     )
                     .build()
                     .also { INSTANCE = it }
             }
         }
+    }
+}
+
+val MIGRATION_49_50 = object : Migration(49, 50) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("""
+            CREATE TABLE IF NOT EXISTS `sesion_borrador` (
+                `ejercicioId` INTEGER PRIMARY KEY NOT NULL, 
+                `jsonSeries` TEXT NOT NULL, 
+                `molestia` INTEGER NOT NULL, 
+                `notas` TEXT NOT NULL, 
+                `fechaActualizacion` INTEGER NOT NULL
+            )
+        """)
     }
 }
 

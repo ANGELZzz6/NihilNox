@@ -47,3 +47,12 @@ data class RegistroDiarioProgresionEntity(
     val molestiaArticular: Int,          // 0-10
     val notas: String = ""
 )
+
+@Entity(tableName = "sesion_borrador")
+data class SesionBorradorEntity(
+    @PrimaryKey val ejercicioId: Long,
+    val jsonSeries: String, // Guardaremos las series como JSON string por simplicidad de persistencia rápida
+    val molestia: Int,
+    val notas: String,
+    val fechaActualizacion: Long
+)

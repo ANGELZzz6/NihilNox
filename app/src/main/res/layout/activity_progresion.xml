@@ -25,16 +25,17 @@
             app:tint="@color/dash_primary"/>
 
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/tvTituloProgresion"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/btnBackProgresion"
             android:layout_toStartOf="@id/btnCalendarioProgresion"
             android:layout_centerVertical="true"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
             android:text="PROGRESIÓN"
             android:textColor="@color/dash_primary"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:letterSpacing="0.1"
             android:maxLines="1"
@@ -71,6 +72,27 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_plus"
             app:tint="@color/dash_primary"/>
+
+        <!-- Temporizador Flotante -->
+        <TextView
+            android:id="@+id/tvTimerProgresion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/btnAgregarEjercicio"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_card_bento"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:text="00:00"
+            android:textColor="@color/dash_secondary_gold"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:elevation="4dp"/>
     </RelativeLayout>
 
     <ScrollView

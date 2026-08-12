@@ -44,6 +44,9 @@ class ProgresionActivity : AppCompatActivity() {
     private lateinit var rvHistorial: RecyclerView
     private lateinit var adapter: HistorialProgresionAdapter
 
+    private lateinit var tvTimer: TextView
+    private var timerDescanso: android.os.CountDownTimer? = null
+
     private lateinit var cardDetalles: MaterialCardView
     private lateinit var tvDetalleDescanso: TextView
     private lateinit var tvDetalleTempo: TextView
@@ -73,6 +76,7 @@ class ProgresionActivity : AppCompatActivity() {
         etNotas = findViewById(R.id.etNotasProgresion)
         btnGuardar = findViewById(R.id.btnGuardarSesion)
         rvHistorial = findViewById(R.id.rvHistorialProgresion)
+        tvTimer = findViewById(R.id.tvTimerProgresion)
 
         cardDetalles = findViewById(R.id.cardDetallesTecnicos)
         tvDetalleDescanso = findViewById(R.id.tvDetalleDescanso)
@@ -90,10 +94,21 @@ class ProgresionActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnAnadirSerie).setOnClickListener { anadirSerie() }
         findViewById<Button>(R.id.btnQuitarSerie).setOnClickListener { quitarSerie() }
 
+        tvDetalleDescanso.setOnClickListener { 
+            viewModel.ejercicioSeleccionado.value?.descansoSegundos?.let { iniciarTimer(it) }
+        }
+
         sliderMolestia.addOnChangeListener { _, value, _ ->
             tvValorMolestia.text = "${value.toInt()}/10"
             actualizarColorMolestia(value.toInt())
+            autoGuardarBorrador()
         }
+
+        etNotas.addTextChangedListener(object : android.text.TextWatcher {
+            override fun afterTextChanged(s: android.text.Editable?) { autoGuardarBorrador() }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
 
         btnGuardar.setOnClickListener { guardarSesion() }
 
@@ -133,6 +148,91 @@ class ProgresionActivity : AppCompatActivity() {
                 cardDetalles.visibility = View.GONE
             }
         }
+
+        viewModel.borradorCargado.observe(this) { borrador ->
+            if (borrador != null) {
+                restaurarBorrador(borrador)
+            }
+        }
+    }
+
+    private fun restaurarBorrador(borrador: SesionBorradorEntity) {
+        try {
+            val jsonArray = org.json.JSONArray(borrador.jsonSeries)
+            val seriesDraft = mutableListOf<SerieEntity>()
+            for (i in 0 until jsonArray.length()) {
+                val obj = jsonArray.getJSONObject(i)
+                seriesDraft.add(SerieEntity(
+                    sesionId = 0,
+                    numeroSerie = i + 1,
+                    pesoKg = obj.getDouble("peso").toFloat(),
+                    reps = obj.getInt("reps"),
+                    rir = if (obj.has("rir")) obj.getInt("rir") else null
+                ))
+            }
+            
+            crearCardsDeSeries(seriesDraft)
+            sliderMolestia.value = borrador.molestia.toFloat().coerceIn(0f, 10f)
+            etNotas.setText(borrador.notas)
+            
+            Toast.makeText(this, "Borrador recuperado", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) { e.printStackTrace() }
+    }
+
+    private fun autoGuardarBorrador() {
+        val series = leerSeriesDeUI()
+        val molestia = sliderMolestia.value.toInt()
+        val notas = etNotas.text.toString()
+        viewModel.guardarBorradorActual(series, molestia, notas)
+    }
+
+    private fun leerSeriesDeUI(): List<SerieEntity> {
+        val series = mutableListOf<SerieEntity>()
+        for (i in 0 until layoutSeriesContainer.childCount) {
+            val card = layoutSeriesContainer.getChildAt(i)
+            val peso = card.findViewById<Slider>(R.id.sliderPeso).value
+            val reps = card.findViewById<Slider>(R.id.sliderReps).value.toInt()
+            val rir = if (i == layoutSeriesContainer.childCount - 1) {
+                card.findViewById<Slider>(R.id.sliderRir).value.toInt()
+            } else null
+            
+            series.add(SerieEntity(sesionId = 0, numeroSerie = i + 1, pesoKg = peso, reps = reps, rir = rir))
+        }
+        return series
+    }
+
+    private fun iniciarTimer(segundos: Int) {
+        timerDescanso?.cancel()
+        tvTimer.visibility = View.VISIBLE
+        
+        timerDescanso = object : android.os.CountDownTimer(segundos * 1000L, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                val seg = (millisUntilFinished / 1000).toInt()
+                val min = seg / 60
+                val s = seg % 60
+                tvTimer.text = String.format(Locale.getDefault(), "%02d:%02d", min, s)
+            }
+
+            override fun onFinish() {
+                tvTimer.text = "¡TIEMPO!"
+                val vibrator = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                    val vibratorManager = getSystemService(VIBRATOR_MANAGER_SERVICE) as android.os.VibratorManager
+                    vibratorManager.defaultVibrator
+                } else {
+                    @Suppress("DEPRECATION")
+                    getSystemService(VIBRATOR_SERVICE) as android.os.Vibrator
+                }
+                
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    vibrator.vibrate(android.os.VibrationEffect.createOneShot(500, android.os.VibrationEffect.DEFAULT_AMPLITUDE))
+                } else {
+                    @Suppress("DEPRECATION")
+                    vibrator.vibrate(500)
+                }
+                
+                tvTimer.postDelayed({ tvTimer.visibility = View.GONE }, 3000)
+            }
+        }.start()
     }
 
     private fun ocultarTeclado() {
@@ -386,8 +486,14 @@ class ProgresionActivity : AppCompatActivity() {
         sliderReps.value = repsBase.toFloat().coerceIn(sliderReps.valueFrom, sliderReps.valueTo)
         tvRepsValue.text = "${sliderReps.value.toInt()}"
 
-        sliderPeso.addOnChangeListener { _, value, _ -> tvPesoValue.text = "$value kg" }
-        sliderReps.addOnChangeListener { _, value, _ -> tvRepsValue.text = "${value.toInt()}" }
+        sliderPeso.addOnChangeListener { _, value, _ -> 
+            tvPesoValue.text = "$value kg"
+            autoGuardarBorrador()
+        }
+        sliderReps.addOnChangeListener { _, value, _ -> 
+            tvRepsValue.text = "${value.toInt()}"
+            autoGuardarBorrador()
+        }
 
         layoutSeriesContainer.addView(view)
     }
@@ -405,6 +511,7 @@ class ProgresionActivity : AppCompatActivity() {
         val dummyData = SerieEntity(sesionId = 0, numeroSerie = count + 1, pesoKg = ultimoPeso, reps = ultimasReps, rir = null)
         agregarVistaSerie(count, dummyData, ejercicio)
         actualizarVisibilidadRir()
+        autoGuardarBorrador()
     }
 
     private fun quitarSerie() {
@@ -412,6 +519,7 @@ class ProgresionActivity : AppCompatActivity() {
         if (count > 1) {
             layoutSeriesContainer.removeViewAt(count - 1)
             actualizarVisibilidadRir()
+            autoGuardarBorrador()
         }
     }
 
@@ -426,7 +534,11 @@ class ProgresionActivity : AppCompatActivity() {
                 layoutRir.visibility = View.VISIBLE
                 if (sliderRir.value == 0f) sliderRir.value = 2f
                 tvRirValue.text = "${sliderRir.value.toInt()}"
-                sliderRir.addOnChangeListener { _, value, _ -> tvRirValue.text = "${value.toInt()}" }
+                sliderRir.clearOnChangeListeners()
+                sliderRir.addOnChangeListener { _, value, _ -> 
+                    tvRirValue.text = "${value.toInt()}"
+                    autoGuardarBorrador()
+                }
             } else {
                 layoutRir.visibility = View.GONE
             }
@@ -480,18 +592,7 @@ class ProgresionActivity : AppCompatActivity() {
     }
 
     private fun guardarSesion() {
-        val series = mutableListOf<SerieEntity>()
-        for (i in 0 until layoutSeriesContainer.childCount) {
-            val card = layoutSeriesContainer.getChildAt(i)
-            val peso = card.findViewById<Slider>(R.id.sliderPeso).value
-            val reps = card.findViewById<Slider>(R.id.sliderReps).value.toInt()
-            val rir = if (i == layoutSeriesContainer.childCount - 1) {
-                card.findViewById<Slider>(R.id.sliderRir).value.toInt()
-            } else null
-            
-            series.add(SerieEntity(sesionId = 0, numeroSerie = i + 1, pesoKg = peso, reps = reps, rir = rir))
-        }
-
+        val series = leerSeriesDeUI()
         val molestia = sliderMolestia.value.toInt()
         val notas = etNotas.text.toString()
 

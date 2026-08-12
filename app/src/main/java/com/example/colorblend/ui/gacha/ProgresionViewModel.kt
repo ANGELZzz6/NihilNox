@@ -37,6 +37,9 @@ class ProgresionViewModel(
     private val _sugerencia = MutableLiveData<SugerenciaProgresion?>()
     val sugerencia: LiveData<SugerenciaProgresion?> = _sugerencia
 
+    private val _borradorCargado = MutableLiveData<SesionBorradorEntity?>()
+    val borradorCargado: LiveData<SesionBorradorEntity?> = _borradorCargado
+
     fun cargarEjercicios() {
         viewModelScope.launch {
             _ejercicios.value = repository.getEjerciciosActivos()
@@ -46,6 +49,36 @@ class ProgresionViewModel(
     fun seleccionarEjercicio(ejercicio: EjercicioEntity) {
         _ejercicioSeleccionado.value = ejercicio
         cargarDatosEjercicio(ejercicio.id)
+        verificarBorrador(ejercicio.id)
+    }
+
+    private fun verificarBorrador(ejercicioId: Long) {
+        viewModelScope.launch {
+            _borradorCargado.value = repository.obtenerBorrador(ejercicioId)
+        }
+    }
+
+    fun guardarBorradorActual(series: List<SerieEntity>, molestia: Int, notas: String) {
+        val ej = _ejercicioSeleccionado.value ?: return
+        viewModelScope.launch {
+            val json = org.json.JSONArray().apply {
+                series.forEach { s ->
+                    put(org.json.JSONObject().apply {
+                        put("peso", s.pesoKg)
+                        put("reps", s.reps)
+                        if (s.rir != null) put("rir", s.rir)
+                    })
+                }
+            }.toString()
+            
+            repository.guardarBorrador(SesionBorradorEntity(
+                ejercicioId = ej.id,
+                jsonSeries = json,
+                molestia = molestia,
+                notas = notas,
+                fechaActualizacion = System.currentTimeMillis()
+            ))
+        }
     }
 
     fun agregarEjercicio(
@@ -195,6 +228,7 @@ class ProgresionViewModel(
             val registro = RegistroDiarioProgresionEntity(sesionId = 0, molestiaArticular = molestia, notas = notas)
             
             repository.guardarSesionCompleta(sesion, series, registro)
+            repository.eliminarBorrador(ejercicio.id)
             
             // ACTUALIZAR PESO ACTUAL DEL EJERCICIO (para que el slider se guarde)
             val maxPesoEnSesion = series.maxOfOrNull { it.pesoKg } ?: ejercicio.pesoActualKg

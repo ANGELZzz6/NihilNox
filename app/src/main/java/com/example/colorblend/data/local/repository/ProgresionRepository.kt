@@ -63,4 +63,16 @@ class ProgresionRepository(private val dao: ProgresionDao) {
     suspend fun eliminarTodaLaProgresion() = withContext(Dispatchers.IO) {
         dao.limpiarTodaLaProgresion()
     }
+
+    suspend fun guardarBorrador(borrador: SesionBorradorEntity) = withContext(Dispatchers.IO) {
+        dao.guardarBorrador(borrador)
+    }
+
+    suspend fun obtenerBorrador(ejercicioId: Long): SesionBorradorEntity? = withContext(Dispatchers.IO) {
+        dao.obtenerBorrador(ejercicioId)
+    }
+
+    suspend fun eliminarBorrador(ejercicioId: Long) = withContext(Dispatchers.IO) {
+        dao.eliminarBorrador(ejercicioId)
+    }
 }

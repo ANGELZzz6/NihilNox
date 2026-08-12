@@ -80,4 +80,13 @@ interface ProgresionDao {
         eliminarTodasLasSesiones()
         eliminarTodosLosEjercicios()
     }
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun guardarBorrador(borrador: SesionBorradorEntity)
+
+    @Query("SELECT * FROM sesion_borrador WHERE ejercicioId = :ejercicioId")
+    suspend fun obtenerBorrador(ejercicioId: Long): SesionBorradorEntity?
+
+    @Query("DELETE FROM sesion_borrador WHERE ejercicioId = :ejercicioId")
+    suspend fun eliminarBorrador(ejercicioId: Long)
 }
